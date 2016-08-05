@@ -357,24 +357,24 @@ where Q_coefficient_power is used in the following names
 
     // if( mass < K0sMass+ksMassWindow_ && mass > K0sMass-ksMassWindow_ ){
 
-      Q_n1_1_K0s_sig = q_vector(n1_, 1, weight, phi);
-      Q_n2_1_K0s_sig = q_vector(n2_, 1, weight, phi);
+      Q_n1_1_K0s_sig += q_vector(n1_, 1, weight, phi);
+      Q_n2_1_K0s_sig += q_vector(n2_, 1, weight, phi);
 
-      Q_n1n2_2_K0s_sig = q_vector(n1_+n2_, 2, weight, phi);
+      Q_n1n2_2_K0s_sig += q_vector(n1_+n2_, 2, weight, phi);
 
-      Q_0_1_K0s_sig = q_vector(0, 1, weight, phi);
-      Q_0_2_K0s_sig = q_vector(0, 2, weight, phi);
+      Q_0_1_K0s_sig += q_vector(0, 1, weight, phi);
+      Q_0_2_K0s_sig += q_vector(0, 2, weight, phi);
 
     //}
     if( mass > K0sMass+ksMassWindow_ || mass < K0sMass-ksMassWindow_ ){
 
-      Q_n1_1_K0s_bkg = q_vector(n1_, 1, weight, phi);
-      Q_n2_1_K0s_bkg = q_vector(n2_, 1, weight, phi);
+      Q_n1_1_K0s_bkg += q_vector(n1_, 1, weight, phi);
+      Q_n2_1_K0s_bkg += q_vector(n2_, 1, weight, phi);
 
-      Q_n1n2_2_K0s_bkg = q_vector(n1_+n2_, 2, weight, phi);
+      Q_n1n2_2_K0s_bkg += q_vector(n1_+n2_, 2, weight, phi);
 
-      Q_0_1_K0s_bkg = q_vector(0, 1, weight, phi);
-      Q_0_2_K0s_bkg = q_vector(0, 2, weight, phi);
+      Q_0_1_K0s_bkg += q_vector(0, 1, weight, phi);
+      Q_0_2_K0s_bkg += q_vector(0, 2, weight, phi);
 
     }
   }
@@ -406,24 +406,24 @@ where Q_coefficient_power is used in the following names
 
     if( mass < LambdaMass+lambdaMassWindow_ && mass > LambdaMass-lambdaMassWindow_ ){
 
-      Q_n1_1_Lambda_sig = q_vector(n1_, 1, weight, phi);
-      Q_n2_1_Lambda_sig = q_vector(n2_, 1, weight, phi);
+      Q_n1_1_Lambda_sig += q_vector(n1_, 1, weight, phi);
+      Q_n2_1_Lambda_sig += q_vector(n2_, 1, weight, phi);
 
-      Q_n1n2_2_Lambda_sig = q_vector(n1_+n2_, 2, weight, phi);
+      Q_n1n2_2_Lambda_sig += q_vector(n1_+n2_, 2, weight, phi);
 
-      Q_0_1_Lambda_sig = q_vector(0, 1, weight, phi);
-      Q_0_2_Lambda_sig = q_vector(0, 2, weight, phi);
+      Q_0_1_Lambda_sig += q_vector(0, 1, weight, phi);
+      Q_0_2_Lambda_sig += q_vector(0, 2, weight, phi);
 
     }
     if( mass > LambdaMass+lambdaMassWindow_ || mass < LambdaMass-lambdaMassWindow_ ){
 
-      Q_n1_1_Lambda_bkg = q_vector(n1_, 1, weight, phi);
-      Q_n2_1_Lambda_bkg = q_vector(n2_, 1, weight, phi);
+      Q_n1_1_Lambda_bkg += q_vector(n1_, 1, weight, phi);
+      Q_n2_1_Lambda_bkg += q_vector(n2_, 1, weight, phi);
 
-      Q_n1n2_2_Lambda_bkg = q_vector(n1_+n2_, 2, weight, phi);
+      Q_n1n2_2_Lambda_bkg += q_vector(n1_+n2_, 2, weight, phi);
 
-      Q_0_1_Lambda_bkg = q_vector(0, 1, weight, phi);
-      Q_0_2_Lambda_bkg = q_vector(0, 2, weight, phi);
+      Q_0_1_Lambda_bkg += q_vector(0, 1, weight, phi);
+      Q_0_2_Lambda_bkg += q_vector(0, 2, weight, phi);
 
     }
   }
