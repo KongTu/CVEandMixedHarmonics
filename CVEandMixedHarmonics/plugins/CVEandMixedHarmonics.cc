@@ -368,8 +368,8 @@ where Q_coefficient_power is used in the following names
   for(unsigned it=0; it<v0candidates_la->size(); ++it){ 
 
     const reco::VertexCompositeCandidate & V0s = (*v0candidates_la)[it];
-    bool isLambda = true;
-    if( !passV0sCut(V0s, vtx, isLambda) ) continue;
+    bool isK0s = false;
+    if( !passV0sCut(V0s, vtx, isK0s) ) continue;
 
     double weight = 1.0;
     double mass = V0s.mass();
