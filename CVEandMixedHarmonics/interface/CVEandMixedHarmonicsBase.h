@@ -154,7 +154,9 @@ class CVEandMixedHarmonics : public edm::EDAnalyzer {
       virtual void endRun(edm::Run const&, edm::EventSetup const&);
       virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
+      virtual bool passV0sCut(const reco::VertexCompositeCandidateCollection & trk, const reco::Vertex & vertex, bool isK0s);
       virtual TComplex q_vector(double n, double p, double w, double phi);
+
 
       // ----------member data ---------------------------
       edm::EDGetTokenT<reco::VertexCollection> vertexSrc_;
@@ -219,6 +221,13 @@ class CVEandMixedHarmonics : public edm::EDAnalyzer {
       double offlineDCA_;
       double offlineChi2_;
       double offlinenhits_;
+
+      double v0sNhitsCut_;
+      double dcaCut_;
+      double decayLengthCut_;
+      double pointingAngleCut_;
+      double lambdaMassWindow_;
+      double ksMassWindow_;
 
       bool useCentrality_;
       bool reverseBeam_;

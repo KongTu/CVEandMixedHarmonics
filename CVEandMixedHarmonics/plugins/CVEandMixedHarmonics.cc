@@ -67,6 +67,13 @@ CVEandMixedHarmonics::CVEandMixedHarmonics(const edm::ParameterSet& iConfig)
   offlineDCA_ = iConfig.getUntrackedParameter<double>("offlineDCA", 0.0);
   offlineChi2_ = iConfig.getUntrackedParameter<double>("offlineChi2", 0.0);
   offlinenhits_ = iConfig.getUntrackedParameter<double>("offlinenhits", 0.0);
+
+  v0sNhitsCut_ = iConfig.getUntrackedParameter<double>("v0sNhitsCut",3.0);
+  dcaCut_ = iConfig.getUntrackedParameter<double>("dcaCut",1.0);
+  decayLengthCut_ = iConfig.getUntrackedParameter<double>("decayLengthCut",5.0);
+  pointingAngleCut_ = iConfig.getUntrackedParameter<double>("pointingAngleCut",0.999);
+  lambdaMassWindow_ = iConfig.getUntrackedParameter<double>("lambdaMassWindow",0.01);
+  ksMassWindow_ = iConfig.getUntrackedParameter<double>("ksMassWindow",0.02);
   
   etaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("etaBins");
   dEtaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("dEtaBins");
@@ -320,6 +327,22 @@ where Q_coefficient_power is used in the following names
           else{continue;}
   }
 
+  //Declaring TComplex varaibles for Q-vectors of V0s
+  
+  TComplex Q_K0s_1, Q_Lambda_1, Q_0_K0s_1, Q_0_Lambda_1;
+
+  //filling Q-vectors of V0s
+  for(unsigned it=0; it<v0candidates_ks->size(); ++it){ 
+
+    const reco::VertexCompositeCandidate & V0s = (*v0candidates_ks)[it];
+    bool isK0s = true;
+    if( !passV0sCut(V0s, vtx, isK0s) ) continue;
+
+    cout << "V0s mass " << V0s.mass() << endl;
+
+  }
+
+
 
 
 /*
@@ -468,7 +491,107 @@ CVEandMixedHarmonics::q_vector(double n, double p, double w, double phi)
   TComplex e(1, n*phi, 1);
   return term1*e;
 }
+//V0s selections
+bool
+CVEandMixedHarmonics::passV0sCut(const reco::VertexCompositeCandidateCollection & trk, const reco::Vertex & vertex, bool isK0s){
 
+  double bestvz = vertex.z(); 
+  double bestvx = vertex.x(); 
+  double bestvy = vertex.y();
+  double bestvzError = vertex.zError(); 
+  double bestvxError = vertex.xError(); 
+  double bestvyError = vertex.yError();
+
+  const reco:: Candidate * d1 = trk.daughter(0);
+  const reco:: Candidate * d2 = trk.daughter(1);
+
+  double px_dau1 = d1->px();
+  double py_dau1 = d1->py();
+  double pz_dau1 = d1->pz();
+ 
+  double px_dau2 = d2->px();
+  double py_dau2 = d2->py();
+  double pz_dau2 = d2->pz();    
+
+  double v0s_mass = trk.mass();
+  double v0s_pt = trk.pt();
+  double v0s_px = trk.px();
+  double v0s_py = trk.py();
+  double v0s_pz = trk.pz();
+  double v0s_eta = trk.eta();
+  double v0s_y = trk.rapidity();
+
+  //PAngle
+  double secvz = trk.vz();
+  double secvx = trk.vx();
+  double secvy = trk.vy();
+  TVector3 ptosvec(secvx-bestvx,secvy-bestvy,secvz-bestvz);
+  TVector3 secvec(v0s_px,v0s_py,v0s_pz);
+
+  double agl = cos(secvec.Angle(ptosvec));
+
+ //Decay length
+  typedef ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3> > SMatrixSym3D;
+  typedef ROOT::Math::SVector<double, 3> SVector3;
+
+  SMatrixSym3D totalCov = vtx.covariance() + trk.vertexCovariance();
+  SVector3 distanceVector(secvx-bestvx,secvy-bestvy,secvz-bestvz);
+
+  double dl = ROOT::Math::Mag(distanceVector);
+  double dlerror = sqrt(ROOT::Math::Similarity(totalCov, distanceVector))/dl;
+  double dlos = dl/dlerror;
+  
+  //NumberofValidHits for two daughters"
+  double dau1_Nhits = dau1->numberOfValidHits();
+  double dau2_Nhits = dau2->numberOfValidHits();
+
+  //DCA
+  math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
+  
+  double dzbest1 = dau1->dz(bestvtx);
+  double dxybest1 = dau1->dxy(bestvtx);
+  double dzerror1 = sqrt(dau1->dzError()*dau1->dzError()+bestvzError*bestvzError);
+  double dxyerror1 = sqrt(dau1->d0Error()*dau1->d0Error()+bestvxError*bestvyError);
+
+  double dzos1 = dzbest1/dzerror1;
+  double dxyos1 = dxybest1/dxyerror1;
+  
+  double dzbest2 = dau2->dz(bestvtx);
+  double dxybest2 = dau2->dxy(bestvtx);
+  double dzerror2 = sqrt(dau2->dzError()*dau2->dzError()+bestvzError*bestvzError);
+  double dxyerror2 = sqrt(dau2->d0Error()*dau2->d0Error()+bestvxError*bestvyError);
+  
+  double dzos2 = dzbest2/dzerror2;
+  double dxyos2 = dxybest2/dxyerror2;
+
+  if( dau1_Nhits <= v0sNhitsCut_ || dau2_Nhits <= v0sNhitsCut_ ) return false;
+  if( dlos < decayLengthCut_ ) return false;
+  if( agl < pointingAngleCut_ ) return false;
+  if( fabs(dzos1) < dcaCut_ || fabs(dzos2) < dcaCut_ || fabs(dxyos1) < dcaCut_ || fabs(dxyos2) < dcaCut_ ) return false;
+  if( fabs(v0s_eta) > 2.4 ) return false;
+
+  if( isK0s == true ){
+
+    double temp = Mass_ks(px_dau1,py_dau1,pz_dau1,px_dau2,py_dau2,pz_dau2);
+    double temp_e = Mass_e(px_dau1,py_dau1,pz_dau1,px_dau2,py_dau2,pz_dau2);
+    double temp_reverse = Mass_ks(px_dau2,py_dau2,pz_dau2,px_dau1,py_dau1,pz_dau1);
+
+    if ( (temp < 1.115683+lambdaMassWindow_ && temp > 1.115683-lambdaMassWindow_) ) return false;
+    if ((temp_reverse < 1.115683+lambdaMassWindow_ && temp_reverse > 1.115683-lambdaMassWindow_)) return false;
+    if ( temp_e < 0.015) return false;
+  }
+  else{
+
+    double temp = Mass_la(px_dau1,py_dau1,pz_dau1,px_dau2,py_dau2,pz_dau2);
+    double temp_e = Mass_e(px_dau1,py_dau1,pz_dau1,px_dau2,py_dau2,pz_dau2);
+    
+    if ( temp < 0.497614+ksMassWindow_ && temp > 0.497614-ksMassWindow_ ) return false;
+    if ( temp_e < 0.015) return false;
+  }
+
+  return true;  
+
+}
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 CVEandMixedHarmonics::endJob() 
