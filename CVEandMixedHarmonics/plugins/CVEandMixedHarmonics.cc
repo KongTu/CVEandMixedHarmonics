@@ -375,8 +375,8 @@ CVEandMixedHarmonics::beginJob()
     for(int sign = 0; sign < 3; sign++){
       for(int HF = 0; HF < 2; HF++){
 
-        c3_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_real_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
-        c3_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_imag_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
+        c3_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_real_%d_%d_%d", deta, sign, HF),";c3", 20000,-1,1);
+        c3_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_imag_%d_%d_%d", deta, sign, HF),";c3", 20000,-1,1);
 
       }
     }    
