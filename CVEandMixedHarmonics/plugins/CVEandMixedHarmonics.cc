@@ -288,7 +288,7 @@ calculate the 2-particles part with the Q-vectors
       }        
 
       TComplex N_3_HFplus, N_3_HFminus;
-      TComplex D_3_HFplus, N_3_HFminus;
+      TComplex D_3_HFplus, D_3_HFminus;
 
       N_3_HFplus = N_2*Q_n3_1_HFplus;
       D_3_HFplus = D_2*Q_0_1_HFplus;
