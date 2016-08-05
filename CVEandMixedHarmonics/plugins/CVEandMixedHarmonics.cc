@@ -493,7 +493,7 @@ CVEandMixedHarmonics::q_vector(double n, double p, double w, double phi)
 }
 //V0s selections
 bool
-CVEandMixedHarmonics::passV0sCut(const reco::VertexCompositeCandidateCollection & trk, const reco::Vertex & vertex, bool isK0s){
+CVEandMixedHarmonics::passV0sCut(const reco::VertexCompositeCandidate & trk, const reco::Vertex & vertex, bool isK0s){
 
   // double bestvz = vertex.z(); 
   // double bestvx = vertex.x(); 
