@@ -26,10 +26,14 @@ CVEandMixedHarmonics::CVEandMixedHarmonics(const edm::ParameterSet& iConfig)
   trackName_  =  iConfig.getParameter<edm::InputTag>("trackName");
   vertexName_ =  iConfig.getParameter<edm::InputTag>("vertexName");
   towerName_ =  iConfig.getParameter<edm::InputTag>("towerName");
+  generalV0_ksName_  =  iConfig.getParameter<edm::InputTag>("generalV0_ksName");
+  generalV0_laName_  =  iConfig.getParameter<edm::InputTag>("generalV0_laName");
 
   trackSrc_ = consumes<reco::TrackCollection>(trackName_);
   vertexSrc_ = consumes<reco::VertexCollection>(vertexName_);
   towerSrc_ = consumes<CaloTowerCollection>(towerName_);
+  generalV0_ks_ = consumes<reco::VertexCompositeCandidateCollection>(generalV0_ksName_);
+  generalV0_la_ = consumes<reco::VertexCompositeCandidateCollection>(generalV0_laName_);
 
   Nmin_ = iConfig.getUntrackedParameter<int>("Nmin");
   Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");
@@ -115,6 +119,12 @@ CVEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   Handle<reco::TrackCollection> tracks;
   iEvent.getByToken(trackSrc_, tracks);
 
+  Handle<reco::VertexCompositeCandidateCollection> v0candidates_ks;
+  iEvent.getByToken(generalV0_ks_,v0candidates_ks);
+    
+  Handle<reco::VertexCompositeCandidateCollection> v0candidates_la;
+  iEvent.getByToken(generalV0_la_,v0candidates_la);
+
   int nTracks = 0;
   for(unsigned it = 0; it < tracks->size(); it++){
 
@@ -186,13 +196,14 @@ define all the ingredients for CME correlator <cos(n1*phi_1 + n2*phi_2 + n3*phi_
 where Q_coefficient_power is used in the following names 
  */
 
-//2-particle correlator
+//2-particle correlator (charge dependent for 0 and 1, and charge independent for 2 in the second argument)
 
-  TComplex Q_n1_1[NetaBins][2], Q_n2_1[NetaBins][2];
+  TComplex Q_n1_1[NetaBins][3], Q_n2_1[NetaBins][3];
   
-  TComplex Q_n1n2_2[NetaBins][2];
+  TComplex Q_n1n2_2[NetaBins][3];
   
-  TComplex Q_0_1[NetaBins][2], Q_0_2[NetaBins][2];
+  TComplex Q_0_1[NetaBins][3], Q_0_2[NetaBins][3];
+
 
 //Scalar product, charge independent, |eta|<2.4
 
@@ -244,7 +255,7 @@ where Q_coefficient_power is used in the following names
         for(int eta = 0; eta < NetaBins; eta++){
           if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
 
-            if( trk.charge() == +1 ){
+            if( trk.charge() == +1 ){//positive charge
 
               Q_n1_1[eta][0] += q_vector(n1_, 1, weight, phi);
               Q_n2_1[eta][0] += q_vector(n2_, 1, weight, phi);
@@ -255,7 +266,7 @@ where Q_coefficient_power is used in the following names
               Q_0_2[eta][0] += q_vector(0, 2, weight, phi);
 
             }
-            if( trk.charge() == -1 ){
+            if( trk.charge() == -1 ){//negative charge
 
               Q_n1_1[eta][1] += q_vector(n1_, 1, weight, phi);
               Q_n2_1[eta][1] += q_vector(n2_, 1, weight, phi);
@@ -264,6 +275,17 @@ where Q_coefficient_power is used in the following names
 
               Q_0_1[eta][1] += q_vector(0, 1, weight, phi);
               Q_0_2[eta][1] += q_vector(0, 2, weight, phi);
+
+            }
+            if( trk.charge() == +1 || trk.charge() == -1 ){//charge independent
+
+              Q_n1_1[eta][2] += q_vector(n1_, 1, weight, phi);
+              Q_n2_1[eta][2] += q_vector(n2_, 1, weight, phi);
+
+              Q_n1n2_2[eta][2] += q_vector(n1_+n2_, 2, weight, phi);
+
+              Q_0_1[eta][2] += q_vector(0, 1, weight, phi);
+              Q_0_2[eta][2] += q_vector(0, 2, weight, phi);
 
             }
           }
@@ -297,6 +319,8 @@ where Q_coefficient_power is used in the following names
           }
           else{continue;}
   }
+
+
 
 /*
 calculate the Scalar product denominator, v_{2,c}
