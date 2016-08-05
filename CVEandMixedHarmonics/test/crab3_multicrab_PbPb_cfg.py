@@ -48,7 +48,7 @@ if __name__ == '__main__':
 	process.ana.Nmin = ntrkRange[num]
 	process.ana.Nmax = ntrkRange[num+1]
        	RequestName = outputName + "_" + str(num)
-       	DataSetName = '/HIMinimumBias5/HIRun2015-02May2016-v1/AOD'
+       	DataSetName = '/HIMinimumBias5/davidlw-RecoSkim2015_pprereco_v5-70836070e3530d592901940b96c951fe/USER'
        	config.General.requestName = RequestName
        	config.Data.inputDataset = DataSetName
        	submit(config)
