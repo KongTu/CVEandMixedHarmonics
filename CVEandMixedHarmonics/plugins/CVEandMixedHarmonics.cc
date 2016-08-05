@@ -208,16 +208,20 @@ where Q_coefficient_power is used in the following names
 
 //2-particle correlator (charge dependent for 0 and 1, and charge independent for 2 in the second argument)
 
-  TComplex Q_n1_1[NetaBins][3], Q_n2_1[NetaBins][3];
+  TComplex Q_n1_1[NetaBins][2], Q_n2_1[NetaBins][2];
   
-  TComplex Q_n1n2_2[NetaBins][3];
+  TComplex Q_n1n2_2[NetaBins][2];
   
-  TComplex Q_0_1[NetaBins][3], Q_0_2[NetaBins][3];
+  TComplex Q_0_1[NetaBins][2], Q_0_2[NetaBins][2];
 
 
 //Scalar product, charge independent, |eta|<2.4
 
   TComplex Q_n3_trk, Q_0_trk;
+
+//3 particle to pair with V0s, charge independent
+
+  TComplex Q_forV0s_trk, Q_0_forV0s_trk;
 
 //------------------------------------------------------------------
 
@@ -262,6 +266,9 @@ where Q_coefficient_power is used in the following names
     Q_n3_trk += q_vector(-n3_, 1, weight, phi);//for scalar product in tracker
     Q_0_trk += q_vector(0, 1, weight, phi);
 
+    Q_forV0s_trk += q_vector(n1_, 1, weight, phi);//for charged particles to be compared with V0s
+    Q_0_forV0s_trk += q_vector(0, 1, weight, phi);
+
     for(int eta = 0; eta < NetaBins; eta++){
       if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
 
@@ -287,20 +294,11 @@ where Q_coefficient_power is used in the following names
           Q_0_2[eta][1] += q_vector(0, 2, weight, phi);
 
         }
-        if( trk.charge() == +1 || trk.charge() == -1 ){//charge independent
-
-          Q_n1_1[eta][2] += q_vector(n1_, 1, weight, phi);
-          Q_n2_1[eta][2] += q_vector(n2_, 1, weight, phi);
-
-          Q_n1n2_2[eta][2] += q_vector(n1_+n2_, 2, weight, phi);
-
-          Q_0_1[eta][2] += q_vector(0, 1, weight, phi);
-          Q_0_2[eta][2] += q_vector(0, 2, weight, phi);
-
-        }
       }
     }
   }
+
+  //Declaring TComplex varaibles for Q-vectors of particle c (HF)
 
   TComplex  Q_n3_1_HFplus, Q_n3_1_HFminus, Q_0_1_HFplus, Q_0_1_HFminus;
   //HF towers loop to fill the towers' Q-vectors:
@@ -332,8 +330,12 @@ where Q_coefficient_power is used in the following names
 
   //Declaring TComplex varaibles for Q-vectors of V0s
   
-  TComplex Q_K0s_sig_1, Q_K0s_bkg_1, Q_0_K0s_sig_1, Q_0_K0s_bkg_1;
-  TComplex Q_Lambda_sig_1, Q_Lambda_bkg_1, Q_0_Lambda_sig_1, Q_0_Lambda_bkg_1;
+  TComplex Q_n1_1_K0s_sig, Q_n2_1_K0s_sig, Q_n1n2_2_K0s_sig, Q_0_1_K0s_sig, Q_0_2_K0s_sig;
+  TComplex Q_n1_1_K0s_bkg, Q_n2_1_K0s_bkg, Q_n1n2_2_K0s_bkg, Q_0_1_K0s_bkg, Q_0_2_K0s_bkg;
+
+  TComplex Q_n1_1_Lambda_sig, Q_n2_1_Lambda_sig, Q_n1n2_2_Lambda_sig, Q_0_1_Lambda_sig, Q_0_2_Lambda_sig;
+  TComplex Q_n1_1_Lambda_bkg, Q_n2_1_Lambda_bkg, Q_n1n2_2_Lambda_bkg, Q_0_1_Lambda_bkg, Q_0_2_Lambda_bkg;
+
 
   //filling Q-vectors of K0s
   for(unsigned it=0; it<v0candidates_ks->size(); ++it){ 
@@ -352,14 +354,24 @@ where Q_coefficient_power is used in the following names
 
     if( mass < K0sMass+ksMassWindow_ && mass > K0sMass-ksMassWindow_ ){
 
-      Q_K0s_sig_1 = q_vector(n1_, 1, weight, phi);
-      Q_0_K0s_sig_1 = q_vector(0, 1, weight, phi);
+      Q_n1_1_K0s_sig = q_vector(n1_, 1, weight, phi);
+      Q_n2_1_K0s_sig = q_vector(n2_, 1, weight, phi);
+
+      Q_n1n2_2_K0s_sig = q_vector(n1_+n2_, 2, weight, phi);
+
+      Q_0_1_K0s_sig = q_vector(0, 1, weight, phi);
+      Q_0_2_K0s_sig = q_vector(0, 2, weight, phi);
 
     }
     if( mass > K0sMass+ksMassWindow_ || mass < K0sMass-ksMassWindow_ ){
 
-      Q_K0s_bkg_1 = q_vector(n1_, 1, weight, phi);
-      Q_0_K0s_bkg_1 = q_vector(0, 1, weight, phi);
+      Q_n1_1_K0s_bkg = q_vector(n1_, 1, weight, phi);
+      Q_n2_1_K0s_bkg = q_vector(n2_, 1, weight, phi);
+
+      Q_n1n2_2_K0s_bkg = q_vector(n1_+n2_, 2, weight, phi);
+
+      Q_0_1_K0s_bkg = q_vector(0, 1, weight, phi);
+      Q_0_2_K0s_bkg = q_vector(0, 2, weight, phi);
 
     }
   }
@@ -368,7 +380,7 @@ where Q_coefficient_power is used in the following names
   for(unsigned it=0; it<v0candidates_la->size(); ++it){ 
 
     const reco::VertexCompositeCandidate & V0s = (*v0candidates_la)[it];
-    bool isK0s = false;
+    bool isK0s = false;//isLambda
     if( !passV0sCut(V0s, vtx, isK0s) ) continue;
 
     double weight = 1.0;
@@ -381,14 +393,24 @@ where Q_coefficient_power is used in the following names
 
     if( mass < LambdaMass+ksMassWindow_ && mass > LambdaMass-ksMassWindow_ ){
 
-      Q_Lambda_sig_1 = q_vector(n1_, 1, weight, phi);
-      Q_0_Lambda_sig_1 = q_vector(0, 1, weight, phi);
+      Q_n1_1_Lambda_sig = q_vector(n1_, 1, weight, phi);
+      Q_n2_1_Lambda_sig = q_vector(n2_, 1, weight, phi);
+
+      Q_n1n2_2_Lambda_sig = q_vector(n1_+n2_, 2, weight, phi);
+
+      Q_0_1_Lambda_sig = q_vector(0, 1, weight, phi);
+      Q_0_2_Lambda_sig = q_vector(0, 2, weight, phi);
 
     }
     if( mass > LambdaMass+ksMassWindow_ || mass < LambdaMass-ksMassWindow_ ){
 
-      Q_Lambda_bkg_1 = q_vector(n1_, 1, weight, phi);
-      Q_0_Lambda_bkg_1 = q_vector(0, 1, weight, phi);
+      Q_n1_1_Lambda_bkg = q_vector(n1_, 1, weight, phi);
+      Q_n2_1_Lambda_bkg = q_vector(n2_, 1, weight, phi);
+
+      Q_n1n2_2_Lambda_bkg = q_vector(n1_+n2_, 2, weight, phi);
+
+      Q_0_1_Lambda_bkg = q_vector(0, 1, weight, phi);
+      Q_0_2_Lambda_bkg = q_vector(0, 2, weight, phi);
 
     }
   }
@@ -481,6 +503,51 @@ calculate the 3-particles correlator with the charged-particles
     }
   }
 
+/*
+calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number separation correlator
+ */
+
+//Lambda-Lambda
+  //2-particles with V0s
+  TComplex N_2_sig_LL, D_2_sig_LL, N_2_bkg_LL, D_2_bkg_LL;
+
+  N_2_sig_LL = Q_n1_1_Lambda_sig*Q_n2_1_Lambda_sig - Q_n1n2_2_Lambda_sig;
+  D_2_sig_LL = Q_0_1_Lambda_sig*Q_0_1_Lambda_sig - Q_0_2_Lambda_sig;
+
+  N_2_bkg_LL = Q_n1_1_Lambda_bkg*Q_n2_1_Lambda_bkg - Q_n1n2_2_Lambda_bkg;
+  D_2_bkg_LL = Q_0_1_Lambda_bkg*Q_0_1_Lambda_bkg - Q_0_2_Lambda_bkg;
+
+  //mutiplying particle c Q-vectors
+  N_3_HFplus = N_2_sig_LL*Q_n3_1_HFplus;
+  D_3_HFplus = D_2_sig_LL*Q_0_1_HFplus;
+
+  N_3_HFminus = N_2_sig_LL*Q_n3_1_HFminus;
+  D_3_HFminus = D_2_sig_LL*Q_0_1_HFminus;
+
+  c3_LL_real[0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+  c3_LL_real[0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_LL_imag[0][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+  c3_LL_imag[0][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+
+  N_3_HFplus = N_2_bkg_LL*Q_n3_1_HFplus;
+  D_3_HFplus = D_2_bkg_LL*Q_0_1_HFplus;
+
+  N_3_HFminus = N_2_bkg_LL*Q_n3_1_HFminus;
+  D_3_HFminus = D_2_bkg_LL*Q_0_1_HFminus;
+
+  c3_LL_real[1][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
+  c3_LL_real[1][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_LL_imag[1][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
+  c3_LL_imag[1][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+
+//K0s-K0s
+
+//Lambda-K0s
+
+//Lambda-h
+
+//K0s-h
+
 }
 // ------------ method called once each job just before starting event loop  ------------
 void 
@@ -533,8 +600,18 @@ CVEandMixedHarmonics::beginJob()
       }
     }    
   }
-}
 
+  for(int sig = 0; sign < 2; sig++){
+    for(int HF = 0; HF < 2; HF++){
+
+      c3_LL_real[sig][HF] = fs->make<TH1D>(Form("c3_LL_real_%d_%d", sig, HF), ";c3", 20000,-1,1);
+      c3_LL_imag[sig][HF] = fs->make<TH1D>(Form("c3_LL_imag_%d_%d", sig, HF), ";c3", 20000,-1,1);
+
+    }
+  }
+
+
+}
 TComplex 
 CVEandMixedHarmonics::q_vector(double n, double p, double w, double phi) 
 {
