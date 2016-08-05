@@ -196,8 +196,18 @@ class CVEandMixedHarmonics : public edm::EDAnalyzer {
 
       TH1D* c3_LL_real[2][2];
       TH1D* c3_LL_imag[2][2];
+      
       TH1D* c3_KK_real[2][2];
       TH1D* c3_KK_imag[2][2];
+      
+      TH1D* c3_LK_real[2][2];
+      TH1D* c3_LK_imag[2][2];
+
+      TH1D* c3_LH_real[2][2];
+      TH1D* c3_LH_imag[2][2];
+
+      TH1D* c3_KH_real[2][2];
+      TH1D* c3_KH_imag[2][2];
 
       TH1D* Ntrk;
       TH1D* vtxZ;
