@@ -75,6 +75,9 @@ CVEandMixedHarmonics::CVEandMixedHarmonics(const edm::ParameterSet& iConfig)
   lambdaMassWindow_ = iConfig.getUntrackedParameter<double>("lambdaMassWindow",0.01);
   ksMassWindow_ = iConfig.getUntrackedParameter<double>("ksMassWindow",0.02);
   
+  v0sPtLow_ = iConfig.getUntrackedParameter<double>("v0sPtLow");
+  v0sPtHigh_ = iConfig.getUntrackedParameter<double>("v0sPtHigh");
+
   etaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("etaBins");
   dEtaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("dEtaBins");
   ptBins_ = iConfig.getUntrackedParameter<std::vector<double>>("ptBins");
@@ -490,14 +493,14 @@ CVEandMixedHarmonics::q_vector(double n, double p, double w, double phi)
 }
 //V0s selections
 bool
-CVEandMixedHarmonics::passV0sCut(const reco::VertexCompositeCandidate & trk, const reco::Vertex & vertex, bool isK0s){
+CVEandMixedHarmonics::passV0sCut(const reco::VertexCompositeCandidate & trk, const reco::Vertex & vtx, bool isK0s){
 
-  double bestvz = vertex.z(); 
-  double bestvx = vertex.x(); 
-  double bestvy = vertex.y();
-  double bestvzError = vertex.zError(); 
-  double bestvxError = vertex.xError(); 
-  double bestvyError = vertex.yError();
+  double bestvz = vtx.z(); 
+  double bestvx = vtx.x(); 
+  double bestvy = vtx.y();
+  double bestvzError = vtx.zError(); 
+  double bestvxError = vtx.xError(); 
+  double bestvyError = vtx.yError();
 
   const reco:: Candidate * d1 = trk.daughter(0);
   const reco:: Candidate * d2 = trk.daughter(1);
@@ -510,13 +513,11 @@ CVEandMixedHarmonics::passV0sCut(const reco::VertexCompositeCandidate & trk, con
   double py_dau2 = d2->py();
   double pz_dau2 = d2->pz();    
 
-  double v0s_mass = trk.mass();
   double v0s_pt = trk.pt();
   double v0s_px = trk.px();
   double v0s_py = trk.py();
   double v0s_pz = trk.pz();
   double v0s_eta = trk.eta();
-  double v0s_y = trk.rapidity();
 
   //PAngle
   double secvz = trk.vz();
@@ -566,6 +567,7 @@ CVEandMixedHarmonics::passV0sCut(const reco::VertexCompositeCandidate & trk, con
   if( agl < pointingAngleCut_ ) return false;
   if( fabs(dzos1) < dcaCut_ || fabs(dzos2) < dcaCut_ || fabs(dxyos1) < dcaCut_ || fabs(dxyos2) < dcaCut_ ) return false;
   if( fabs(v0s_eta) > 2.4 ) return false;
+  if( v0s_pt < v0sPtLow_ || v0s_pt > v0sPtHigh_ ) return false;
 
   if( isK0s == true ){
 
