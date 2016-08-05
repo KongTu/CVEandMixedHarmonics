@@ -312,7 +312,7 @@ calculate the Scalar product denominator, v_{2,c}
   N_2_trk = Q_n3_trk*Q_n3_1_HFminus;
   D_2_trk = Q_0_trk*Q_0_1_HFminus;
 
-  c2_bc->Fill(N_2_trk.Re()/D_2_trk.Re(), D_2_trk.Re());
+  c2_cb->Fill(N_2_trk.Re()/D_2_trk.Re(), D_2_trk.Re());
 
   N_2_trk = Q_n3_1_HFminus*TComplex::Conjugate(Q_n3_1_HFminus);
   D_2_trk = Q_0_1_HFplus*Q_0_1_HFminus;
