@@ -506,6 +506,10 @@ calculate the 3-particles correlator with the charged-particles
 /*
 calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number separation correlator
  */
+  
+  //temp complex number for each fill
+  TComplex N_3_HFplus, N_3_HFminus;
+  TComplex D_3_HFplus, D_3_HFminus;
 
 //Lambda-Lambda
   //2-particles with V0s
@@ -601,7 +605,7 @@ CVEandMixedHarmonics::beginJob()
     }    
   }
 
-  for(int sig = 0; sign < 2; sig++){
+  for(int sig = 0; sig < 2; sig++){
     for(int HF = 0; HF < 2; HF++){
 
       c3_LL_real[sig][HF] = fs->make<TH1D>(Form("c3_LL_real_%d_%d", sig, HF), ";c3", 20000,-1,1);
