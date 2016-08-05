@@ -213,6 +213,7 @@ where Q_coefficient_power is used in the following names
         double chi2n = trk.normalizedChi2();
         double nlayers = trk.hitPattern().trackerLayersWithMeasurement();
         chi2n = chi2n/nlayers;
+        double nPixelLayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
         double phi = trk.phi();
         double trkEta = trk.eta();
 
@@ -225,8 +226,13 @@ where Q_coefficient_power is used in the following names
         if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
         if(chi2n > offlineChi2_ ) continue;
         if(nhits < offlinenhits_ ) continue;
+        if( nPixelLayers <= 0 ) continue;
         if(trk.pt() < ptLow_ || trk.pt() > ptHigh_ ) continue;
         if(fabs(trkEta) > etaTracker_ ) continue;
+
+        trkPhi->Fill(phi, weight);
+        trkPt->Fill(trk.pt(), weight);
+        trk_eta->Fill(trkEta, weight);
 
         for(int eta = 0; eta < NetaBins; eta++){
           if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
@@ -266,6 +272,8 @@ where Q_coefficient_power is used in the following names
           double caloEta = hit.eta();
           double caloPhi = hit.phi();
           double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
+
+          hfPhi->Fill(caloPhi, w);
           
           if( reverseBeam_ ) caloEta = -hit.eta();          
           if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
@@ -360,6 +368,16 @@ CVEandMixedHarmonics::beginJob()
   TH1D::SetDefaultSumw2();
 
   const int NdEtaBins = dEtaBins_.size() - 1;
+  const int NetaBins = etaBins_.size() - 1;
+  double etaBinsArray[100];
+  for(unsigned i = 0; i < etaBins_.size(); i++){
+    etaBinsArray[i] = etaBins_[i];
+  }
+  const int Nptbins = ptBins_.size() - 1;
+  double ptBinsArray[100];
+  for(unsigned i = 0; i < ptBins_.size(); i++){
+    ptBinsArray[i] = ptBins_[i];
+  }
 
   edm::FileInPath fip1("CVEandMixedHarmonics/CVEandMixedHarmonics/data/Hydjet_eff_mult_v1.root");
   TFile f1(fip1.fullPath().c_str(),"READ");
@@ -370,6 +388,10 @@ CVEandMixedHarmonics::beginJob()
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
+  trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
+  hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
+  trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
+  trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
 
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
@@ -381,8 +403,6 @@ CVEandMixedHarmonics::beginJob()
       }
     }    
   }
-
-
 }
 
 TComplex 
