@@ -226,80 +226,80 @@ where Q_coefficient_power is used in the following names
   //track loop to fill charged particles Q-vectors
   for(unsigned it = 0; it < tracks->size(); it++){
 
-     const reco::Track & trk = (*tracks)[it];
-  
-     math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
+    const reco::Track & trk = (*tracks)[it];
 
-        double dzvtx = trk.dz(bestvtx);
-        double dxyvtx = trk.dxy(bestvtx);
-        double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
-        double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError); 
-        double nhits = trk.numberOfValidHits();
-        double chi2n = trk.normalizedChi2();
-        double nlayers = trk.hitPattern().trackerLayersWithMeasurement();
-        chi2n = chi2n/nlayers;
-        double nPixelLayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
-        double phi = trk.phi();
-        double trkEta = trk.eta();
+    math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
 
-        double weight = 1.0;
-        if( doEffCorrection_ ) { weight = 1.0/effTable[eff_]->GetBinContent( effTable[eff_]->FindBin(trk.eta(), trk.pt()) );}
+    double dzvtx = trk.dz(bestvtx);
+    double dxyvtx = trk.dxy(bestvtx);
+    double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
+    double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError); 
+    double nhits = trk.numberOfValidHits();
+    double chi2n = trk.normalizedChi2();
+    double nlayers = trk.hitPattern().trackerLayersWithMeasurement();
+    chi2n = chi2n/nlayers;
+    double nPixelLayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
+    double phi = trk.phi();
+    double trkEta = trk.eta();
 
-        if(!trk.quality(reco::TrackBase::highPurity)) continue;
-        if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
-        if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
-        if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
-        if(chi2n > offlineChi2_ ) continue;
-        if(nhits < offlinenhits_ ) continue;
-        if( nPixelLayers <= 0 ) continue;
-        if(trk.pt() < ptLow_ || trk.pt() > ptHigh_ ) continue;
-        if(fabs(trkEta) > etaTracker_ ) continue;
+    double weight = 1.0;
+    if( doEffCorrection_ ) { weight = 1.0/effTable[eff_]->GetBinContent( effTable[eff_]->FindBin(trk.eta(), trk.pt()) );}
 
-        trkPhi->Fill(phi, weight);
-        trkPt->Fill(trk.pt(), weight);
-        trk_eta->Fill(trkEta, weight);
+    if(!trk.quality(reco::TrackBase::highPurity)) continue;
+    if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
+    if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
+    if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
+    if(chi2n > offlineChi2_ ) continue;
+    if(nhits < offlinenhits_ ) continue;
+    if( nPixelLayers <= 0 ) continue;
+    if(trk.pt() < ptLow_ || trk.pt() > ptHigh_ ) continue;
+    if(fabs(trkEta) > etaTracker_ ) continue;
 
-        Q_n3_trk += q_vector(-n3_, 1, weight, phi);//for scalar product in tracker
-        Q_0_trk += q_vector(0, 1, weight, phi);
+    trkPhi->Fill(phi, weight);
+    trkPt->Fill(trk.pt(), weight);
+    trk_eta->Fill(trkEta, weight);
 
-        for(int eta = 0; eta < NetaBins; eta++){
-          if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
+    Q_n3_trk += q_vector(-n3_, 1, weight, phi);//for scalar product in tracker
+    Q_0_trk += q_vector(0, 1, weight, phi);
 
-            if( trk.charge() == +1 ){//positive charge
+    for(int eta = 0; eta < NetaBins; eta++){
+      if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
 
-              Q_n1_1[eta][0] += q_vector(n1_, 1, weight, phi);
-              Q_n2_1[eta][0] += q_vector(n2_, 1, weight, phi);
+        if( trk.charge() == +1 ){//positive charge
 
-              Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, weight, phi);
+          Q_n1_1[eta][0] += q_vector(n1_, 1, weight, phi);
+          Q_n2_1[eta][0] += q_vector(n2_, 1, weight, phi);
 
-              Q_0_1[eta][0] += q_vector(0, 1, weight, phi);
-              Q_0_2[eta][0] += q_vector(0, 2, weight, phi);
+          Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, weight, phi);
 
-            }
-            if( trk.charge() == -1 ){//negative charge
+          Q_0_1[eta][0] += q_vector(0, 1, weight, phi);
+          Q_0_2[eta][0] += q_vector(0, 2, weight, phi);
 
-              Q_n1_1[eta][1] += q_vector(n1_, 1, weight, phi);
-              Q_n2_1[eta][1] += q_vector(n2_, 1, weight, phi);
-
-              Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, weight, phi);
-
-              Q_0_1[eta][1] += q_vector(0, 1, weight, phi);
-              Q_0_2[eta][1] += q_vector(0, 2, weight, phi);
-
-            }
-            if( trk.charge() == +1 || trk.charge() == -1 ){//charge independent
-
-              Q_n1_1[eta][2] += q_vector(n1_, 1, weight, phi);
-              Q_n2_1[eta][2] += q_vector(n2_, 1, weight, phi);
-
-              Q_n1n2_2[eta][2] += q_vector(n1_+n2_, 2, weight, phi);
-
-              Q_0_1[eta][2] += q_vector(0, 1, weight, phi);
-              Q_0_2[eta][2] += q_vector(0, 2, weight, phi);
-
-            }
-          }
         }
+        if( trk.charge() == -1 ){//negative charge
+
+          Q_n1_1[eta][1] += q_vector(n1_, 1, weight, phi);
+          Q_n2_1[eta][1] += q_vector(n2_, 1, weight, phi);
+
+          Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, weight, phi);
+
+          Q_0_1[eta][1] += q_vector(0, 1, weight, phi);
+          Q_0_2[eta][1] += q_vector(0, 2, weight, phi);
+
+        }
+        if( trk.charge() == +1 || trk.charge() == -1 ){//charge independent
+
+          Q_n1_1[eta][2] += q_vector(n1_, 1, weight, phi);
+          Q_n2_1[eta][2] += q_vector(n2_, 1, weight, phi);
+
+          Q_n1n2_2[eta][2] += q_vector(n1_+n2_, 2, weight, phi);
+
+          Q_0_1[eta][2] += q_vector(0, 1, weight, phi);
+          Q_0_2[eta][2] += q_vector(0, 2, weight, phi);
+
+        }
+      }
+    }
   }
 
   TComplex  Q_n3_1_HFplus, Q_n3_1_HFminus, Q_0_1_HFplus, Q_0_1_HFminus;
