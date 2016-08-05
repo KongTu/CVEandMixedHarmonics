@@ -391,7 +391,7 @@ where Q_coefficient_power is used in the following names
 
     la_mass->Fill(eta, pt, mass, weight);
 
-    if( mass < LambdaMass+ksMassWindow_ && mass > LambdaMass-ksMassWindow_ ){
+    if( mass < LambdaMass+lambdaMassWindow_ && mass > LambdaMass-lambdaMassWindow_ ){
 
       Q_n1_1_Lambda_sig = q_vector(n1_, 1, weight, phi);
       Q_n2_1_Lambda_sig = q_vector(n2_, 1, weight, phi);
@@ -402,7 +402,7 @@ where Q_coefficient_power is used in the following names
       Q_0_2_Lambda_sig = q_vector(0, 2, weight, phi);
 
     }
-    if( mass > LambdaMass+ksMassWindow_ || mass < LambdaMass-ksMassWindow_ ){
+    if( mass > LambdaMass+lambdaMassWindow_ || mass < LambdaMass-lambdaMassWindow_ ){
 
       Q_n1_1_Lambda_bkg = q_vector(n1_, 1, weight, phi);
       Q_n2_1_Lambda_bkg = q_vector(n2_, 1, weight, phi);
@@ -515,6 +515,13 @@ calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number s
   //2-particles with V0s
   TComplex N_2_sig_LL, D_2_sig_LL, N_2_bkg_LL, D_2_bkg_LL;
 
+  cout << "Q_n1_1_Lambda_sig: " << Q_n1_1_Lambda_sig << endl;
+  cout << "Q_n2_1_Lambda_sig: " << Q_n2_1_Lambda_sig << endl;
+  cout << "Q_n1n2_2_Lambda_sig: " << Q_n1n2_2_Lambda_sig << endl;
+
+  cout << "Q_0_1_Lambda_sig: " << Q_0_1_Lambda_sig << endl;
+  cout << "Q_0_2_Lambda_sig: " << Q_0_2_Lambda_sig << endl;
+
   N_2_sig_LL = Q_n1_1_Lambda_sig*Q_n2_1_Lambda_sig - Q_n1n2_2_Lambda_sig;
   D_2_sig_LL = Q_0_1_Lambda_sig*Q_0_1_Lambda_sig - Q_0_2_Lambda_sig;
 
@@ -545,6 +552,37 @@ calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number s
   c3_LL_imag[1][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
 
 //K0s-K0s
+  //2-particles with V0s
+  TComplex N_2_sig_KK, D_2_sig_KK, N_2_bkg_KK, D_2_bkg_KK;
+
+  N_2_sig_KK = Q_n1_1_K0s_sig*Q_n2_1_K0s_sig - Q_n1n2_2_K0s_sig;
+  D_2_sig_KK = Q_0_1_K0s_sig*Q_0_1_K0s_sig - Q_0_2_K0s_sig;
+
+  N_2_bkg_KK = Q_n1_1_K0s_bkg*Q_n2_1_K0s_bkg - Q_n1n2_2_K0s_bkg;
+  D_2_bkg_KK = Q_0_1_K0s_bkg*Q_0_1_K0s_bkg - Q_0_2_K0s_bkg;
+
+  //mutiplying particle c Q-vectors
+  N_3_HFplus = N_2_sig_KK*Q_n3_1_HFplus;
+  D_3_HFplus = D_2_sig_KK*Q_0_1_HFplus;
+
+  N_3_HFminus = N_2_sig_KK*Q_n3_1_HFminus;
+  D_3_HFminus = D_2_sig_KK*Q_0_1_HFminus;
+
+  c3_KK_real[0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+  c3_KK_real[0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_KK_imag[0][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+  c3_KK_imag[0][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+
+  N_3_HFplus = N_2_bkg_KK*Q_n3_1_HFplus;
+  D_3_HFplus = D_2_bkg_KK*Q_0_1_HFplus;
+
+  N_3_HFminus = N_2_bkg_KK*Q_n3_1_HFminus;
+  D_3_HFminus = D_2_bkg_KK*Q_0_1_HFminus;
+
+  c3_KK_real[1][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
+  c3_KK_real[1][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_KK_imag[1][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
+  c3_KK_imag[1][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
 
 //Lambda-K0s
 
@@ -610,6 +648,9 @@ CVEandMixedHarmonics::beginJob()
 
       c3_LL_real[sig][HF] = fs->make<TH1D>(Form("c3_LL_real_%d_%d", sig, HF), ";c3", 20000,-1,1);
       c3_LL_imag[sig][HF] = fs->make<TH1D>(Form("c3_LL_imag_%d_%d", sig, HF), ";c3", 20000,-1,1);
+
+      c3_KK_real[sig][HF] = fs->make<TH1D>(Form("c3_KK_real_%d_%d", sig, HF), ";c3", 20000,-1,1);
+      c3_KK_imag[sig][HF] = fs->make<TH1D>(Form("c3_KK_imag_%d_%d", sig, HF), ";c3", 20000,-1,1);
 
     }
   }
