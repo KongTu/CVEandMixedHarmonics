@@ -277,8 +277,6 @@ where Q_coefficient_power is used in the following names
 
   }
     
-  double multiplicity = (double) nTracks;
-
 /*
 calculate 2-particle cumulant with a gap
  */
