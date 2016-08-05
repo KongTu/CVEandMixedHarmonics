@@ -332,7 +332,8 @@ where Q_coefficient_power is used in the following names
 
   //Declaring TComplex varaibles for Q-vectors of V0s
   
-  TComplex Q_K0s_1, Q_Lambda_1, Q_0_K0s_1, Q_0_Lambda_1;
+  TComplex Q_K0s_sig_1, Q_K0s_bkg_1, Q_0_K0s_sig_1, Q_0_K0s_bkg_1;
+  TComplex Q_Lambda_sig_1, Q_Lambda_bkg_1, Q_0_Lambda_sig_1, Q_0_Lambda_bkg_1;
 
   //filling Q-vectors of K0s
   for(unsigned it=0; it<v0candidates_ks->size(); ++it){ 
@@ -341,8 +342,26 @@ where Q_coefficient_power is used in the following names
     bool isK0s = true;
     if( !passV0sCut(V0s, vtx, isK0s) ) continue;
 
-    cout << "K0s mass " << V0s.mass() << endl;
+    double weight = 1.0;
+    double mass = V0s.mass();
+    double phi = V0s.phi();
+    double pt = V0s.pt();
+    double eta = V0s.eta();
 
+    ks_mass->Fill(eta, pt, mass, weight);
+
+    if( mass < K0sMass+ksMassWindow_ && mass > K0sMass-ksMassWindow_ ){
+
+      Q_K0s_sig_1 = q_vector(n1_, 1, weight, phi);
+      Q_0_K0s_sig_1 = q_vector(0, 1, weight, phi);
+
+    }
+    if( mass > K0sMass+ksMassWindow_ || mass < K0sMass-ksMassWindow_ ){
+
+      Q_K0s_bkg_1 = q_vector(n1_, 1, weight, phi);
+      Q_0_K0s_bkg_1 = q_vector(0, 1, weight, phi);
+
+    }
   }
 
   //filling Q-vectors of Lambda
@@ -352,8 +371,26 @@ where Q_coefficient_power is used in the following names
     bool isLambda = true;
     if( !passV0sCut(V0s, vtx, isLambda) ) continue;
 
-    cout << "K0s mass " << V0s.mass() << endl;
+    double weight = 1.0;
+    double mass = V0s.mass();
+    double phi = V0s.phi();
+    double pt = V0s.pt();
+    double eta = V0s.eta();
 
+    la_mass->Fill(eta, pt, mass, weight);
+
+    if( mass < LambdaMass+ksMassWindow_ && mass > LambdaMass-ksMassWindow_ ){
+
+      Q_Lambda_sig_1 = q_vector(n1_, 1, weight, phi);
+      Q_0_Lambda_sig_1 = q_vector(0, 1, weight, phi);
+
+    }
+    if( mass > LambdaMass+ksMassWindow_ || mass < LambdaMass-ksMassWindow_ ){
+
+      Q_Lambda_bkg_1 = q_vector(n1_, 1, weight, phi);
+      Q_0_Lambda_bkg_1 = q_vector(0, 1, weight, phi);
+
+    }
   }
 
 /*
@@ -470,6 +507,9 @@ CVEandMixedHarmonics::beginJob()
   for(int i = 0; i < 5; i++){
      effTable[i] = (TH2D*)f1.Get(Form("rTotalEff3D_%d",i));
   }
+
+  ks_mass = fs->make<TH3D>("ks_mass",";#eta;pT(GeV/c);mass(GeV/c^{2})",70,-3.5,3.5,120,0,12,360,0.44,0.56);
+  la_mass = fs->make<TH3D>("la_mass",";#eta;pT(GeV/c);mass(GeV/c^{2})",70,-3.5,3.5,120,0,12,360,1.08,1.16);
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);
@@ -589,8 +629,8 @@ CVEandMixedHarmonics::passV0sCut(const reco::VertexCompositeCandidate & trk, con
     double temp_e = Mass_e(px_dau1,py_dau1,pz_dau1,px_dau2,py_dau2,pz_dau2);
     double temp_reverse = Mass_ks(px_dau2,py_dau2,pz_dau2,px_dau1,py_dau1,pz_dau1);
 
-    if ( (temp < 1.115683+lambdaMassWindow_ && temp > 1.115683-lambdaMassWindow_) ) return false;
-    if ((temp_reverse < 1.115683+lambdaMassWindow_ && temp_reverse > 1.115683-lambdaMassWindow_)) return false;
+    if ( (temp < LambdaMass+lambdaMassWindow_ && temp > LambdaMass-lambdaMassWindow_) ) return false;
+    if ((temp_reverse < LambdaMass+lambdaMassWindow_ && temp_reverse > LambdaMass-lambdaMassWindow_)) return false;
     if ( temp_e < 0.015) return false;
   }
   else{
@@ -598,7 +638,7 @@ CVEandMixedHarmonics::passV0sCut(const reco::VertexCompositeCandidate & trk, con
     double temp = Mass_la(px_dau1,py_dau1,pz_dau1,px_dau2,py_dau2,pz_dau2);
     double temp_e = Mass_e(px_dau1,py_dau1,pz_dau1,px_dau2,py_dau2,pz_dau2);
     
-    if ( temp < 0.497614+ksMassWindow_ && temp > 0.497614-ksMassWindow_ ) return false;
+    if ( temp < K0sMass+ksMassWindow_ && temp > K0sMass-ksMassWindow_ ) return false;
     if ( temp_e < 0.015) return false;
   }
 

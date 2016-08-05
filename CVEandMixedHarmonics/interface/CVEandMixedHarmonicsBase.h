@@ -132,6 +132,9 @@
 //#include "RiceHIG/V0Analysis/interface/V0Validator.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
+#define PI 2
+#define K0sMass 0.497614
+#define LambdaMass 1.115683
 
 using namespace std;
 using namespace reco;
@@ -176,6 +179,10 @@ class CVEandMixedHarmonics : public edm::EDAnalyzer {
 
       edm::InputTag generalV0_ksName_;
       edm::InputTag generalV0_laName_;
+
+      //V0s mass
+      TH3D* ks_mass;
+      TH3D* la_mass;
 
       //correction table
       TH2D* effTable[5];
