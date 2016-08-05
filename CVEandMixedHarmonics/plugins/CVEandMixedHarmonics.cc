@@ -525,15 +525,6 @@ calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number s
   N_3_HFplus = N_2_sig_LL*Q_n3_1_HFplus;
   D_3_HFplus = D_2_sig_LL*Q_0_1_HFplus;
 
-  cout << "N_2_sig_LL: " << N_2_sig_LL << endl;
-  cout << "D_2_sig_LL: " << D_2_sig_LL << endl;
-
-  cout << "Q_n3_1_HFplus: " << Q_n3_1_HFplus << endl;
-  cout << "Q_0_1_HFplus: " << Q_0_1_HFplus << endl;
-
-  cout << "N_3_HFplus: " << N_3_HFplus << endl;
-  cout << "D_3_HFplus: " << D_3_HFplus << endl;
-
   N_3_HFminus = N_2_sig_LL*Q_n3_1_HFminus;
   D_3_HFminus = D_2_sig_LL*Q_0_1_HFminus;
 
@@ -569,6 +560,15 @@ calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number s
 
   N_3_HFminus = N_2_sig_KK*Q_n3_1_HFminus;
   D_3_HFminus = D_2_sig_KK*Q_0_1_HFminus;
+
+  cout << "N_2_sig_KK: " << N_2_sig_KK << endl;
+  cout << "D_2_sig_KK: " << D_2_sig_KK << endl;
+
+  cout << "Q_n3_1_HFplus: " << Q_n3_1_HFplus << endl;
+  cout << "Q_0_1_HFplus: " << Q_0_1_HFplus << endl;
+
+  cout << "N_3_HFplus: " << N_3_HFplus << endl;
+  cout << "D_3_HFplus: " << D_3_HFplus << endl;
 
   c3_KK_real[0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
   c3_KK_real[0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
