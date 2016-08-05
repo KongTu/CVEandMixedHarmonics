@@ -162,10 +162,16 @@ class CVEandMixedHarmonics : public edm::EDAnalyzer {
       edm::EDGetTokenT<CaloTowerCollection> towerSrc_;
       edm::EDGetTokenT<reco::GenParticleCollection> genSrc_;
 
+      edm::EDGetTokenT<reco::VertexCompositeCandidateCollection> generalV0_ks_;
+      edm::EDGetTokenT<reco::VertexCompositeCandidateCollection> generalV0_la_;
+
       edm::InputTag vertexName_;
       edm::InputTag trackName_;
       edm::InputTag pfCandName_;
       edm::InputTag towerName_;
+
+      edm::InputTag generalV0_ksName_;
+      edm::InputTag generalV0_laName_;
 
       //correction table
       TH2D* effTable[5];
