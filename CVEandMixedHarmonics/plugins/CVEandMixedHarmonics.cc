@@ -566,7 +566,7 @@ calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number s
   N_3_HFminus = N_2_sig_KK*Q_n3_1_HFminus;
   D_3_HFminus = D_2_sig_KK*Q_0_1_HFminus;
 
-  if( D_2_sig_KK != 0.0 ){
+  if( D_2_sig_KK.Re() != 0.0 ){
     cout << "N_2_sig_KK: " << N_2_sig_KK << endl;
     cout << "D_2_sig_KK: " << D_2_sig_KK << endl;
 
