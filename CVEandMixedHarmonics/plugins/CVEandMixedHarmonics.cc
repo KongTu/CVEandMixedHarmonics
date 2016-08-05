@@ -175,34 +175,23 @@ CVEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   const int NetaBins = etaBins_.size() - 1 ;
 
 /*
-The SC(m,n) = <<cos(m+n-m-n)>> - <<cos(m-m)>><<cos(n-n)>>
- */
-
-/*
-define all the ingredients for 2-, 3-, and 4-particle cumulants,
+define all the ingredients for CME correlator <cos(n1*phi_1 + n2*phi_2 + n3*phi_3)> ,
 where Q_coefficient_power is used in the following names 
  */
 
 //2-particle correlator
 
-  TComplex Q_k1_1[NetaBins], Q_k2_1[NetaBins], Q_k1k2_2[NetaBins], Q_m1_1[NetaBins],
-  Q_m2_1[NetaBins], Q_m1m2_2[NetaBins], Q_eta_0_1[NetaBins], Q_eta_0_2[NetaBins]; 
-
-//4-particle correlator, including the ingredient for 3-particle correlator
-
-  TComplex Q_n1_1, Q_n2_1, Q_n3_1, Q_n4_1;
+  TComplex Q_n1_1[NetaBins], Q_n2_1[NetaBins];
   
-  TComplex Q_n1n2_2, Q_n1n3_2, Q_n1n4_2, Q_n2n3_2, Q_n2n4_2, Q_n3n4_2;
+  TComplex Q_n1n2_2[NetaBins];
   
-  TComplex Q_n1n2n3_3, Q_n1n2n4_3, Q_n1n3n4_3, Q_n2n3n4_3;
-  
-  TComplex Q_n1n2n3n4_4;
-  
-  TComplex Q_0_1, Q_0_2, Q_0_3, Q_0_4;
+  TComplex Q_0_1[NetaBins], Q_0_2[NetaBins];
 
 //------------------------------------------------------------------
 
 //Start filling Q-vectors;
+
+  //track loop to fill charged particles Q-vectors
   for(unsigned it = 0; it < tracks->size(); it++){
 
      const reco::Track & trk = (*tracks)[it];
@@ -234,51 +223,47 @@ where Q_coefficient_power is used in the following names
 
         for(int eta = 0; eta < NetaBins; eta++){
           if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
-          
-            //for use of 2-particle:
-            Q_k1_1[eta] += q_vector(n1_, 1, weight, phi);
-            Q_k2_1[eta] += q_vector(-n1_, 1, weight, phi);
-            Q_k1k2_2[eta] += q_vector(0.0, 2, weight, phi);
 
-            Q_m1_1[eta] += q_vector(n2_, 1, weight, phi);
-            Q_m2_1[eta] += q_vector(-n2_, 1, weight, phi);
-            Q_m1m2_2[eta] += q_vector(0.0, 2, weight, phi);
+            Q_n1_1[eta] += q_vector(n1_, 1, weight, phi);
+            Q_n2_1[eta] += q_vector(n2_, 1, weight, phi);
 
-            Q_eta_0_1[eta] += q_vector(0,1,weight,phi);
-            Q_eta_0_2[eta] += q_vector(0,2,weight,phi);
+            Q_n1n2_2[eta] += q_vector(n1_+n2_, 2, weight, phi);
 
+            Q_0_1[eta] += q_vector(0, 1, weight, phi);
+            Q_0_2[eta] += q_vector(0, 2, weight, phi);
+           
           }
         }
+  }
 
-        //for use of 4-particle:
-        Q_n1_1 += q_vector(n1_, 1, weight, phi);
-        Q_n2_1 += q_vector(n2_, 1, weight, phi);
-        Q_n3_1 += q_vector(n3_, 1, weight, phi);
-        Q_n4_1 += q_vector(n4_, 1, weight, phi);
+  TComplex  Q_n3_1_HFplus, Q_n3_1_HFminus, Q_0_1_HFplus, Q_0_1_HFminus;
+  //HF towers loop to fill the towers' Q-vectors:
+  for(unsigned i = 0; i < towers->size(); ++i){
 
-        Q_n1n2_2 += q_vector(n1_+n2_, 2, weight, phi);
-        Q_n1n3_2 += q_vector(n1_+n3_, 2, weight, phi);
-        Q_n1n4_2 += q_vector(n1_+n4_, 2, weight, phi);
-        Q_n2n3_2 += q_vector(n2_+n3_, 2, weight, phi);
-        Q_n2n4_2 += q_vector(n2_+n4_, 2, weight, phi);
-        Q_n3n4_2 += q_vector(n3_+n4_, 2, weight, phi);
+          const CaloTower & hit= (*towers)[i];
 
-        Q_n1n2n3_3 += q_vector(n1_+n2_+n3_, 3, weight, phi);
-        Q_n1n2n4_3 += q_vector(n1_+n2_+n4_, 3, weight, phi);
-        Q_n1n3n4_3 += q_vector(n1_+n3_+n4_, 3, weight, phi);
-        Q_n2n3n4_3 += q_vector(n2_+n3_+n4_, 3, weight, phi);
+          double caloEta = hit.eta();
+          double caloPhi = hit.phi();
+          double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
+          
+          if( reverseBeam_ ) caloEta = -hit.eta();          
+          if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
+            
+              Q_n3_1_HFplus += q_vector(n3_, 1, w, caloPhi);
+              Q_0_1_HFplus += q_vector(0, 1, w, caloPhi);
 
-        Q_n1n2n3n4_4 += q_vector(n1_+n2_+n3_+n4_, 4, weight, phi);
-        
-        Q_0_1 += q_vector(0,1,weight,phi);
-        Q_0_2 += q_vector(0,2,weight,phi);
-        Q_0_3 += q_vector(0,3,weight,phi);
-        Q_0_4 += q_vector(0,4,weight,phi);
+          }
+          else if( caloEta < -etaLowHF_ && caloEta > -etaHighHF_ ){
 
+              Q_n3_1_HFminus += q_vector(n3_, 1, w, caloPhi);
+              Q_0_1_HFminus += q_vector(0, 1, w, caloPhi); 
+
+          }
+          else{continue;}
   }
     
 /*
-calculate 2-particle cumulant with a gap
+calculate the 2-particles part with the Q-vectors
  */
 
   for(int ieta = 0; ieta < NetaBins; ieta++){
@@ -286,70 +271,38 @@ calculate 2-particle cumulant with a gap
 
       double deltaEta = fabs( etaBins_[ieta] - etaBins_[jeta] );
 
-      TComplex N_2_k;
-      TComplex N_2_m;
+      TComplex N_2;
       TComplex D_2;
 
       if( ieta == jeta ){
 
-        N_2_k = Q_k1_1[ieta]*Q_k2_1[jeta] - Q_k1k2_2[ieta];
-        N_2_m = Q_m1_1[ieta]*Q_m2_1[jeta] - Q_m1m2_2[ieta];
-        D_2 = Q_eta_0_1[ieta]*Q_eta_0_1[jeta] - Q_eta_0_2[ieta];
+        N_2 = Q_n1_1[ieta]*Q_n2_1[ieta] - Q_n1n2_2[ieta];
+        D_2 = Q_0_1[ieta]*Q_0_1[ieta] - Q_0_2[ieta];
 
       }
       else{
         
-        N_2_k = Q_k1_1[ieta]*Q_k2_1[jeta];
-        N_2_m = Q_m1_1[ieta]*Q_m2_1[jeta];
-        D_2 = Q_eta_0_1[ieta]*Q_eta_0_1[jeta];
-      }
-      
-      if(deltaEta >= gapValue_){
+        N_2 = Q_n1_1[ieta]*Q_n2_1[jeta];
+        D_2 = Q_0_1[ieta]*Q_0_1[jeta];
 
-        c2_Gap_n1->Fill(N_2_k.Re()/D_2.Re(), D_2.Re());
-        c2_Gap_n2->Fill(N_2_m.Re()/D_2.Re(), D_2.Re());
+      }        
 
-        c2_Gap_n1_imag->Fill(N_2_k.Im()/D_2.Re(), D_2.Re());
-        c2_Gap_n2_imag->Fill(N_2_m.Im()/D_2.Re(), D_2.Re());
+      TComplex N_3_HFplus, N_3_HFminus;
+      TComplex D_3_HFplus, N_3_HFminus;
 
-      }
+      N_3_HFplus = N_2*Q_n3_1_HFplus;
+      D_3_HFplus = D_2*Q_0_1_HFplus;
 
-      c2_noGap_n1->Fill(N_2_k.Re()/D_2.Re(), D_2.Re());
-      c2_noGap_n2->Fill(N_2_m.Re()/D_2.Re(), D_2.Re());
+      c3_real[0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+      c3_imag[0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
 
-      c2_noGap_n1_imag->Fill(N_2_k.Im()/D_2.Re(), D_2.Re());
-      c2_noGap_n2_imag->Fill(N_2_m.Im()/D_2.Re(), D_2.Re());
-        
+      N_3_HFminus = N_2*Q_n3_1_HFminus;
+      D_3_HFminus = D_2*Q_0_1_HFminus;
+
+      c3_real[1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+      c3_imag[1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
     }
   }
-
-/*
-calculate 3-particle cumulant
- */
-
-  TComplex N_3, D_3;
-
-  N_3 = Q_n1_1*Q_n2_1*Q_n3_1 - Q_n1n2_2*Q_n3_1 - Q_n2_1*Q_n1n3_2 - Q_n1_1*Q_n2n3_2 - Q_n1n2n3_3.operator*(2);
-  D_3 = Q_0_1*Q_0_1*Q_0_1 - (Q_0_2*Q_0_1).operator*(3) + Q_0_3.operator*(2);
-
-  c3->Fill( N_3.Re()/D_3.Re(), D_3.Re());
-  c3_imag->Fill( N_3.Im()/D_3.Re(), D_3.Re());
-/*
-calculate 4-particle cumulant
- */  
-
-  TComplex N_4, D_4;
-
-  N_4 = Q_n1_1*Q_n2_1*Q_n3_1*Q_n4_1 - Q_n1n2_2*Q_n3_1*Q_n4_1 - Q_n2_1*Q_n1n3_2*Q_n4_1
-      - Q_n1_1*Q_n2n3_2*Q_n4_1 + (Q_n1n2n3_3*Q_n4_1).operator*(2) - Q_n2_1*Q_n3_1*Q_n1n4_2
-      + Q_n2n3_2*Q_n1n4_2 - Q_n1_1*Q_n3_1*Q_n2n4_2 + Q_n1n3_2*Q_n2n4_2
-      + (Q_n3_1*Q_n1n2n4_3).operator*(2) - Q_n1_1*Q_n2_1*Q_n3n4_2 + Q_n1n2_2*Q_n3n4_2
-      + (Q_n2_1*Q_n1n3n4_3).operator*(2) + (Q_n1_1*Q_n2n3n4_3).operator*(2) - Q_n1n2n3n4_4.operator*(6);
-
-  D_4 = Q_0_1*Q_0_1*Q_0_1*Q_0_1 - (Q_0_1*Q_0_1*Q_0_2).operator*(6) + (Q_0_2*Q_0_2).operator*(3) + (Q_0_1*Q_0_3).operator*(8) - Q_0_4.operator*(6);
- 
-  c4->Fill( N_4.Re()/D_4.Re(), D_4.Re());
-  c4_imag->Fill( N_4.Im()/D_4.Re(), D_4.Re());
 
 }
 // ------------ method called once each job just before starting event loop  ------------
@@ -370,21 +323,13 @@ CVEandMixedHarmonics::beginJob()
   vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
 
-  c2_Gap_n1 = fs->make<TH1D>("c2_Gap_n1",";c2", 2000,-1,1);
-  c2_Gap_n2 = fs->make<TH1D>("c2_Gap_n2",";c2", 2000,-1,1);
-  c2_noGap_n1 = fs->make<TH1D>("c2_noGap_n1",";c2", 2000,-1,1);
-  c2_noGap_n2 = fs->make<TH1D>("c2_noGap_n2",";c2", 2000,-1,1);
-  
-  c3 = fs->make<TH1D>("c3",";c3", 2000,-1,1);
-  c4 = fs->make<TH1D>("c4",";c4", 2000,-1,1);
+  for(int HF = 0; HF < 2; HF++){
 
-  c2_Gap_n1_imag = fs->make<TH1D>("c2_Gap_n1_imag",";c2", 2000,-1,1);
-  c2_Gap_n2_imag = fs->make<TH1D>("c2_Gap_n2_imag",";c2", 2000,-1,1);
-  c2_noGap_n1_imag = fs->make<TH1D>("c2_noGap_n1_imag",";c2", 2000,-1,1);
-  c2_noGap_n2_imag = fs->make<TH1D>("c2_noGap_n2_imag",";c2", 2000,-1,1);
+    c3_real[HF] = fs->make<TH1D>(Form("c3_real_%d", HF),";c3", 2000,-1,1);
+    c3_imag[HF] = fs->make<TH1D>(Form("c3_imag_%d", HF),";c3", 2000,-1,1);
 
-  c3_imag = fs->make<TH1D>("c3_imag",";c3", 2000,-1,1);
-  c4_imag = fs->make<TH1D>("c4_imag",";c4", 2000,-1,1);
+  }
+
 }
 
 TComplex 
