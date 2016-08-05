@@ -334,14 +334,25 @@ where Q_coefficient_power is used in the following names
   
   TComplex Q_K0s_1, Q_Lambda_1, Q_0_K0s_1, Q_0_Lambda_1;
 
-  //filling Q-vectors of V0s
+  //filling Q-vectors of K0s
   for(unsigned it=0; it<v0candidates_ks->size(); ++it){ 
 
     const reco::VertexCompositeCandidate & V0s = (*v0candidates_ks)[it];
     bool isK0s = true;
     if( !passV0sCut(V0s, vtx, isK0s) ) continue;
 
-    cout << "V0s mass " << V0s.mass() << endl;
+    cout << "K0s mass " << V0s.mass() << endl;
+
+  }
+
+  //filling Q-vectors of Lambda
+  for(unsigned it=0; it<v0candidates_la->size(); ++it){ 
+
+    const reco::VertexCompositeCandidate & V0s = (*v0candidates_la)[it];
+    bool isLambda = true;
+    if( !passV0sCut(V0s, vtx, isLambda) ) continue;
+
+    cout << "K0s mass " << V0s.mass() << endl;
 
   }
 
