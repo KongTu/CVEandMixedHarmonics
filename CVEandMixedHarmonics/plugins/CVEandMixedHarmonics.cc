@@ -338,7 +338,6 @@ where Q_coefficient_power is used in the following names
 
 
   //filling Q-vectors of K0s
-  int nK0s = 0;
   for(unsigned it=0; it<v0candidates_ks->size(); ++it){ 
 
     const reco::VertexCompositeCandidate & V0s = (*v0candidates_ks)[it];
@@ -351,11 +350,9 @@ where Q_coefficient_power is used in the following names
     double pt = V0s.pt();
     double eta = V0s.eta();
 
-    nK0s++;
-
     ks_mass->Fill(eta, pt, mass, weight);
 
-    // if( mass < K0sMass+ksMassWindow_ && mass > K0sMass-ksMassWindow_ ){
+    if( mass < K0sMass+ksMassWindow_ && mass > K0sMass-ksMassWindow_ ){
 
       Q_n1_1_K0s_sig += q_vector(n1_, 1, weight, phi);
       Q_n2_1_K0s_sig += q_vector(n2_, 1, weight, phi);
@@ -365,7 +362,7 @@ where Q_coefficient_power is used in the following names
       Q_0_1_K0s_sig += q_vector(0, 1, weight, phi);
       Q_0_2_K0s_sig += q_vector(0, 2, weight, phi);
 
-    //}
+    }
     if( mass > K0sMass+ksMassWindow_ || mass < K0sMass-ksMassWindow_ ){
 
       Q_n1_1_K0s_bkg += q_vector(n1_, 1, weight, phi);
@@ -377,16 +374,6 @@ where Q_coefficient_power is used in the following names
       Q_0_2_K0s_bkg += q_vector(0, 2, weight, phi);
 
     }
-  }
-
-  cout << "nK0s: " << nK0s << endl;
-  if( nK0s > 10 ){
-
-    cout << "Q_n1_1_K0s_sig: " << Q_n1_1_K0s_sig << endl;
-    cout << "Q_n2_1_K0s_sig: " << Q_n2_1_K0s_sig << endl;
-    cout << "Q_n1n2_2_K0s_sig: " << Q_n1n2_2_K0s_sig << endl;
-    cout << "Q_0_1_K0s_sig: " << Q_0_1_K0s_sig << endl;
-    cout << "Q_0_2_K0s_sig: " << Q_0_2_K0s_sig << endl;
   }
 
   //filling Q-vectors of Lambda
@@ -564,12 +551,6 @@ calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number s
   N_2_sig_KK = Q_n1_1_K0s_sig*Q_n2_1_K0s_sig - Q_n1n2_2_K0s_sig;
   D_2_sig_KK = Q_0_1_K0s_sig*Q_0_1_K0s_sig - Q_0_2_K0s_sig;
 
-  if( nK0s > 10 ){
-
-    cout << "D_2_sig_KK: " << D_2_sig_KK << endl;
-
-  }
-
   N_2_bkg_KK = Q_n1_1_K0s_bkg*Q_n2_1_K0s_bkg - Q_n1n2_2_K0s_bkg;
   D_2_bkg_KK = Q_0_1_K0s_bkg*Q_0_1_K0s_bkg - Q_0_2_K0s_bkg;
 
@@ -579,18 +560,6 @@ calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number s
 
   N_3_HFminus = N_2_sig_KK*Q_n3_1_HFminus;
   D_3_HFminus = D_2_sig_KK*Q_0_1_HFminus;
-
-  if( D_2_sig_KK.Re() != 0.0 ){
-    cout << "N_2_sig_KK: " << N_2_sig_KK << endl;
-    cout << "D_2_sig_KK: " << D_2_sig_KK << endl;
-
-    cout << "Q_n3_1_HFplus: " << Q_n3_1_HFplus << endl;
-    cout << "Q_0_1_HFplus: " << Q_0_1_HFplus << endl;
-
-    cout << "N_3_HFplus: " << N_3_HFplus << endl;
-    cout << "D_3_HFplus: " << D_3_HFplus << endl;
-  }
-  
 
   c3_KK_real[0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
   c3_KK_real[0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
