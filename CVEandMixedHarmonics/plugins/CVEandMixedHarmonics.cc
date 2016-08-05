@@ -505,6 +505,9 @@ CVEandMixedHarmonics::passV0sCut(const reco::VertexCompositeCandidate & trk, con
   const reco:: Candidate * d1 = trk.daughter(0);
   const reco:: Candidate * d2 = trk.daughter(1);
 
+  auto dau1 = d1->get<reco::TrackRef>();
+  auto dau2 = d2->get<reco::TrackRef>();
+
   double px_dau1 = d1->px();
   double py_dau1 = d1->py();
   double pz_dau1 = d1->pz();
