@@ -380,6 +380,14 @@ where Q_coefficient_power is used in the following names
   }
 
   cout << "nK0s: " << nK0s << endl;
+  if( nK0s > 10 ){
+
+    cout << "Q_n1_1_K0s_sig: " << Q_n1_1_K0s_sig << endl;
+    cout << "Q_n2_1_K0s_sig: " << Q_n2_1_K0s_sig << endl;
+    cout << "Q_n1n2_2_K0s_sig: " << Q_n1n2_2_K0s_sig << endl;
+    cout << "Q_0_1_K0s_sig: " << Q_0_1_K0s_sig << endl;
+    cout << "Q_0_2_K0s_sig: " << Q_0_2_K0s_sig << endl;
+  }
 
   //filling Q-vectors of Lambda
   for(unsigned it=0; it<v0candidates_la->size(); ++it){ 
@@ -555,6 +563,12 @@ calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number s
 
   N_2_sig_KK = Q_n1_1_K0s_sig*Q_n2_1_K0s_sig - Q_n1n2_2_K0s_sig;
   D_2_sig_KK = Q_0_1_K0s_sig*Q_0_1_K0s_sig - Q_0_2_K0s_sig;
+
+  if( nK0s > 10 ){
+
+    cout << "D_2_sig_KK: " << D_2_sig_KK << endl;
+
+  }
 
   N_2_bkg_KK = Q_n1_1_K0s_bkg*Q_n2_1_K0s_bkg - Q_n1n2_2_K0s_bkg;
   D_2_bkg_KK = Q_0_1_K0s_bkg*Q_0_1_K0s_bkg - Q_0_2_K0s_bkg;
