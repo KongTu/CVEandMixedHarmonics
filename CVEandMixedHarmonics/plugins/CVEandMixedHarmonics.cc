@@ -495,12 +495,12 @@ CVEandMixedHarmonics::q_vector(double n, double p, double w, double phi)
 bool
 CVEandMixedHarmonics::passV0sCut(const reco::VertexCompositeCandidateCollection & trk, const reco::Vertex & vertex, bool isK0s){
 
-  double bestvz = vertex.z(); 
-  double bestvx = vertex.x(); 
-  double bestvy = vertex.y();
-  double bestvzError = vertex.zError(); 
-  double bestvxError = vertex.xError(); 
-  double bestvyError = vertex.yError();
+  // double bestvz = vertex.z(); 
+  // double bestvx = vertex.x(); 
+  // double bestvy = vertex.y();
+  // double bestvzError = vertex.zError(); 
+  // double bestvxError = vertex.xError(); 
+  // double bestvyError = vertex.yError();
 
   
 
