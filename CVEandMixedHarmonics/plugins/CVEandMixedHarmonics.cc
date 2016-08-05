@@ -173,6 +173,13 @@ CVEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   Ntrk->Fill( nTracks );
 
   const int NetaBins = etaBins_.size() - 1 ;
+  const int NdEtaBins = dEtaBins_.size() - 1;
+  double dEtaBinsArray[100];
+
+  for(unsigned i = 0; i < dEtaBins_.size(); i++){
+
+    dEtaBinsArray[i] = dEtaBins_[i]-0.0001;
+  }
 
 /*
 define all the ingredients for CME correlator <cos(n1*phi_1 + n2*phi_2 + n3*phi_3)> ,
@@ -271,38 +278,47 @@ calculate the 2-particles part with the Q-vectors
 
       double deltaEta = fabs( etaBins_[ieta] - etaBins_[jeta] );
 
-      TComplex N_2;
-      TComplex D_2;
+      for(int deta = 0; deta < NdEtaBins; deta++){
+        if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
+      
+          TComplex N_2;
+          TComplex D_2;
 
-      if( ieta == jeta ){
+          if( ieta == jeta ){
 
-        N_2 = Q_n1_1[ieta]*Q_n2_1[ieta] - Q_n1n2_2[ieta];
-        D_2 = Q_0_1[ieta]*Q_0_1[ieta] - Q_0_2[ieta];
+            N_2 = Q_n1_1[ieta]*Q_n2_1[ieta] - Q_n1n2_2[ieta];
+            D_2 = Q_0_1[ieta]*Q_0_1[ieta] - Q_0_2[ieta];
 
+          }
+          else{
+            
+            N_2 = Q_n1_1[ieta]*Q_n2_1[jeta];
+            D_2 = Q_0_1[ieta]*Q_0_1[jeta];
+
+          }        
+
+          TComplex N_3_HFplus, N_3_HFminus;
+          TComplex D_3_HFplus, D_3_HFminus;
+
+          N_3_HFplus = N_2*Q_n3_1_HFplus;
+          D_3_HFplus = D_2*Q_0_1_HFplus;
+
+          c3_real[deta][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+          c3_imag[deta][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+
+          N_3_HFminus = N_2*Q_n3_1_HFminus;
+          D_3_HFminus = D_2*Q_0_1_HFminus;
+
+          c3_real[deta][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+          c3_imag[deta][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+            
+        }
       }
-      else{
-        
-        N_2 = Q_n1_1[ieta]*Q_n2_1[jeta];
-        D_2 = Q_0_1[ieta]*Q_0_1[jeta];
-
-      }        
-
-      TComplex N_3_HFplus, N_3_HFminus;
-      TComplex D_3_HFplus, D_3_HFminus;
-
-      N_3_HFplus = N_2*Q_n3_1_HFplus;
-      D_3_HFplus = D_2*Q_0_1_HFplus;
-
-      c3_real[0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
-      c3_imag[0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
-
-      N_3_HFminus = N_2*Q_n3_1_HFminus;
-      D_3_HFminus = D_2*Q_0_1_HFminus;
-
-      c3_real[1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-      c3_imag[1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
     }
   }
+
+
+
 
 }
 // ------------ method called once each job just before starting event loop  ------------
@@ -312,6 +328,8 @@ CVEandMixedHarmonics::beginJob()
   edm::Service<TFileService> fs;
     
   TH1D::SetDefaultSumw2();
+
+  const int NdEtaBins = dEtaBins_.size() - 1;
 
   edm::FileInPath fip1("CVEandMixedHarmonics/CVEandMixedHarmonics/data/Hydjet_eff_mult_v1.root");
   TFile f1(fip1.fullPath().c_str(),"READ");
@@ -323,12 +341,15 @@ CVEandMixedHarmonics::beginJob()
   vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
 
-  for(int HF = 0; HF < 2; HF++){
+  for(int deta = 0; deta < NdEtaBins; deta++){
+    for(int HF = 0; HF < 2; HF++){
 
-    c3_real[HF] = fs->make<TH1D>(Form("c3_real_%d", HF),";c3", 2000,-1,1);
-    c3_imag[HF] = fs->make<TH1D>(Form("c3_imag_%d", HF),";c3", 2000,-1,1);
+      c3_real[HF] = fs->make<TH1D>(Form("c3_real_%d", HF),";c3", 2000,-1,1);
+      c3_imag[HF] = fs->make<TH1D>(Form("c3_imag_%d", HF),";c3", 2000,-1,1);
 
+    }    
   }
+
 
 }
 
