@@ -188,11 +188,11 @@ where Q_coefficient_power is used in the following names
 
 //2-particle correlator
 
-  TComplex Q_n1_1[NetaBins], Q_n2_1[NetaBins];
+  TComplex Q_n1_1[NetaBins][2], Q_n2_1[NetaBins][2];
   
-  TComplex Q_n1n2_2[NetaBins];
+  TComplex Q_n1n2_2[NetaBins][2];
   
-  TComplex Q_0_1[NetaBins], Q_0_2[NetaBins];
+  TComplex Q_0_1[NetaBins][2], Q_0_2[NetaBins][2];
 
 //------------------------------------------------------------------
 
@@ -231,14 +231,28 @@ where Q_coefficient_power is used in the following names
         for(int eta = 0; eta < NetaBins; eta++){
           if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
 
-            Q_n1_1[eta] += q_vector(n1_, 1, weight, phi);
-            Q_n2_1[eta] += q_vector(n2_, 1, weight, phi);
+            if( trk.charge() == +1 ){
 
-            Q_n1n2_2[eta] += q_vector(n1_+n2_, 2, weight, phi);
+              Q_n1_1[eta][0] += q_vector(n1_, 1, weight, phi);
+              Q_n2_1[eta][0] += q_vector(n2_, 1, weight, phi);
 
-            Q_0_1[eta] += q_vector(0, 1, weight, phi);
-            Q_0_2[eta] += q_vector(0, 2, weight, phi);
-           
+              Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, weight, phi);
+
+              Q_0_1[eta][0] += q_vector(0, 1, weight, phi);
+              Q_0_2[eta][0] += q_vector(0, 2, weight, phi);
+
+            }
+            if( trk.charge() == -1 ){
+
+              Q_n1_1[eta][1] += q_vector(n1_, 1, weight, phi);
+              Q_n2_1[eta][1] += q_vector(n2_, 1, weight, phi);
+
+              Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, weight, phi);
+
+              Q_0_1[eta][1] += q_vector(0, 1, weight, phi);
+              Q_0_2[eta][1] += q_vector(0, 2, weight, phi);
+
+            }
           }
         }
   }
@@ -270,7 +284,7 @@ where Q_coefficient_power is used in the following names
   }
     
 /*
-calculate the 2-particles part with the Q-vectors
+calculate the 3-particles correlator with the charged-particles
  */
 
   for(int ieta = 0; ieta < NetaBins; ieta++){
@@ -280,45 +294,61 @@ calculate the 2-particles part with the Q-vectors
 
       for(int deta = 0; deta < NdEtaBins; deta++){
         if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
-      
+          
           TComplex N_2;
           TComplex D_2;
-
-          if( ieta == jeta ){
-
-            N_2 = Q_n1_1[ieta]*Q_n2_1[ieta] - Q_n1n2_2[ieta];
-            D_2 = Q_0_1[ieta]*Q_0_1[ieta] - Q_0_2[ieta];
-
-          }
-          else{
-            
-            N_2 = Q_n1_1[ieta]*Q_n2_1[jeta];
-            D_2 = Q_0_1[ieta]*Q_0_1[jeta];
-
-          }        
 
           TComplex N_3_HFplus, N_3_HFminus;
           TComplex D_3_HFplus, D_3_HFminus;
 
+          //same sign correlator:
+          for(int sign = 0; sign < 2; sign++){
+            if( ieta == jeta ){
+
+              N_2 = Q_n1_1[ieta][sign]*Q_n2_1[ieta][sign] - Q_n1n2_2[ieta][sign];
+              D_2 = Q_0_1[ieta][sign]*Q_0_1[ieta][sign] - Q_0_2[ieta][sign];
+
+            }
+            else{
+              
+              N_2 = Q_n1_1[ieta][sign]*Q_n2_1[jeta][sign];
+              D_2 = Q_0_1[ieta][sign]*Q_0_1[jeta][sign];
+
+            }        
+
+            N_3_HFplus = N_2*Q_n3_1_HFplus;
+            D_3_HFplus = D_2*Q_0_1_HFplus;
+
+            c3_real[deta][sign][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+            c3_imag[deta][sign][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+
+            N_3_HFminus = N_2*Q_n3_1_HFminus;
+            D_3_HFminus = D_2*Q_0_1_HFminus;
+
+            c3_real[deta][sign][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+            c3_imag[deta][sign][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+  
+          }
+          //opposite sign correlator:
+          N_2 = Q_n1_1[ieta][0]*Q_n2_1[jeta][1];
+          D_2 = Q_0_1[ieta][0]*Q_0_1[jeta][1];
+
           N_3_HFplus = N_2*Q_n3_1_HFplus;
           D_3_HFplus = D_2*Q_0_1_HFplus;
 
-          c3_real[deta][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
-          c3_imag[deta][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+          c3_real[deta][2][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+          c3_imag[deta][2][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
 
           N_3_HFminus = N_2*Q_n3_1_HFminus;
           D_3_HFminus = D_2*Q_0_1_HFminus;
 
-          c3_real[deta][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-          c3_imag[deta][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-            
+          c3_real[deta][2][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+          c3_imag[deta][2][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+
         }
       }
     }
   }
-
-
-
 
 }
 // ------------ method called once each job just before starting event loop  ------------
@@ -342,11 +372,13 @@ CVEandMixedHarmonics::beginJob()
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
 
   for(int deta = 0; deta < NdEtaBins; deta++){
-    for(int HF = 0; HF < 2; HF++){
+    for(int sign = 0; sign < 3; sign++){
+      for(int HF = 0; HF < 2; HF++){
 
-      c3_real[deta][HF] = fs->make<TH1D>(Form("c3_real_%d_%d", deta, HF),";c3", 2000,-1,1);
-      c3_imag[deta][HF] = fs->make<TH1D>(Form("c3_imag_%d_%d", deta, HF),";c3", 2000,-1,1);
+        c3_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_real_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
+        c3_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_imag_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
 
+      }
     }    
   }
 
