@@ -194,6 +194,10 @@ where Q_coefficient_power is used in the following names
   
   TComplex Q_0_1[NetaBins][2], Q_0_2[NetaBins][2];
 
+//Scalar product, charge independent, |eta|<2.4
+
+  TComplex Q_n3_trk, Q_0_trk;
+
 //------------------------------------------------------------------
 
 //Start filling Q-vectors;
@@ -233,6 +237,9 @@ where Q_coefficient_power is used in the following names
         trkPhi->Fill(phi, weight);
         trkPt->Fill(trk.pt(), weight);
         trk_eta->Fill(trkEta, weight);
+
+        Q_n3_trk += q_vector(-n3_, 1, weight, phi);//for scalar product in tracker
+        Q_0_trk += q_vector(0, 1, weight, phi);
 
         for(int eta = 0; eta < NetaBins; eta++){
           if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
@@ -290,6 +297,27 @@ where Q_coefficient_power is used in the following names
           }
           else{continue;}
   }
+
+/*
+calculate the Scalar product denominator, v_{2,c}
+*/
+
+  TComplex N_2_trk, D_2_trk;
+
+  N_2_trk = Q_n3_trk*Q_n3_1_HFplus;
+  D_2_trk = Q_0_trk*Q_0_1_HFplus;
+
+  c2_ac->Fill(N_2_trk.Re()/D_2_trk.Re(), D_2_trk.Re());
+
+  N_2_trk = Q_n3_trk*Q_n3_1_HFminus;
+  D_2_trk = Q_0_trk*Q_0_1_HFminus;
+
+  c2_bc->Fill(N_2_trk.Re()/D_2_trk.Re(), D_2_trk.Re());
+
+  N_2_trk = Q_n3_1_HFminus*TComplex::Conjugate(Q_n3_1_HFminus);
+  D_2_trk = Q_0_1_HFplus*Q_0_1_HFminus;
+
+  c2_ab->Fill(N_2_trk.Re()/D_2_trk.Re(), D_2_trk.Re());
     
 /*
 calculate the 3-particles correlator with the charged-particles
@@ -393,6 +421,10 @@ CVEandMixedHarmonics::beginJob()
   trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
   trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
 
+  c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
+  c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
+  c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 20000,-1,1);
+  
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
       for(int HF = 0; HF < 2; HF++){

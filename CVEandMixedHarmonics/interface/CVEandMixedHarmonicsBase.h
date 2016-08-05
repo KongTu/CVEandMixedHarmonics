@@ -170,6 +170,10 @@ class CVEandMixedHarmonics : public edm::EDAnalyzer {
       //correction table
       TH2D* effTable[5];
 
+      TH1D* c2_ab;
+      TH1D* c2_ac;
+      TH1D* c2_cb;
+
       TH1D* c3_real[48][3][2];
       TH1D* c3_imag[48][3][2];
 
