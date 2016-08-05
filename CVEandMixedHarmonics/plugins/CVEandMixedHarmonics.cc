@@ -594,6 +594,38 @@ CVEandMixedHarmonics::passV0sCut(const reco::VertexCompositeCandidate & trk, con
   return true;  
 
 }
+double 
+CVEandMixedHarmonics::Mass_ks(double px_1,double py_1,double pz_1,double px_2,double py_2,double pz_2)
+{
+  double temp = 0.0;
+  double E1 = sqrt((px_1*px_1+py_1*py_1+pz_1*pz_1)+(0.93827203*0.93827203));
+  double E2 = sqrt((px_2*px_2+py_2*py_2+pz_2*pz_2)+(0.13957018*0.13957018));
+  double E_tot = E1+E2;
+  temp = (E_tot*E_tot) - ((px_1+px_2)*(px_1+px_2)+(py_1+py_2)*(py_1+py_2)+(pz_1+pz_2)*(pz_1+pz_2));
+  return sqrt(temp);
+}
+
+double 
+CVEandMixedHarmonics::Mass_la(double px_1,double py_1,double pz_1,double px_2,double py_2,double pz_2)
+{    
+  double temp = 0.0;
+  double E1 = sqrt((px_1*px_1+py_1*py_1+pz_1*pz_1)+(0.13957018*0.13957018));
+  double E2 = sqrt((px_2*px_2+py_2*py_2+pz_2*pz_2)+(0.13957018*0.13957018));
+  double E_tot = E1+E2;
+  temp = (E_tot*E_tot) - ((px_1+px_2)*(px_1+px_2)+(py_1+py_2)*(py_1+py_2)+(pz_1+pz_2)*(pz_1+pz_2));
+  return sqrt(temp);
+}
+
+double 
+CVEandMixedHarmonics::Mass_e(double px_1,double py_1,double pz_1,double px_2,double py_2,double pz_2)
+{
+  double temp = 0.0;
+  double E1 = sqrt((px_1*px_1+py_1*py_1+pz_1*pz_1)+(0.000511*0.000511));
+  double E2 = sqrt((px_2*px_2+py_2*py_2+pz_2*pz_2)+(0.000511*0.000511));
+  double E_tot = E1+E2;
+  temp = (E_tot*E_tot) - ((px_1+px_2)*(px_1+px_2)+(py_1+py_2)*(py_1+py_2)+(pz_1+pz_2)*(pz_1+pz_2));
+  return sqrt(temp);
+}
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 CVEandMixedHarmonics::endJob() 
