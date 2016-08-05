@@ -515,13 +515,6 @@ calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number s
   //2-particles with V0s
   TComplex N_2_sig_LL, D_2_sig_LL, N_2_bkg_LL, D_2_bkg_LL;
 
-  cout << "Q_n1_1_Lambda_sig: " << Q_n1_1_Lambda_sig << endl;
-  cout << "Q_n2_1_Lambda_sig: " << Q_n2_1_Lambda_sig << endl;
-  cout << "Q_n1n2_2_Lambda_sig: " << Q_n1n2_2_Lambda_sig << endl;
-
-  cout << "Q_0_1_Lambda_sig: " << Q_0_1_Lambda_sig << endl;
-  cout << "Q_0_2_Lambda_sig: " << Q_0_2_Lambda_sig << endl;
-
   N_2_sig_LL = Q_n1_1_Lambda_sig*Q_n2_1_Lambda_sig - Q_n1n2_2_Lambda_sig;
   D_2_sig_LL = Q_0_1_Lambda_sig*Q_0_1_Lambda_sig - Q_0_2_Lambda_sig;
 
@@ -531,6 +524,9 @@ calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number s
   //mutiplying particle c Q-vectors
   N_3_HFplus = N_2_sig_LL*Q_n3_1_HFplus;
   D_3_HFplus = D_2_sig_LL*Q_0_1_HFplus;
+
+  cout << "N_3_HFplus: " << N_3_HFplus << endl;
+  cout << "D_3_HFplus: " << D_3_HFplus << endl;
 
   N_3_HFminus = N_2_sig_LL*Q_n3_1_HFminus;
   D_3_HFminus = D_2_sig_LL*Q_0_1_HFminus;
