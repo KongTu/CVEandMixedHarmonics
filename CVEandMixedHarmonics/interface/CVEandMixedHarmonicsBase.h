@@ -229,7 +229,7 @@ class CVEandMixedHarmonics : public edm::EDAnalyzer {
       double lambdaMassWindow_;
       double ksMassWindow_;
 
-      double v0sptLow_;
+      double v0sPtLow_;
       double v0sPtHigh_;
 
       bool useCentrality_;
