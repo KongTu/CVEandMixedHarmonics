@@ -724,40 +724,114 @@ TComplex D_3_HFplus, D_3_HFminus;
   }
 //end of K0s-K0s
 
+//Lambda-K0s:
+  TComplex N_2_sig_LK, D_2_sig_LK, N_2_bkg_LK, D_2_bkg_LK;
+  TComplex N_2_sig_bkg_LK, D_2_sig_bkg_LK;//sig-bkg correlator (note that the n1 and n2 would make a different from the one below)
+  TComplex N_2_bkg_sig_LK, D_2_bkg_sig_LK;//bkg-sig correlator
 
-// //Lambda-K0s
-//   TComplex N_2_sig_LK, D_2_sig_LK, N_2_bkg_LK, D_2_bkg_LK;
+//--------------------------------------------
+  N_2_sig_LK = Q_n1_1_Lambda_sig[0]*Q_n2_1_K0s_sig;
+  D_2_sig_LK = Q_0_1_Lambda_sig[0]*Q_0_1_K0s_sig;
 
-// //--------------------------------------------
-//   N_2_sig_LK = Q_n1_1_Lambda_sig*Q_n2_1_K0s_sig;
-//   D_2_sig_LK = Q_0_1_Lambda_sig*Q_0_1_K0s_sig;
+  N_2_sig_bkg_LK = Q_n1_1_Lambda_sig[0]*Q_n2_1_K0s_bkg;//sig-bkg doesn't overlap, no need to subtract the 3rd term
+  D_2_sig_bkg_LK = Q_0_1_Lambda_sig[0]*Q_0_1_K0s_bkg;
 
-//   N_2_bkg_LK = Q_n1_1_Lambda_bkg*Q_n2_1_K0s_bkg;
-//   D_2_bkg_LK = Q_0_1_Lambda_bkg*Q_0_1_K0s_bkg;
-// //--------------------------------------------
+  N_2_bkg_sig_LK = Q_n1_1_K0s_bkg*Q_n2_1_Lambda_sig[0];//bkg-sig doesn't overlap, no need to subtract the 3rd term
+  D_2_bkg_sig_LK = Q_0_1_K0s_bkg*Q_0_1_Lambda_sig[0];
 
-//   //mutiplying particle c Q-vectors
-//   N_3_HFplus = N_2_sig_LK*Q_n3_1_HFplus;
-//   D_3_HFplus = D_2_sig_LK*Q_0_1_HFplus;
+  N_2_bkg_LK = Q_n1_1_Lambda_bkg[0]*Q_n2_1_K0s_bkg;
+  D_2_bkg_LK = Q_0_1_Lambda_bkg[0]*Q_0_1_K0s_bkg;
+//--------------------------------------------
 
-//   N_3_HFminus = N_2_sig_LK*Q_n3_1_HFminus;
-//   D_3_HFminus = D_2_sig_LK*Q_0_1_HFminus;
+//mutiplying particle c Q-vectors
+  for( int j = 0; j < 4; j++){
+    if( j == 0 ){
+      N_3_HFplus = N_2_sig_LK*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_sig_LK*Q_0_1_HFplus;
 
-//   c3_LK_real[0][0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
-//   c3_LK_real[0][0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
-//   c3_LK_imag[0][0][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
-//   c3_LK_imag[0][0][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+      N_3_HFminus = N_2_sig_LK*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_sig_LK*Q_0_1_HFminus;
+    }
+    if( j == 1 ){
+      N_3_HFplus = N_2_sig_bkg_LK*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_sig_bkg_LK*Q_0_1_HFplus;
 
-//   N_3_HFplus = N_2_bkg_LK*Q_n3_1_HFplus;
-//   D_3_HFplus = D_2_bkg_LK*Q_0_1_HFplus;
+      N_3_HFminus = N_2_sig_bkg_LK*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_sig_bkg_LK*Q_0_1_HFminus;
+    }
+    if( j == 2 ){
+      N_3_HFplus = N_2_bkg_sig_LK*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_bkg_sig_LK*Q_0_1_HFplus;
 
-//   N_3_HFminus = N_2_bkg_LK*Q_n3_1_HFminus;
-//   D_3_HFminus = D_2_bkg_LK*Q_0_1_HFminus;
+      N_3_HFminus = N_2_bkg_sig_LK*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_bkg_sig_LK*Q_0_1_HFminus;
+    }
+    if( j == 3 ){
+      N_3_HFplus = N_2_bkg_LK*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_bkg_LK*Q_0_1_HFplus;
 
-//   c3_LK_real[0][1][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
-//   c3_LK_real[0][1][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
-//   c3_LK_imag[0][1][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
-//   c3_LK_imag[0][1][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+      N_3_HFminus = N_2_bkg_LK*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_bkg_LK*Q_0_1_HFminus;
+    }
+    
+    c3_LK_real[0][j][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+    c3_LK_real[0][j][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+    c3_LK_imag[0][j][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+    c3_LK_imag[0][j][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  }
+
+//--------------------------------------------
+  N_2_sig_LK = Q_n1_1_Lambda_sig[1]*Q_n2_1_K0s_sig;
+  D_2_sig_LK = Q_0_1_Lambda_sig[1]*Q_0_1_K0s_sig;
+
+  N_2_sig_bkg_LK = Q_n1_1_Lambda_sig[1]*Q_n2_1_K0s_bkg;//sig-bkg doesn't overlap, no need to subtract the 3rd term
+  D_2_sig_bkg_LK = Q_0_1_Lambda_sig[1]*Q_0_1_K0s_bkg;
+
+  N_2_bkg_sig_LK = Q_n1_1_K0s_bkg*Q_n2_1_Lambda_sig[1];//bkg-sig doesn't overlap, no need to subtract the 3rd term
+  D_2_bkg_sig_LK = Q_0_1_K0s_bkg*Q_0_1_Lambda_sig[1];
+
+  N_2_bkg_LK = Q_n1_1_Lambda_bkg[1]*Q_n2_1_K0s_bkg;
+  D_2_bkg_LK = Q_0_1_Lambda_bkg[1]*Q_0_1_K0s_bkg;
+//--------------------------------------------
+
+//mutiplying particle c Q-vectors
+  for( int j = 0; j < 4; j++){
+    if( j == 0 ){
+      N_3_HFplus = N_2_sig_LK*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_sig_LK*Q_0_1_HFplus;
+
+      N_3_HFminus = N_2_sig_LK*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_sig_LK*Q_0_1_HFminus;
+    }
+    if( j == 1 ){
+      N_3_HFplus = N_2_sig_bkg_LK*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_sig_bkg_LK*Q_0_1_HFplus;
+
+      N_3_HFminus = N_2_sig_bkg_LK*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_sig_bkg_LK*Q_0_1_HFminus;
+    }
+    if( j == 2 ){
+      N_3_HFplus = N_2_bkg_sig_LK*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_bkg_sig_LK*Q_0_1_HFplus;
+
+      N_3_HFminus = N_2_bkg_sig_LK*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_bkg_sig_LK*Q_0_1_HFminus;
+    }
+    if( j == 3 ){
+      N_3_HFplus = N_2_bkg_LK*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_bkg_LK*Q_0_1_HFplus;
+
+      N_3_HFminus = N_2_bkg_LK*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_bkg_LK*Q_0_1_HFminus;
+    }
+    
+    c3_LK_real[1][j][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+    c3_LK_real[1][j][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+    c3_LK_imag[1][j][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+    c3_LK_imag[1][j][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  }
+
+
 
 // //Lambda-h
 //   TComplex N_2_sig_LH, D_2_sig_LH, N_2_bkg_LH, D_2_bkg_LH;
