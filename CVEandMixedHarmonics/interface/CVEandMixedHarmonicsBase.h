@@ -182,7 +182,8 @@ class CVEandMixedHarmonics : public edm::EDAnalyzer {
 
       //V0s mass
       TH3D* ks_mass;
-      TH3D* la_mass;
+      TH3D* la_mass_1;
+      TH3D* la_mass_2;
 
       //correction table
       TH2D* effTable[5];

@@ -388,9 +388,11 @@ where Q_coefficient_power is used in the following names
     double phi = V0s.phi();
     double pt = V0s.pt();
     double eta = V0s.eta();
+    int pdgId = V0s.pdgId();
 
-    la_mass->Fill(eta, pt, mass, weight);
-
+    if( pdgId == 3122 )  la_mass_1->Fill(eta, pt, mass, weight);
+    if( pdgId == -3122 ) la_mass_2->Fill(eta, pt, mass, weight);
+    
     if( mass < LambdaMass+lambdaMassWindow_ && mass > LambdaMass-lambdaMassWindow_ ){
 
       Q_n1_1_Lambda_sig += q_vector(n1_, 1, weight, phi);
@@ -536,7 +538,6 @@ calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number s
   //mutiplying particle c Q-vectors
 
   for( int j = 0; j < 4; j++){
-
     if( j == 0 ){
       N_3_HFplus = N_2_sig_LL*Q_n3_1_HFplus;
       D_3_HFplus = D_2_sig_LL*Q_0_1_HFplus;
@@ -737,7 +738,8 @@ CVEandMixedHarmonics::beginJob()
   }
 
   ks_mass = fs->make<TH3D>("ks_mass",";#eta;pT(GeV/c);mass(GeV/c^{2})",70,-3.5,3.5,120,0,12,360,0.44,0.56);
-  la_mass = fs->make<TH3D>("la_mass",";#eta;pT(GeV/c);mass(GeV/c^{2})",70,-3.5,3.5,120,0,12,360,1.08,1.16);
+  la_mass_1 = fs->make<TH3D>("la_mass_1",";#eta;pT(GeV/c);mass(GeV/c^{2})",70,-3.5,3.5,120,0,12,360,1.08,1.16);
+  la_mass_2 = fs->make<TH3D>("la_mass_2",";#eta;pT(GeV/c);mass(GeV/c^{2})",70,-3.5,3.5,120,0,12,360,1.08,1.16);
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);
