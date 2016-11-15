@@ -762,7 +762,7 @@ CVEandMixedHarmonics::beginJob()
     }    
   }
 
-  for(int sig = 0; sig < 2; sig++){
+  for(int sig = 0; sig < 4; sig++){
     for(int HF = 0; HF < 2; HF++){
 
       c3_LL_real[sig][HF] = fs->make<TH1D>(Form("c3_LL_real_%d_%d", sig, HF), ";c3", 20000,-1,1);
