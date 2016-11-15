@@ -513,38 +513,64 @@ calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number s
 
 //Lambda-Lambda
   //2-particles with V0s
-  TComplex N_2_sig_LL, D_2_sig_LL, N_2_bkg_LL, D_2_bkg_LL;
+  TComplex N_2_sig_LL, D_2_sig_LL; //sig-sig correlator
+  TComplex N_2_bkg_LL, D_2_bkg_LL; //bkg-bkg correlatro
+  TComplex N_2_sig_bkg_LL, D_2_sig_bkg_LL;//sig-bkg correlator (note that the n1 and n2 would make a different from the one below)
+  TComplex N_2_bkg_sig_LL, D_2_bkg_sig_LL;//bkg-sig correlator
 
 //--------------------------------------------
   N_2_sig_LL = Q_n1_1_Lambda_sig*Q_n2_1_Lambda_sig - Q_n1n2_2_Lambda_sig;
   D_2_sig_LL = Q_0_1_Lambda_sig*Q_0_1_Lambda_sig - Q_0_2_Lambda_sig;
 
+  N_2_sig_bkg_LL = Q_n1_1_Lambda_sig*Q_n2_1_Lambda_bkg;//sig-bkg doesn't overlap, no need to subtract the 3rd term
+  D_2_sig_bkg_LL = Q_0_1_Lambda_sig*Q_0_1_Lambda_bkg;
+
+  N_2_bkg_sig_LL = Q_n1_1_Lambda_bkg*Q_n2_1_Lambda_sig;//bkg-sig doesn't overlap, no need to subtract the 3rd term
+  D_2_bkg_sig_LL = Q_0_1_Lambda_bkg*Q_0_1_Lambda_sig;
+
   N_2_bkg_LL = Q_n1_1_Lambda_bkg*Q_n2_1_Lambda_bkg - Q_n1n2_2_Lambda_bkg;
   D_2_bkg_LL = Q_0_1_Lambda_bkg*Q_0_1_Lambda_bkg - Q_0_2_Lambda_bkg;
+
 //--------------------------------------------
 
   //mutiplying particle c Q-vectors
-  N_3_HFplus = N_2_sig_LL*Q_n3_1_HFplus;
-  D_3_HFplus = D_2_sig_LL*Q_0_1_HFplus;
 
-  N_3_HFminus = N_2_sig_LL*Q_n3_1_HFminus;
-  D_3_HFminus = D_2_sig_LL*Q_0_1_HFminus;
+  if( int j = 0; j < 4; j++){
 
-  c3_LL_real[0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
-  c3_LL_real[0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
-  c3_LL_imag[0][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
-  c3_LL_imag[0][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+    if( j == 0 ){
+      N_3_HFplus = N_2_sig_LL*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_sig_LL*Q_0_1_HFplus;
 
-  N_3_HFplus = N_2_bkg_LL*Q_n3_1_HFplus;
-  D_3_HFplus = D_2_bkg_LL*Q_0_1_HFplus;
+      N_3_HFminus = N_2_sig_LL*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_sig_LL*Q_0_1_HFminus;
+    }
+    if( j == 1 ){
+      N_3_HFplus = N_2_sig_bkg_LL*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_sig_bkg_LL*Q_0_1_HFplus;
 
-  N_3_HFminus = N_2_bkg_LL*Q_n3_1_HFminus;
-  D_3_HFminus = D_2_bkg_LL*Q_0_1_HFminus;
+      N_3_HFminus = N_2_sig_bkg_LL*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_sig_bkg_LL*Q_0_1_HFminus;
+    }
+    if( j == 2 ){
+      N_3_HFplus = N_2_bkg_sig_LL*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_bkg_sig_LL*Q_0_1_HFplus;
 
-  c3_LL_real[1][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
-  c3_LL_real[1][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
-  c3_LL_imag[1][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
-  c3_LL_imag[1][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+      N_3_HFminus = N_2_bkg_sig_LL*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_bkg_sig_LL*Q_0_1_HFminus;
+    }
+    if( j == 3 ){
+      N_3_HFplus = N_2_bkg_LL*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_bkg_LL*Q_0_1_HFplus;
+
+      N_3_HFminus = N_2_bkg_LL*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_bkg_LL*Q_0_1_HFminus;
+    }
+    
+    c3_LL_real[j][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+    c3_LL_real[j][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+    c3_LL_imag[j][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+    c3_LL_imag[j][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  }
 
 //K0s-K0s
   //2-particles with V0s
