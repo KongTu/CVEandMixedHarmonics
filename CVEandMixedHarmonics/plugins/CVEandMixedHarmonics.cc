@@ -535,7 +535,7 @@ calculate the 3-particle correlator with V0s, generally 5 cases. Baryon number s
 
   //mutiplying particle c Q-vectors
 
-  if( int j = 0; j < 4; j++){
+  for( int j = 0; j < 4; j++){
 
     if( j == 0 ){
       N_3_HFplus = N_2_sig_LL*Q_n3_1_HFplus;
