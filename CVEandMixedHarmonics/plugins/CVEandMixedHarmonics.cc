@@ -685,10 +685,10 @@ TComplex D_3_HFplus, D_3_HFminus;
   N_3_HFminus = N_2_sig_KK*Q_n3_1_HFminus;
   D_3_HFminus = D_2_sig_KK*Q_0_1_HFminus;
 
-  c3_KK_real[0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
-  c3_KK_real[0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
-  c3_KK_imag[0][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
-  c3_KK_imag[0][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_KK_real[0][0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+  c3_KK_real[0][0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_KK_imag[0][0][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+  c3_KK_imag[0][0][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
 
   N_3_HFplus = N_2_bkg_KK*Q_n3_1_HFplus;
   D_3_HFplus = D_2_bkg_KK*Q_0_1_HFplus;
@@ -696,10 +696,10 @@ TComplex D_3_HFplus, D_3_HFminus;
   N_3_HFminus = N_2_bkg_KK*Q_n3_1_HFminus;
   D_3_HFminus = D_2_bkg_KK*Q_0_1_HFminus;
 
-  c3_KK_real[1][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
-  c3_KK_real[1][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
-  c3_KK_imag[1][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
-  c3_KK_imag[1][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_KK_real[0][1][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
+  c3_KK_real[0][1][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_KK_imag[0][1][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
+  c3_KK_imag[0][1][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
 
 //Lambda-K0s
   TComplex N_2_sig_LK, D_2_sig_LK, N_2_bkg_LK, D_2_bkg_LK;
@@ -719,10 +719,10 @@ TComplex D_3_HFplus, D_3_HFminus;
   N_3_HFminus = N_2_sig_LK*Q_n3_1_HFminus;
   D_3_HFminus = D_2_sig_LK*Q_0_1_HFminus;
 
-  c3_LK_real[0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
-  c3_LK_real[0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
-  c3_LK_imag[0][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
-  c3_LK_imag[0][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_LK_real[0][0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+  c3_LK_real[0][0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_LK_imag[0][0][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+  c3_LK_imag[0][0][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
 
   N_3_HFplus = N_2_bkg_LK*Q_n3_1_HFplus;
   D_3_HFplus = D_2_bkg_LK*Q_0_1_HFplus;
@@ -730,10 +730,10 @@ TComplex D_3_HFplus, D_3_HFminus;
   N_3_HFminus = N_2_bkg_LK*Q_n3_1_HFminus;
   D_3_HFminus = D_2_bkg_LK*Q_0_1_HFminus;
 
-  c3_LK_real[1][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
-  c3_LK_real[1][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
-  c3_LK_imag[1][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
-  c3_LK_imag[1][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_LK_real[0][1][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
+  c3_LK_real[0][1][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_LK_imag[0][1][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
+  c3_LK_imag[0][1][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
 
 //Lambda-h
   TComplex N_2_sig_LH, D_2_sig_LH, N_2_bkg_LH, D_2_bkg_LH;
@@ -753,10 +753,10 @@ TComplex D_3_HFplus, D_3_HFminus;
   N_3_HFminus = N_2_sig_LH*Q_n3_1_HFminus;
   D_3_HFminus = D_2_sig_LH*Q_0_1_HFminus;
 
-  c3_LH_real[0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
-  c3_LH_real[0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
-  c3_LH_imag[0][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
-  c3_LH_imag[0][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_LH_real[0][0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+  c3_LH_real[0][0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_LH_imag[0][0][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+  c3_LH_imag[0][0][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
 
   N_3_HFplus = N_2_bkg_LH*Q_n3_1_HFplus;
   D_3_HFplus = D_2_bkg_LH*Q_0_1_HFplus;
@@ -764,10 +764,10 @@ TComplex D_3_HFplus, D_3_HFminus;
   N_3_HFminus = N_2_bkg_LH*Q_n3_1_HFminus;
   D_3_HFminus = D_2_bkg_LH*Q_0_1_HFminus;
 
-  c3_LH_real[1][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
-  c3_LH_real[1][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
-  c3_LH_imag[1][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
-  c3_LH_imag[1][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_LH_real[0][1][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
+  c3_LH_real[0][1][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_LH_imag[0][1][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
+  c3_LH_imag[0][1][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
 
 //K0s-h
   TComplex N_2_sig_KH, D_2_sig_KH, N_2_bkg_KH, D_2_bkg_KH;
@@ -787,10 +787,10 @@ TComplex D_3_HFplus, D_3_HFminus;
   N_3_HFminus = N_2_sig_KH*Q_n3_1_HFminus;
   D_3_HFminus = D_2_sig_KH*Q_0_1_HFminus;
 
-  c3_KH_real[0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
-  c3_KH_real[0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
-  c3_KH_imag[0][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
-  c3_KH_imag[0][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_KH_real[0][0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+  c3_KH_real[0][0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_KH_imag[0][0][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+  c3_KH_imag[0][0][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
 
   N_3_HFplus = N_2_bkg_KH*Q_n3_1_HFplus;
   D_3_HFplus = D_2_bkg_KH*Q_0_1_HFplus;
@@ -798,10 +798,10 @@ TComplex D_3_HFplus, D_3_HFminus;
   N_3_HFminus = N_2_bkg_KH*Q_n3_1_HFminus;
   D_3_HFminus = D_2_bkg_KH*Q_0_1_HFminus;
 
-  c3_KH_real[1][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
-  c3_KH_real[1][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
-  c3_KH_imag[1][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
-  c3_KH_imag[1][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_KH_real[0][1][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
+  c3_KH_real[0][1][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  c3_KH_imag[0][1][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
+  c3_KH_imag[0][1][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
 
 }
 // ------------ method called once each job just before starting event loop  ------------
