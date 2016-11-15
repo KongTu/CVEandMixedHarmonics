@@ -887,8 +887,8 @@ CVEandMixedHarmonics::beginJob()
       c3_KK_real[sig][HF] = fs->make<TH1D>(Form("c3_KK_real_%d_%d", sig, HF), ";c3", 20000,-1,1);
       c3_KK_imag[sig][HF] = fs->make<TH1D>(Form("c3_KK_imag_%d_%d", sig, HF), ";c3", 20000,-1,1);
 
-      c3_KH_real[sign][sig][HF] = fs->make<TH1D>(Form("c3_KH_real_%d_%d", sig, HF), ";c3", 20000,-1,1);
-      c3_KH_imag[sign][sig][HF] = fs->make<TH1D>(Form("c3_KH_imag_%d_%d", sig, HF), ";c3", 20000,-1,1);
+      c3_KH_real[sig][HF] = fs->make<TH1D>(Form("c3_KH_real_%d_%d", sig, HF), ";c3", 20000,-1,1);
+      c3_KH_imag[sig][HF] = fs->make<TH1D>(Form("c3_KH_imag_%d_%d", sig, HF), ";c3", 20000,-1,1);
       
       for(int sign = 0; sign < 3; sign++){
 
