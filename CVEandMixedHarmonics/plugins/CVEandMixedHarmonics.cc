@@ -669,37 +669,61 @@ TComplex D_3_HFplus, D_3_HFminus;
 //K0s-K0s
   //2-particles with V0s
   TComplex N_2_sig_KK, D_2_sig_KK, N_2_bkg_KK, D_2_bkg_KK;
+  TComplex N_2_sig_bkg_KK, D_2_sig_bkg_KK;//sig-bkg correlator (note that the n1 and n2 would make a different from the one below)
+  TComplex N_2_bkg_sig_KK, D_2_bkg_sig_KK;//bkg-sig correlator
 
 //--------------------------------------------
   N_2_sig_KK = Q_n1_1_K0s_sig*Q_n2_1_K0s_sig - Q_n1n2_2_K0s_sig;
   D_2_sig_KK = Q_0_1_K0s_sig*Q_0_1_K0s_sig - Q_0_2_K0s_sig;
+
+  N_2_sig_bkg_KK = Q_n1_1_K0s_sig*Q_n2_1_K0s_bkg;//sig-bkg doesn't overlap, no need to subtract the 3rd term
+  D_2_sig_bkg_KK = Q_0_1_K0s_sig*Q_0_1_K0s_bkg;
+
+  N_2_bkg_sig_KK = Q_n1_1_K0s_bkg*Q_n2_1_K0s_sig;//bkg-sig doesn't overlap, no need to subtract the 3rd term
+  D_2_bkg_sig_KK = Q_0_1_K0s_bkg*Q_0_1_K0s_sig;
 
   N_2_bkg_KK = Q_n1_1_K0s_bkg*Q_n2_1_K0s_bkg - Q_n1n2_2_K0s_bkg;
   D_2_bkg_KK = Q_0_1_K0s_bkg*Q_0_1_K0s_bkg - Q_0_2_K0s_bkg;
 //--------------------------------------------
 
   //mutiplying particle c Q-vectors
-  N_3_HFplus = N_2_sig_KK*Q_n3_1_HFplus;
-  D_3_HFplus = D_2_sig_KK*Q_0_1_HFplus;
+  for( int j = 0; j < 4; j++){
+    if( j == 0 ){
+      N_3_HFplus = N_2_sig_KK*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_sig_KK*Q_0_1_HFplus;
 
-  N_3_HFminus = N_2_sig_KK*Q_n3_1_HFminus;
-  D_3_HFminus = D_2_sig_KK*Q_0_1_HFminus;
+      N_3_HFminus = N_2_sig_KK*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_sig_KK*Q_0_1_HFminus;
+    }
+    if( j == 1 ){
+      N_3_HFplus = N_2_sig_bkg_KK*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_sig_bkg_KK*Q_0_1_HFplus;
 
-  c3_KK_real[0][0][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
-  c3_KK_real[0][0][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
-  c3_KK_imag[0][0][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
-  c3_KK_imag[0][0][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+      N_3_HFminus = N_2_sig_bkg_KK*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_sig_bkg_KK*Q_0_1_HFminus;
+    }
+    if( j == 2 ){
+      N_3_HFplus = N_2_bkg_sig_KK*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_bkg_sig_KK*Q_0_1_HFplus;
 
-  N_3_HFplus = N_2_bkg_KK*Q_n3_1_HFplus;
-  D_3_HFplus = D_2_bkg_KK*Q_0_1_HFplus;
+      N_3_HFminus = N_2_bkg_sig_KK*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_bkg_sig_KK*Q_0_1_HFminus;
+    }
+    if( j == 3 ){
+      N_3_HFplus = N_2_bkg_KK*Q_n3_1_HFplus;
+      D_3_HFplus = D_2_bkg_KK*Q_0_1_HFplus;
 
-  N_3_HFminus = N_2_bkg_KK*Q_n3_1_HFminus;
-  D_3_HFminus = D_2_bkg_KK*Q_0_1_HFminus;
+      N_3_HFminus = N_2_bkg_KK*Q_n3_1_HFminus;
+      D_3_HFminus = D_2_bkg_KK*Q_0_1_HFminus;
+    }
+    
+    c3_KK_real[j][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+    c3_KK_real[j][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
+    c3_KK_imag[j][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[signal][HF]
+    c3_KK_imag[j][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
+  }
+//end of K0s-K0s
 
-  c3_KK_real[0][1][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
-  c3_KK_real[0][1][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re());
-  c3_KK_imag[0][1][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re());//[bkg][HF]
-  c3_KK_imag[0][1][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re());
 
 // //Lambda-K0s
 //   TComplex N_2_sig_LK, D_2_sig_LK, N_2_bkg_LK, D_2_bkg_LK;
@@ -857,25 +881,25 @@ CVEandMixedHarmonics::beginJob()
     }    
   }
 
-  for(int sign = 0; sign < 3; sign++){
-    for(int sig = 0; sig < 4; sig++){
-      for(int HF = 0; HF < 2; HF++){
+  for(int sig = 0; sig < 4; sig++){
+    for(int HF = 0; HF < 2; HF++){
+
+      c3_KK_real[sig][HF] = fs->make<TH1D>(Form("c3_KK_real_%d_%d", sig, HF), ";c3", 20000,-1,1);
+      c3_KK_imag[sig][HF] = fs->make<TH1D>(Form("c3_KK_imag_%d_%d", sig, HF), ";c3", 20000,-1,1);
+
+      c3_KH_real[sign][sig][HF] = fs->make<TH1D>(Form("c3_KH_real_%d_%d", sig, HF), ";c3", 20000,-1,1);
+      c3_KH_imag[sign][sig][HF] = fs->make<TH1D>(Form("c3_KH_imag_%d_%d", sig, HF), ";c3", 20000,-1,1);
+      
+      for(int sign = 0; sign < 3; sign++){
 
         c3_LL_real[sign][sig][HF] = fs->make<TH1D>(Form("c3_LL_real_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
         c3_LL_imag[sign][sig][HF] = fs->make<TH1D>(Form("c3_LL_imag_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
-
-        c3_KK_real[sign][sig][HF] = fs->make<TH1D>(Form("c3_KK_real_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
-        c3_KK_imag[sign][sig][HF] = fs->make<TH1D>(Form("c3_KK_imag_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
 
         c3_LK_real[sign][sig][HF] = fs->make<TH1D>(Form("c3_LK_real_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
         c3_LK_imag[sign][sig][HF] = fs->make<TH1D>(Form("c3_LK_imag_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
 
         c3_LH_real[sign][sig][HF] = fs->make<TH1D>(Form("c3_LH_real_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
         c3_LH_imag[sign][sig][HF] = fs->make<TH1D>(Form("c3_LH_imag_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
-
-        c3_KH_real[sign][sig][HF] = fs->make<TH1D>(Form("c3_KH_real_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
-        c3_KH_imag[sign][sig][HF] = fs->make<TH1D>(Form("c3_KH_imag_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
-
       }
     }
   }
