@@ -68,6 +68,7 @@ CVEandMixedHarmonics::CVEandMixedHarmonics(const edm::ParameterSet& iConfig)
   offlineChi2_ = iConfig.getUntrackedParameter<double>("offlineChi2", 0.0);
   offlinenhits_ = iConfig.getUntrackedParameter<double>("offlinenhits", 0.0);
 
+  v0EtaTracker_ = iConfig.getUntrackedParameter<double>("v0EtaTracker",2.4);
   v0sNhitsCut_ = iConfig.getUntrackedParameter<double>("v0sNhitsCut",3.0);
   dcaCut_ = iConfig.getUntrackedParameter<double>("dcaCut",1.0);
   decayLengthCut_ = iConfig.getUntrackedParameter<double>("decayLengthCut",5.0);
@@ -75,8 +76,10 @@ CVEandMixedHarmonics::CVEandMixedHarmonics(const edm::ParameterSet& iConfig)
   lambdaMassWindow_ = iConfig.getUntrackedParameter<double>("lambdaMassWindow",0.01);
   ksMassWindow_ = iConfig.getUntrackedParameter<double>("ksMassWindow",0.02);
   
-  v0sPtLow_ = iConfig.getUntrackedParameter<double>("v0sPtLow");
-  v0sPtHigh_ = iConfig.getUntrackedParameter<double>("v0sPtHigh");
+  K0sPtLow_ = iConfig.getUntrackedParameter<double>("K0sPtLow");
+  K0sPtHigh_ = iConfig.getUntrackedParameter<double>("K0sPtHigh");
+  LamPtLow_ = iConfig.getUntrackedParameter<double>("LamPtLow");
+  LamPtHigh_ = iConfig.getUntrackedParameter<double>("LamPtHigh");
 
   etaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("etaBins");
   dEtaBins_ = iConfig.getUntrackedParameter<std::vector<double>>("dEtaBins");
@@ -1101,10 +1104,11 @@ CVEandMixedHarmonics::passV0sCut(const reco::VertexCompositeCandidate & trk, con
   if( dlos < decayLengthCut_ ) return false;
   if( agl < pointingAngleCut_ ) return false;
   if( fabs(dzos1) < dcaCut_ || fabs(dzos2) < dcaCut_ || fabs(dxyos1) < dcaCut_ || fabs(dxyos2) < dcaCut_ ) return false;
-  if( fabs(v0s_eta) > 2.4 ) return false;
-  if( v0s_pt < v0sPtLow_ || v0s_pt > v0sPtHigh_ ) return false;
+  if( fabs(v0s_eta) > v0EtaTracker_ ) return false;
 
   if( isK0s == true ){
+
+    if( v0s_pt < K0sPtLow_ || v0s_pt > K0sPtHigh_ ) return false;
 
     double temp = Mass_ks(px_dau1,py_dau1,pz_dau1,px_dau2,py_dau2,pz_dau2);
     double temp_e = Mass_e(px_dau1,py_dau1,pz_dau1,px_dau2,py_dau2,pz_dau2);
@@ -1115,6 +1119,8 @@ CVEandMixedHarmonics::passV0sCut(const reco::VertexCompositeCandidate & trk, con
     if ( temp_e < 0.015) return false;
   }
   else{
+
+    if( v0s_pt < LamPtLow_ || v0s_pt > LamPtHigh_ ) return false;
 
     double temp = Mass_la(px_dau1,py_dau1,pz_dau1,px_dau2,py_dau2,pz_dau2);
     double temp_e = Mass_e(px_dau1,py_dau1,pz_dau1,px_dau2,py_dau2,pz_dau2);

@@ -247,6 +247,7 @@ class CVEandMixedHarmonics : public edm::EDAnalyzer {
       double offlineChi2_;
       double offlinenhits_;
 
+      double v0EtaTracker_;
       double v0sNhitsCut_;
       double dcaCut_;
       double decayLengthCut_;
@@ -254,8 +255,10 @@ class CVEandMixedHarmonics : public edm::EDAnalyzer {
       double lambdaMassWindow_;
       double ksMassWindow_;
 
-      double v0sPtLow_;
-      double v0sPtHigh_;
+      double K0sPtLow_;
+      double K0sPtHigh_;
+      double LamPtLow_;
+      double LamPtHigh_;
 
       bool useCentrality_;
       bool reverseBeam_;
