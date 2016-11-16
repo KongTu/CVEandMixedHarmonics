@@ -975,16 +975,16 @@ CVEandMixedHarmonics::beginJob()
   trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
   trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
 
-  c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
-  c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
-  c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 20000,-1,1);
+  c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 2000,-1,1);
+  c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 2000,-1,1);
+  c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 2000,-1,1);
   
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
       for(int HF = 0; HF < 2; HF++){
 
-        c3_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_real_%d_%d_%d", deta, sign, HF),";c3", 20000,-1,1);
-        c3_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_imag_%d_%d_%d", deta, sign, HF),";c3", 20000,-1,1);
+        c3_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_real_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
+        c3_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_imag_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
 
       }
     }    
@@ -993,22 +993,22 @@ CVEandMixedHarmonics::beginJob()
   for(int sig = 0; sig < 4; sig++){
     for(int HF = 0; HF < 2; HF++){
 
-      c3_KK_real[sig][HF] = fs->make<TH1D>(Form("c3_KK_real_%d_%d", sig, HF), ";c3", 20000,-1,1);
-      c3_KK_imag[sig][HF] = fs->make<TH1D>(Form("c3_KK_imag_%d_%d", sig, HF), ";c3", 20000,-1,1);
+      c3_KK_real[sig][HF] = fs->make<TH1D>(Form("c3_KK_real_%d_%d", sig, HF), ";c3", 2000,-1,1);
+      c3_KK_imag[sig][HF] = fs->make<TH1D>(Form("c3_KK_imag_%d_%d", sig, HF), ";c3", 2000,-1,1);
 
-      c3_KH_real[sig][HF] = fs->make<TH1D>(Form("c3_KH_real_%d_%d", sig, HF), ";c3", 20000,-1,1);
-      c3_KH_imag[sig][HF] = fs->make<TH1D>(Form("c3_KH_imag_%d_%d", sig, HF), ";c3", 20000,-1,1);
+      c3_KH_real[sig][HF] = fs->make<TH1D>(Form("c3_KH_real_%d_%d", sig, HF), ";c3", 2000,-1,1);
+      c3_KH_imag[sig][HF] = fs->make<TH1D>(Form("c3_KH_imag_%d_%d", sig, HF), ";c3", 2000,-1,1);
       
       for(int sign = 0; sign < 3; sign++){
 
-        c3_LL_real[sign][sig][HF] = fs->make<TH1D>(Form("c3_LL_real_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
-        c3_LL_imag[sign][sig][HF] = fs->make<TH1D>(Form("c3_LL_imag_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
+        c3_LL_real[sign][sig][HF] = fs->make<TH1D>(Form("c3_LL_real_%d_%d_%d", sign, sig, HF), ";c3", 2000,-1,1);
+        c3_LL_imag[sign][sig][HF] = fs->make<TH1D>(Form("c3_LL_imag_%d_%d_%d", sign, sig, HF), ";c3", 2000,-1,1);
 
-        c3_LK_real[sign][sig][HF] = fs->make<TH1D>(Form("c3_LK_real_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
-        c3_LK_imag[sign][sig][HF] = fs->make<TH1D>(Form("c3_LK_imag_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
+        c3_LK_real[sign][sig][HF] = fs->make<TH1D>(Form("c3_LK_real_%d_%d_%d", sign, sig, HF), ";c3", 2000,-1,1);
+        c3_LK_imag[sign][sig][HF] = fs->make<TH1D>(Form("c3_LK_imag_%d_%d_%d", sign, sig, HF), ";c3", 2000,-1,1);
 
-        c3_LH_real[sign][sig][HF] = fs->make<TH1D>(Form("c3_LH_real_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
-        c3_LH_imag[sign][sig][HF] = fs->make<TH1D>(Form("c3_LH_imag_%d_%d_%d", sign, sig, HF), ";c3", 20000,-1,1);
+        c3_LH_real[sign][sig][HF] = fs->make<TH1D>(Form("c3_LH_real_%d_%d_%d", sign, sig, HF), ";c3", 2000,-1,1);
+        c3_LH_imag[sign][sig][HF] = fs->make<TH1D>(Form("c3_LH_imag_%d_%d_%d", sign, sig, HF), ";c3", 2000,-1,1);
       }
     }
   }
