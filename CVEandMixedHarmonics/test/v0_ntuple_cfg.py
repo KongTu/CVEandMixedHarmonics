@@ -27,7 +27,7 @@ process.ana = cms.EDAnalyzer("V0AnalyzerSimpleNtuple",
                 genParticleSrc = cms.InputTag("genParticles"),
                 generalV0_ks = cms.InputTag("generalV0CandidatesNew:Kshort"),
                 generalV0_la = cms.InputTag("generalV0CandidatesNew:Lambda"),
-                doGenParticle = cms.bool(False),
+                doGenParticle = cms.untracked.bool(False),
 
 )
 
