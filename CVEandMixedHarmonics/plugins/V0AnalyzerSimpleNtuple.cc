@@ -134,14 +134,7 @@ private:
     TNtuple* V0AnalyzerSimpleNtuple_la;
     TNtuple* V0AnalyzerSimpleNtuple_genks;
     TNtuple* V0AnalyzerSimpleNtuple_genla;
-    
-    double etaMin_trg_;
-    double etaMax_trg_;
-    double etaMin_ass_;
-    double etaMax_ass_;
-    double multMax_;
-    double multMin_;
-    int bkgFactor_;
+
     bool doGenParticle_;
 
     edm::EDGetTokenT<edm::View<reco::Track> > trackSrc_;
@@ -175,14 +168,6 @@ V0AnalyzerSimpleNtuple::V0AnalyzerSimpleNtuple(const edm::ParameterSet& iConfig)
 
     generalV0_ks_ = consumes<reco::VertexCompositeCandidateCollection>(iConfig.getParameter<edm::InputTag>("generalV0_ks"));
     generalV0_la_ = consumes<reco::VertexCompositeCandidateCollection>(iConfig.getParameter<edm::InputTag>("generalV0_la"));
-
-    etaMin_trg_ = iConfig.getUntrackedParameter<double>("etaMin_trg", -2.4);
-    etaMax_trg_ = iConfig.getUntrackedParameter<double>("etaMax_trg", 2.4);
-    etaMin_ass_ = iConfig.getUntrackedParameter<double>("etaMin_ass", -2.4);
-    etaMax_ass_ = iConfig.getUntrackedParameter<double>("etaMax_ass", 2.4);
-    multMax_ = iConfig.getUntrackedParameter<double>("multMax", 220);
-    multMin_ = iConfig.getUntrackedParameter<double>("multMin", 185);
-    bkgFactor_ = iConfig.getUntrackedParameter<int>("bkgFactor", 10);
 
     doGenParticle_ = iConfig.getUntrackedParameter<bool>("doGenParticle", false);
 
@@ -224,6 +209,26 @@ iSetup)
 
     edm::Handle<edm::View<reco::Track>> tracks;
     iEvent.getByToken(trackSrc_, tracks);
+
+    double nMult_ass_good = 0.0;
+    for(unsigned it = 0; it < tracks->size(); it++){
+
+        const reco::Track & trk = (*tracks)[it];
+
+        math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
+
+        double dzvtx = trk.dz(bestvtx);
+        double dxyvtx = trk.dxy(bestvtx);
+        double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
+        double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
+        
+        if(!trk.quality(reco::TrackBase::highPurity)) continue;
+        if(fabs(trk.ptError())/trk.pt() > 0.1 ) continue;
+        if(fabs(dzvtx/dzerror) > 3.0 ) continue;
+        if(fabs(dxyvtx/dxyerror) > 3.0 ) continue;
+        if( fabs(trk.eta()) < 2.4 && trk.pt() > 0.4 ){nMult_ass_good++;}// NtrkOffline        
+
+    }
 
     edm::Handle<reco::VertexCompositeCandidateCollection> v0candidates_ks;
     iEvent.getByToken(generalV0_ks_,v0candidates_ks);
@@ -348,7 +353,7 @@ iSetup)
         double dxyos2 = dxybest2/dxyerror2;
         
         //Fill
-        V0AnalyzerSimpleNtuple_ks->Fill(pt,eta,mass,dzos1,dzos2,dxyos1,dxyos2,dau1_Nhits,dau2_Nhits,dlos,agl);
+        V0AnalyzerSimpleNtuple_ks->Fill(pt,eta,mass,nMult_ass_good,dzos1,dzos2,dxyos1,dxyos2,dau1_Nhits,dau2_Nhits,dlos,agl);
             
     }
     
@@ -420,7 +425,7 @@ iSetup)
         double dxyos2 = dxybest2/dxyerror2;
         
         //Fill
-        V0AnalyzerSimpleNtuple_la->Fill(pt,eta,mass,dzos1,dzos2,dxyos1,dxyos2,dau1_Nhits,dau2_Nhits,dlos,agl);
+        V0AnalyzerSimpleNtuple_la->Fill(pt,eta,mass,nMult_ass_good,dzos1,dzos2,dxyos1,dxyos2,dau1_Nhits,dau2_Nhits,dlos,agl);
         
     }
 
@@ -436,8 +441,8 @@ V0AnalyzerSimpleNtuple::beginJob()
         
     TH1D::SetDefaultSumw2();
     
-    V0AnalyzerSimpleNtuple_ks = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_ks","V0AnalyzerSimpleNtuple_ks","pt:eta:mass:trkDCA1z:trkDCA2z:trkDCA1xy:trkDCA2xy:trkNHits1:trkNHits2:L:PAngle");
-    V0AnalyzerSimpleNtuple_la = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_la","V0AnalyzerSimpleNtuple_la","pt:eta:mass:trkDCA1z:trkDCA2z:trkDCA1xy:trkDCA2xy:trkNHits1:trkNHits2:L:PAngle");
+    V0AnalyzerSimpleNtuple_ks = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_ks","V0AnalyzerSimpleNtuple_ks","pt:eta:mass:ntrk:trkDCA1z:trkDCA2z:trkDCA1xy:trkDCA2xy:trkNHits1:trkNHits2:L:PAngle");
+    V0AnalyzerSimpleNtuple_la = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_la","V0AnalyzerSimpleNtuple_la","pt:eta:mass:ntrk:trkDCA1z:trkDCA2z:trkDCA1xy:trkDCA2xy:trkNHits1:trkNHits2:L:PAngle");
 
     if( doGenParticle_ ){
 
