@@ -20,7 +20,7 @@ process.load('HeavyIonsAnalysis.Configuration.collisionEventSelection_cff')
 process.load('Configuration.EventContent.EventContentHeavyIons_cff')
 process.GlobalTag.globaltag = '75X_dataRun2_PromptHI_v3'
 
-process.ana = EDAnalyzer("V0AnalyzerSimpleNtuple",
+process.ana = cms.EDAnalyzer("V0AnalyzerSimpleNtuple",
 
                 trackSrc = cms.InputTag("generalTracks"),
                 vertexSrc = cms.InputTag("offlinePrimaryVertices"),
