@@ -5,8 +5,8 @@
 
 using namespace std;
 
-double PbPb_centralityBinCenter[] = {35, 45, 55, 65, 75};
-int mult_ = 1;
+double PbPb_centralityBinCenter[] = {35, 45, 55, 65, 75, 85};
+int mult_ = 6;
 
 double V0sV0s_correlator( double gamma_obs, double gamma_sig_bkg, double gamma_bkg_sig, double gamma_bkg_bkg, double f_sig_1, double f_sig_2){
 
@@ -39,8 +39,8 @@ Fit V0s under-fly
 	TH3D* la_mass_2[6];
 
 	TH1D* ks_mass_1D[6];
-	TH1D* la_mass_1_1D[6];
-	TH1D* la_mass_2_1D[6];
+	TH1D* la_mass_1D_1[6];
+	TH1D* la_mass_1D_2[6];
 	
 	for(int i = 0; i < mult_; i++){
 
@@ -66,14 +66,15 @@ Fit V0s under-fly
 	}
 	double f_sig_Lam[6];
 	TCanvas* c2 = new TCanvas("c2","c2",800,800);
+	c2->Divide(3,2);
 	for(int i = 0; i < mult_; i++){
-
+		c2->cd(i+1);
 		vector<double> fitParameters_Lam;
 		InitialFit_la(c2, la_mass_1D_1[i], 1, 1, 1, fitParameters_Lam);
 		f_sig_Lam[i] = fitParameters_Lam[5];
 	}
 
-	TH1D* QaQb[5]; TH1D* QaQc[5]; TH1D* QcQb[5];
+	TH1D* QaQb[6]; TH1D* QaQc[6]; TH1D* QcQb[6];
 
 	for(int mult = 0; mult < mult_; mult++){
 
@@ -189,15 +190,15 @@ Setting up the TGraphs
 		gr1_p[i] = new TGraphErrors(6);
 		gr1_p[i]->SetName(Form("la_la_p_%d", i));
 
+	}
+
+	for(int i = 0; i < 2; i++){
+
 		gr3_Pb[i] = new TGraphErrors(6);
 		gr3_Pb[i]->SetName(Form("la_ks_Pb_%d", i));
 
 		gr3_p[i] = new TGraphErrors(6);
 		gr3_p[i]->SetName(Form("la_ks_p_%d", i));
-
-	}
-
-	for(int i = 0; i < 2; i++){
 
 		gr4_Pb[i] = new TGraphErrors(6);
 		gr4_Pb[i]->SetName(Form("la_h_Pb_%d", i));
@@ -230,14 +231,14 @@ Filling the TGraphs with place-holder errors
 			double Pb_error = c3_LL_error[mult][i][0][0];
 
 			gr1_Pb[i]->SetPoint(mult, PbPb_centralityBinCenter[mult], Pb_value/v2[mult][0]);
-			gr1_Pb[i]->SetPointError(mult, PbPb_centralityBinCenter[mult], Pb_error/v2[mult][0]);
+			gr1_Pb[i]->SetPointError(mult, 0.0, Pb_error/v2[mult][0]);
 
 			//p-going:
 			double p_value = V0sV0s_correlator(c3_LL_value[mult][i][0][1], c3_LL_value[mult][i][1][1], c3_LL_value[mult][i][2][1], c3_LL_value[mult][i][3][1], f_sig_Lam[mult], f_sig_Lam[mult]);
 			double p_error = c3_LL_error[mult][i][0][1];
 
 			gr1_p[i]->SetPoint(mult, PbPb_centralityBinCenter[mult], p_value/v2[mult][1]);
-			gr1_p[i]->SetPointError(mult, PbPb_centralityBinCenter[mult], p_error/v2[mult][1]);
+			gr1_p[i]->SetPointError(mult, 0.0, p_error/v2[mult][1]);
 
 		}
 
@@ -249,14 +250,14 @@ Filling the TGraphs with place-holder errors
 			double Pb_error = c3_LK_error[mult][i][0][0];
 
 			gr3_Pb[i]->SetPoint(mult, PbPb_centralityBinCenter[mult], Pb_value/v2[mult][0]);
-			gr3_Pb[i]->SetPointError(mult, PbPb_centralityBinCenter[mult], Pb_error/v2[mult][0]);
+			gr3_Pb[i]->SetPointError(mult, 0.0, Pb_error/v2[mult][0]);
 
 			//p-going:
 			double p_value = V0sV0s_correlator(c3_LK_value[mult][i][0][1], c3_LK_value[mult][i][1][1], c3_LK_value[mult][i][2][1], c3_LK_value[mult][i][3][1], f_sig_Lam[mult], f_sig_K0s[mult]);
 			double p_error = c3_LK_error[mult][i][0][1];
 
 			gr3_p[i]->SetPoint(mult, PbPb_centralityBinCenter[mult], p_value/v2[mult][1]);
-			gr3_p[i]->SetPointError(mult, PbPb_centralityBinCenter[mult], p_error/v2[mult][1]);
+			gr3_p[i]->SetPointError(mult, 0.0, p_error/v2[mult][1]);
 
 			//lambda-H correlation:
 			//Pb-going:
@@ -264,14 +265,14 @@ Filling the TGraphs with place-holder errors
 			double Pb_error = c3_LH_error[mult][i][0][0];
 
 			gr4_Pb[i]->SetPoint(mult, PbPb_centralityBinCenter[mult], Pb_value/v2[mult][0]);
-			gr4_Pb[i]->SetPointError(mult, PbPb_centralityBinCenter[mult], Pb_error/v2[mult][0]);
+			gr4_Pb[i]->SetPointError(mult, 0.0, Pb_error/v2[mult][0]);
 
 			//p-going:
 			double p_value = V0sH_correlator(c3_LH_value[mult][i][0][1], c3_LH_value[mult][i][1][1], f_sig_K0s[mult]);
 			double p_error = c3_LH_error[mult][i][0][1];
 
 			gr4_p[i]->SetPoint(mult, PbPb_centralityBinCenter[mult], p_value/v2[mult][1]);
-			gr4_p[i]->SetPointError(mult, PbPb_centralityBinCenter[mult], p_error/v2[mult][1]);
+			gr4_p[i]->SetPointError(mult, 0.0, p_error/v2[mult][1]);
 		}
 	
 		//K0s-K0s correlation:
@@ -280,14 +281,14 @@ Filling the TGraphs with place-holder errors
 		double Pb_error = c3_KK_error[mult][0][0];
 
 		gr2_Pb->SetPoint(mult, PbPb_centralityBinCenter[mult], Pb_value/v2[mult][0]);
-		gr2_Pb->SetPointError(mult, PbPb_centralityBinCenter[mult], Pb_error/v2[mult][0]);
+		gr2_Pb->SetPointError(mult, 0.0, Pb_error/v2[mult][0]);
 
 		//p-going:
 		double p_value = V0sV0s_correlator(c3_KK_value[mult][0][1], c3_KK_value[mult][1][1], c3_KK_value[mult][2][1], c3_KK_value[mult][3][1], f_sig_K0s[mult], f_sig_K0s[mult]);
 		double p_error = c3_KK_error[mult][0][1];
 
 		gr2_p->SetPoint(mult, PbPb_centralityBinCenter[mult], p_value/v2[mult][1]);
-		gr2_p->SetPointError(mult, PbPb_centralityBinCenter[mult], p_error/v2[mult][1]);
+		gr2_p->SetPointError(mult, 0.0, p_error/v2[mult][1]);
 
 
 		//K0s-H correlation:
@@ -296,14 +297,14 @@ Filling the TGraphs with place-holder errors
 		double Pb_error = c3_KH_error[mult][0][0];
 
 		gr5_Pb->SetPoint(mult, PbPb_centralityBinCenter[mult], Pb_value/v2[mult][0]);
-		gr5_Pb->SetPointError(mult, PbPb_centralityBinCenter[mult], Pb_error/v2[mult][0]);
+		gr5_Pb->SetPointError(mult, 0.0, Pb_error/v2[mult][0]);
 
 		//p-going:
 		double p_value = V0sH_correlator(c3_KH_value[mult][0][1], c3_KH_value[mult][1][1], f_sig_K0s[mult]);
 		double p_error = c3_KH_error[mult][0][1];
 
 		gr5_p->SetPoint(mult, PbPb_centralityBinCenter[mult], p_value/v2[mult][1]);
-		gr5_p->SetPointError(mult, PbPb_centralityBinCenter[mult], p_error/v2[mult][1]);
+		gr5_p->SetPointError(mult, 0.0, p_error/v2[mult][1]);
 
 		
 	}
