@@ -249,9 +249,15 @@ class CVEandMixedHarmonics : public edm::EDAnalyzer {
 
       double v0EtaTracker_;
       double v0sNhitsCut_;
-      double dcaCut_;
-      double decayLengthCut_;
-      double pointingAngleCut_;
+      
+      double K0s_dcaCut_;
+      double K0s_decayLengthCut_;
+      double K0s_pointingAngleCut_;
+
+      double Lam_dcaCut_;
+      double Lam_decayLengthCut_;
+      double Lam_pointingAngleCut_;
+
       double lambdaMassWindow_;
       double ksMassWindow_;
 
