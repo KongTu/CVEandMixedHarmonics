@@ -347,6 +347,10 @@ where Q_coefficient_power is used in the following names
   TComplex Q_n1_1_Lambda_bkg[2], Q_n2_1_Lambda_bkg[2], Q_n1n2_2_Lambda_bkg[2], Q_0_1_Lambda_bkg[2], Q_0_2_Lambda_bkg[2];
 
 
+  //define K0s and Lambda mass:
+  // double K0sMass = 0.4936;
+  // double LambdaMass = 1.1156;
+
   //filling Q-vectors of K0s
   for(unsigned it=0; it<v0candidates_ks->size(); ++it){ 
 
@@ -363,6 +367,8 @@ where Q_coefficient_power is used in the following names
     ks_mass->Fill(eta, pt, mass, weight);
 
     if( mass < K0sMass+ksMassWindow_ && mass > K0sMass-ksMassWindow_ ){
+
+      cout << "K0sMass: " << K0sMass << endl;
 
       Q_n1_1_K0s_sig += q_vector(n1_, 1, weight, phi);
       Q_n2_1_K0s_sig += q_vector(n2_, 1, weight, phi);
