@@ -49,6 +49,7 @@ CVEandMixedHarmonics::CVEandMixedHarmonics(const edm::ParameterSet& iConfig)
   reverseBeam_ = iConfig.getUntrackedParameter<bool>("reverseBeam");
   doEffCorrection_ = iConfig.getUntrackedParameter<bool>("doEffCorrection");
   useEtaGap_ = iConfig.getUntrackedParameter<bool>("useEtaGap");
+  dopPb_ = iConfig.getUntrackedParameter<bool>("dopPb");
 
   eff_ = iConfig.getUntrackedParameter<int>("eff");
 
@@ -258,7 +259,16 @@ where Q_coefficient_power is used in the following names
     double trkEta = trk.eta();
 
     double weight = 1.0;
-    if( doEffCorrection_ ) { weight = 1.0/effTable[eff_]->GetBinContent( effTable[eff_]->FindBin(trk.eta(), trk.pt()) );}
+    if( doEffCorrection_ ) { 
+
+      if( dopPb_ ){
+        weight = 1.0/effTable_pPb[eff_]->GetBinContent( effTable_pPb[eff_]->FindBin(trk.eta(), trk.pt()) );
+      }
+      else{
+        weight = 1.0/effTable[eff_]->GetBinContent( effTable[eff_]->FindBin(trk.eta(), trk.pt()) );
+      }
+
+    }
 
     if(!trk.quality(reco::TrackBase::highPurity)) continue;
     if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
@@ -971,6 +981,12 @@ CVEandMixedHarmonics::beginJob()
   TFile f1(fip1.fullPath().c_str(),"READ");
   for(int i = 0; i < 5; i++){
      effTable[i] = (TH2D*)f1.Get(Form("rTotalEff3D_%d",i));
+  }
+
+  edm::FileInPath fip2("CVEandMixedHarmonics/CVEandMixedHarmonics/data/Hijing_8TeV_dataBS.root");
+  TFile f2(fip2.fullPath().c_str(),"READ");
+  for(int i = 0; i < 1; i++){
+     effTable_pPb[i] = (TH2D*)f2.Get(Form("rTotalEff3D_%d",i));
   }
 
   ks_mass = fs->make<TH3D>("ks_mass",";#eta;pT(GeV/c);mass(GeV/c^{2})",70,-3.5,3.5,120,0,12,360,0.44,0.56);
