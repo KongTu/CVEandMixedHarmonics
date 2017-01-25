@@ -187,6 +187,7 @@ class CVEandMixedHarmonics : public edm::EDAnalyzer {
 
       //correction table
       TH2D* effTable[5];
+      TH2D* effTable_pPb[5];
 
       TH1D* c2_ab;
       TH1D* c2_ac;
@@ -270,6 +271,7 @@ class CVEandMixedHarmonics : public edm::EDAnalyzer {
       bool reverseBeam_;
       bool doEffCorrection_;
       bool useEtaGap_;
+      bool dopPb_;
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
