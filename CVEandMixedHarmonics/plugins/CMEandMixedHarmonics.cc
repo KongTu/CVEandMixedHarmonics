@@ -538,13 +538,13 @@ CMEandMixedHarmonics::beginJob()
     ptBinsArray[i] = ptBins_[i];
   }
 
-  edm::FileInPath fip1("CMEandMixedHarmonics/CMEandMixedHarmonics/data/Hydjet_eff_mult_v1.root");
+  edm::FileInPath fip1("CVEandMixedHarmonics/CVEandMixedHarmonics/data/Hydjet_eff_mult_v1.root");
   TFile f1(fip1.fullPath().c_str(),"READ");
   for(int i = 0; i < 5; i++){
      effTable[i] = (TH2D*)f1.Get(Form("rTotalEff3D_%d",i));
   }
 
-  edm::FileInPath fip2("CMEandMixedHarmonics/CMEandMixedHarmonics/data/Hijing_8TeV_dataBS.root");
+  edm::FileInPath fip2("CVEandMixedHarmonics/CVEandMixedHarmonics/data/Hijing_8TeV_dataBS.root");
   TFile f2(fip2.fullPath().c_str(),"READ");
   for(int i = 0; i < 1; i++){
      effTable_pPb[i] = (TH2D*)f2.Get(Form("rTotalEff3D_%d",i));
