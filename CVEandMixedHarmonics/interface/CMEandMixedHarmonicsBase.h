@@ -192,6 +192,7 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       TH1D* trk_eta;
       TH1D* cbinHist;
       TH1D* q2_mag;
+      TH1D* Ntrk_q2;
 
       int Nmin_;
       int Nmax_;

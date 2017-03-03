@@ -184,6 +184,40 @@ CMEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
 
 /*
+q2 calculation at HF and selections:
+*/
+
+  double qHFcos = 0.;
+  double qHFsin = 0.;
+  double qHF_count = 0.;
+  for(unsigned i = 0; i < towers->size(); ++i){
+
+          const CaloTower & hit= (*towers)[i];
+
+          double caloEta = hit.eta();
+          double caloPhi = hit.phi();
+          double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
+          if( reverseBeam_ ) caloEta = -hit.eta();
+
+    if( caloEta < 3.0 || caloEta > 5.0 ) continue;
+
+    qHFcos += w*cos(2*caloPhi);
+    qHFsin += w*sin(2*caloPhi);
+    qHF_count += w;
+
+  }
+
+  double q2HF_real = qHFcos/qHF_count;
+  double q2HF_imag = qHFsin/qHF_count;
+  double magnitude_HF = sqrt(q2HF_imag*q2HF_imag + q2HF_real*q2HF_real);
+
+  if( magnitude_HF > q2max_ || magnitude_HF < q2min_ ) return;//q2 selections. 
+  
+  q2_mag->Fill( magnitude_HF );
+  Ntrk_q2->Fill(nTracks);
+
+
+/*
 define all the ingredients for CME correlator (gamma) <cos(n1*phi_1 + n2*phi_2 + n3*phi_3)>
 and delta correlator <cos(phi_1 - phi_2)> ,
 where Q_coefficient_power (P_coefficient_power) is used in the following names 
@@ -520,6 +554,9 @@ CMEandMixedHarmonics::beginJob()
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
   trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
   trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
+  q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
+  Ntrk_q2 = fs->make<TH1D>("Ntrk_q2",";Ntrk",5000,0,5000);
+
 
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
