@@ -184,17 +184,26 @@ CMEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
 
 /*
-define all the ingredients for CME correlator <cos(n1*phi_1 + n2*phi_2 + n3*phi_3)> ,
-where Q_coefficient_power is used in the following names 
+define all the ingredients for CME correlator (gamma) <cos(n1*phi_1 + n2*phi_2 + n3*phi_3)>
+and delta correlator <cos(phi_1 - phi_2)> ,
+where Q_coefficient_power (P_coefficient_power) is used in the following names 
  */
 
-//2-particle correlator (charge dependent for 0 and 1, and charge independent for 2 in the second argument)
+//3-particle correlator q-vectors (charge dependent for 0 and 1, and charge independent for 2 in the second argument)
 
   TComplex Q_n1_1[NetaBins][2], Q_n2_1[NetaBins][2];
   
   TComplex Q_n1n2_2[NetaBins][2];
   
   TComplex Q_0_1[NetaBins][2], Q_0_2[NetaBins][2];
+
+//2-particle correlator q-vectors
+
+  TComplex P_n1_1[NetaBins][2], P_n2_1[NetaBins][2];
+
+  TComplex P_n1n2_2[NetaBins][2];
+
+  TComplex P_0_1[NetaBins][2], P_0_2[NetaBins][2];
 
 
 //Scalar product, charge independent, |eta|<2.4
@@ -259,6 +268,7 @@ where Q_coefficient_power is used in the following names
 
         if( trk.charge() == +1 ){//positive charge
 
+          //3p:
           Q_n1_1[eta][0] += q_vector(n1_, 1, weight, phi);
           Q_n2_1[eta][0] += q_vector(n2_, 1, weight, phi);
 
@@ -266,6 +276,17 @@ where Q_coefficient_power is used in the following names
 
           Q_0_1[eta][0] += q_vector(0, 1, weight, phi);
           Q_0_2[eta][0] += q_vector(0, 2, weight, phi);
+
+          //2p: (similar way but be careful of the order of harmonics)
+
+          P_n1_1[eta][0] += q_vector(n1_, 1, weight, phi);
+          P_n2_1[eta][0] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
+
+          P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, weight, phi);
+
+          P_0_1[eta][0] += q_vector(0, 1, weight, phi);
+          P_0_2[eta][0] += q_vector(0, 2, weight, phi);
+
 
         }
         if( trk.charge() == -1 ){//negative charge
@@ -277,6 +298,16 @@ where Q_coefficient_power is used in the following names
 
           Q_0_1[eta][1] += q_vector(0, 1, weight, phi);
           Q_0_2[eta][1] += q_vector(0, 2, weight, phi);
+
+          //2p: (similar way but be careful of the order of harmonics)
+
+          P_n1_1[eta][1] += q_vector(n1_, 1, weight, phi);
+          P_n2_1[eta][1] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
+
+          P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, weight, phi);
+
+          P_0_1[eta][1] += q_vector(0, 1, weight, phi);
+          P_0_2[eta][1] += q_vector(0, 2, weight, phi);
 
         }
       }
@@ -402,6 +433,53 @@ calculate the 3-particles correlator with the charged-particles
     }
   }
 
+/*
+calculate the 2-particles correlator with the charged-particles
+ */
+
+  for(int ieta = 0; ieta < NetaBins; ieta++){
+    for(int jeta = 0; jeta < NetaBins; jeta++){
+
+      double deltaEta = fabs( etaBins_[ieta] - etaBins_[jeta] );
+
+      for(int deta = 0; deta < NdEtaBins; deta++){
+        if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
+          
+          TComplex N_2;
+          TComplex D_2;
+
+          //same sign correlator:
+          for(int sign = 0; sign < 2; sign++){
+            if( ieta == jeta ){
+
+              N_2 = P_n1_1[ieta][sign]*P_n2_1[ieta][sign] - P_n1n2_2[ieta][sign];
+              D_2 = P_0_1[ieta][sign]*P_0_1[ieta][sign] - P_0_2[ieta][sign];
+
+            }
+            else{
+              
+              N_2 = P_n1_1[ieta][sign]*P_n2_1[jeta][sign];
+              D_2 = P_0_1[ieta][sign]*P_0_1[jeta][sign];
+
+            }        
+
+            c2_real[deta][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
+            c2_imag[deta][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+
+          }
+          //opposite sign correlator:
+          N_2 = P_n1_1[ieta][0]*P_n2_1[jeta][1];
+          D_2 = P_0_1[ieta][0]*P_0_1[jeta][1];
+
+          c2_real[deta][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
+          c2_imag[deta][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+
+        }
+      }
+    }
+  }
+
+
 }
 // ------------ method called once each job just before starting event loop  ------------
 void 
@@ -455,6 +533,14 @@ CMEandMixedHarmonics::beginJob()
         c3_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_imag_%d_%d_%d", deta, sign, HF),";c3", 20000,-1,1);
 
       }
+    }    
+  }
+
+  for(int deta = 0; deta < NdEtaBins; deta++){
+    for(int sign = 0; sign < 3; sign++){
+
+      c2_real[deta][sign] = fs->make<TH1D>(Form("c2_real_%d_%d", deta, sign),";c2", 20000,-1,1);
+      c2_imag[deta][sign] = fs->make<TH1D>(Form("c2_imag_%d_%d", deta, sign),";c2", 20000,-1,1);
     }    
   }
 
