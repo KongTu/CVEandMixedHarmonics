@@ -214,6 +214,9 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       
       double ptLow_;
       double ptHigh_;
+
+      double q2max_;
+      double q2min_;
       
       double offlineptErr_;
       double offlineDCA_;

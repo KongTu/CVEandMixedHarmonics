@@ -61,6 +61,9 @@ CMEandMixedHarmonics::CMEandMixedHarmonics(const edm::ParameterSet& iConfig)
   ptLow_ = iConfig.getUntrackedParameter<double>("ptLow");
   ptHigh_ = iConfig.getUntrackedParameter<double>("ptHigh");
 
+  q2max_ = iConfig.getUntrackedParameter<double>("q2max");
+  q2min_ = iConfig.getUntrackedParameter<double>("q2min");
+
   offlineptErr_ = iConfig.getUntrackedParameter<double>("offlineptErr", 0.0);
   offlineDCA_ = iConfig.getUntrackedParameter<double>("offlineDCA", 0.0);
   offlineChi2_ = iConfig.getUntrackedParameter<double>("offlineChi2", 0.0);
