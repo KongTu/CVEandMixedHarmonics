@@ -20,7 +20,7 @@ process.load("SimGeneral.MixingModule.mixNoPU_cfi")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('HeavyIonsAnalysis.Configuration.collisionEventSelection_cff')
 process.load('Configuration.EventContent.EventContentHeavyIons_cff')
-process.GlobalTag.globaltag = '75X_dataRun2_PromptHI_v3'
+process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v15'
 
 process.PAprimaryVertexFilter = cms.EDFilter("VertexSelector",
     src = cms.InputTag("offlinePrimaryVertices"),
@@ -39,28 +39,35 @@ process.NoScraping = cms.EDFilter("FilterOutScraping",
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
-#'/store/hidata/HIRun2015/HIMinimumBias5/AOD/02May2016-v1/10000/006477CE-3326-E611-8C08-003048F317E6.root'
-'file:/afs/cern.ch/work/z/zhchen/public/PbPb_MB_10.root'
+#'root://cmsxrootd.fnal.gov//store/hidata/PARun2016C/PAHighMultiplicity7/AOD/PromptReco-v1/000/285/480/00000/02BA31E5-08AF-E611-AAA3-FA163ED00180.root'
+#'root://cmsxrootd.fnal.gov//store/hidata/PARun2016C/PAMinimumBias1/AOD/PromptReco-v1/000/285/480/00000/32A34AA3-2CAF-E611-9C0D-FA163E8F093D.root'
+'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity7/RecoSkim2016_Pbp_V0Cascade_v1/170301_191341/0000/pPb_HM_1.root'
 )
 )
 
+process.load("RecoVertex.V0Producer.generalV0Candidates_cff")
+process.generalV0CandidatesNew = process.generalV0Candidates.clone()
+process.load("TrackingCode.pileUpFilter.pileUpFilter_cff")
 process.load("CVEandMixedHarmonics.CVEandMixedHarmonics.cveandmixedharmonics_cfi")
 
 #define the cuts
-process.ana_m3n2 = process.ana.clone()
-
-process.ana_m3n2.Nmin = 60
-process.ana_m3n2.Nmax = 80
-process.ana_m3n2.useCentrality = True
-process.ana_m3n2.doEffCorrection = True
-process.ana_m3n2.n1 = +3
-process.ana_m3n2.n2 = +2
-process.ana_m3n2.n3 = -3
-process.ana_m3n2.n4 = -2
-
+process.ana.useCentrality = False
+process.ana.doEffCorrection = True
+#process.ana.generalV0_ksName = 'generalV0Candidates:Kshort'
+#process.ana.generalV0_laName = 'generalV0Candidates:Lambda'
+#process.ana.Nmin = 320
+#process.ana.Nmax = 1000
+process.ana.etaHighHF = 5.0
+process.ana.etaLowHF = 3.0
+process.ana.n1 = +1
+process.ana.n2 = +1
+process.ana.n3 = -2
 
 process.TFileService = cms.Service("TFileService",fileName = cms.string("test.root"))
-process.p = cms.Path(  #process.hfCoincFilter3 *
-                       #process.PAprimaryVertexFilter *
-                       #process.NoScraping *
-                        process.ana_m3n2)
+process.p = cms.Path(  process.hfCoincFilter *
+                       process.PAprimaryVertexFilter *
+                       process.NoScraping *
+                       process.hltHM *
+		       process.olvFilter_pPb8TeV_dz1p0 *
+		       #process.generalV0CandidatesNew *
+ 		       process.ana)
