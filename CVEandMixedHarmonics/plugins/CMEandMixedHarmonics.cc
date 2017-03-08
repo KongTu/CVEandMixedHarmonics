@@ -569,6 +569,10 @@ CMEandMixedHarmonics::beginJob()
   for(unsigned i = 0; i < ptBins_.size(); i++){
     ptBinsArray[i] = ptBins_[i];
   }
+  double dEtaBinsArray[100];
+  for(unsigned i = 0; i < dEtaBins_.size(); i++){
+    dEtaBinsArray[i] = dEtaBins_[i]-0.0001;
+  }
 
   edm::FileInPath fip1("CVEandMixedHarmonics/CVEandMixedHarmonics/data/Hydjet_eff_mult_v1.root");
   TFile f1(fip1.fullPath().c_str(),"READ");
