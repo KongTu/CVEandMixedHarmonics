@@ -247,6 +247,10 @@ where Q_coefficient_power (P_coefficient_power) is used in the following names
 
   TComplex Q_n3_trk, Q_0_trk;
 
+//Tracker v2
+
+  TComplex Q_nC_trk[NetaBins], Q_0_nC_trk[NetaBins];
+
 
 //------------------------------------------------------------------
 
@@ -302,6 +306,9 @@ where Q_coefficient_power (P_coefficient_power) is used in the following names
 
     for(int eta = 0; eta < NetaBins; eta++){
       if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
+
+        Q_nC_trk[eta] += q_vector(2, 1, weight, phi);
+        Q_0_nC_trk[eta] += q_vector(0, 1, weight, phi);
 
         if( trk.charge() == +1 ){//positive charge
 
@@ -381,7 +388,6 @@ where Q_coefficient_power (P_coefficient_power) is used in the following names
           else{continue;}
   }
 
-
 /*
 calculate the Scalar product denominator, v_{2,c}
 */
@@ -411,6 +417,17 @@ calculate the 3-particles correlator with the charged-particles
     for(int jeta = 0; jeta < NetaBins; jeta++){
 
       double deltaEta = fabs( etaBins_[ieta] - etaBins_[jeta] );
+
+      if( deltaEta > 2.0 ){//calculate the tracker v2 with a gap of 2
+
+          TComplex N_2;
+          TComplex D_2;
+
+          N_2 = Q_nC_trk[ieta]*TComplex::Conjugate(Q_nC_trk[jeta]);
+          D_2 = Q_0_nC_trk[ieta]*Q_0_nC_trk[jeta];
+
+          c2_tracker->Fill(N_2.Re()/D_2.Re(), D_2.Re());
+      }
 
       for(int deta = 0; deta < NdEtaBins; deta++){
         if( deltaEta > dEtaBinsArray[deta] && deltaEta < dEtaBinsArray[deta+1] ){
@@ -564,6 +581,9 @@ CMEandMixedHarmonics::beginJob()
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
   c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 20000,-1,1);
+
+  v2_tracker = fs->make<TH1D>("v2_tracker",";c2_tracker", 20000,-1,1);
+
   
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
