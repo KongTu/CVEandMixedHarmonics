@@ -582,7 +582,7 @@ CMEandMixedHarmonics::beginJob()
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
   c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 20000,-1,1);
 
-  v2_tracker = fs->make<TH1D>("v2_tracker",";c2_tracker", 20000,-1,1);
+  c2_tracker = fs->make<TH1D>("c2_tracker",";c2_tracker", 20000,-1,1);
 
   
   for(int deta = 0; deta < NdEtaBins; deta++){
