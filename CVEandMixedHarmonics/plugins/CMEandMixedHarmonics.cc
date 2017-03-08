@@ -442,12 +442,16 @@ calculate the 3-particles correlator with the charged-particles
           for(int sign = 0; sign < 2; sign++){
             if( ieta == jeta ){
 
+              delEta3p[sign]->Fill( deltaEta );
+
               N_2 = Q_n1_1[ieta][sign]*Q_n2_1[ieta][sign] - Q_n1n2_2[ieta][sign];
               D_2 = Q_0_1[ieta][sign]*Q_0_1[ieta][sign] - Q_0_2[ieta][sign];
 
             }
             else{
-              
+
+              delEta3p[sign]->Fill( deltaEta );
+
               N_2 = Q_n1_1[ieta][sign]*Q_n2_1[jeta][sign];
               D_2 = Q_0_1[ieta][sign]*Q_0_1[jeta][sign];
 
@@ -467,6 +471,9 @@ calculate the 3-particles correlator with the charged-particles
   
           }
           //opposite sign correlator:
+
+          delEta3p[2]->Fill( deltaEta );
+
           N_2 = Q_n1_1[ieta][0]*Q_n2_1[jeta][1];
           D_2 = Q_0_1[ieta][0]*Q_0_1[jeta][1];
 
@@ -506,12 +513,17 @@ calculate the 2-particles correlator with the charged-particles
           for(int sign = 0; sign < 2; sign++){
             if( ieta == jeta ){
 
+              delEta2p[sign]->Fill( deltaEta );
+
+
               N_2 = P_n1_1[ieta][sign]*P_n2_1[ieta][sign] - P_n1n2_2[ieta][sign];
               D_2 = P_0_1[ieta][sign]*P_0_1[ieta][sign] - P_0_2[ieta][sign];
 
             }
             else{
-              
+
+              delEta2p[sign]->Fill( deltaEta );
+
               N_2 = P_n1_1[ieta][sign]*P_n2_1[jeta][sign];
               D_2 = P_0_1[ieta][sign]*P_0_1[jeta][sign];
 
@@ -521,6 +533,9 @@ calculate the 2-particles correlator with the charged-particles
             c2_imag[deta][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
 
           }
+
+          delEta2p[2]->Fill( deltaEta );
+
           //opposite sign correlator:
           N_2 = P_n1_1[ieta][0]*P_n2_1[jeta][1];
           D_2 = P_0_1[ieta][0]*P_0_1[jeta][1];
@@ -577,6 +592,12 @@ CMEandMixedHarmonics::beginJob()
   q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
   Ntrk_q2 = fs->make<TH1D>("Ntrk_q2",";Ntrk",5000,0,5000);
 
+  for(int sign = 0; sign < 3; sign++){
+
+    delEta2p[sign] = fs->make<TH1D>(Form("delEta2p_%d",sign),";#Delta#eta", NdEtaBins, dEtaBinsArray);
+    delEta3p[sign] = fs->make<TH1D>(Form("delEta3p_%d",sign),";#Delta#eta", NdEtaBins, dEtaBinsArray);
+    
+  }
 
   c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
