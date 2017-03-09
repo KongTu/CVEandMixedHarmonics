@@ -2,11 +2,10 @@ import FWCore.ParameterSet.Config as cms
 
 import HLTrigger.HLTfilters.hltHighLevel_cfi
 hltHM = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone()
-hltHM.HLTPaths = ['HLT_PAPixelTracks_Multiplicity100_v*',
-                  'HLT_PAPixelTracks_Multiplicity130_v*',
-                  'HLT_PAPixelTracks_Multiplicity160_v*'
-                  #'HLT_PAPixelTracks_Multiplicity190_v*',
-                  #'HLT_PAPixelTracks_Multiplicity220_v*'
+hltHM.HLTPaths = [#'HLT_PAFullTracks_Multiplicity120*_v*',
+                  #'HLT_PAFullTracks_Multiplicity150*_v*',
+                  #'HLT_PAFullTracks_Multiplicity185*_v*',
+                  'HLT_PAFullTracks_Multiplicity250*_v*'
 ]
 
 hltHM.andOr = cms.bool(True)
@@ -14,7 +13,7 @@ hltHM.throw = cms.bool(False)
 				
 ana = cms.EDAnalyzer('CVEandMixedHarmonics',
                                                   vertexName = cms.InputTag('offlinePrimaryVertices'),
-                		  						  trackName = cms.InputTag('generalTracks'),
+                		 		  trackName = cms.InputTag('generalTracks'),
                                                   towerName = cms.InputTag("towerMaker"),
                                                   generalV0_ksName = cms.InputTag("generalV0CandidatesNew:Kshort"),
                                                   generalV0_laName = cms.InputTag("generalV0CandidatesNew:Lambda"),
@@ -23,13 +22,13 @@ ana = cms.EDAnalyzer('CVEandMixedHarmonics',
 				  		  offlinenhits = cms.untracked.double(0),
 						  offlineChi2 = cms.untracked.double(999.9),
 						  useCentrality = cms.untracked.bool(False),
-              useEtaGap = cms.untracked.bool(True),
-              dopPb = cms.untracked.bool(True),
+              					  useEtaGap = cms.untracked.bool(True),
+              					  dopPb = cms.untracked.bool(True),
                                                   reverseBeam = cms.untracked.bool(False),
 						  doEffCorrection = cms.untracked.bool(False),
 						  Nmin = cms.untracked.int32(1),
                                                   Nmax = cms.untracked.int32(10000),
-                                                  eff = cms.untracked.int32(1),
+                                                  eff = cms.untracked.int32(0),
                                                   n1 = cms.untracked.int32(2),
                                                   n2 = cms.untracked.int32(2),
                                                   n3 = cms.untracked.int32(2),
@@ -38,9 +37,8 @@ ana = cms.EDAnalyzer('CVEandMixedHarmonics',
                                                   vzHigh = cms.untracked.double(15.0),
                                                   ptLow = cms.untracked.double(0.3),
 						  ptHigh = cms.untracked.double(3.0),
-						 
 						  etaTracker = cms.untracked.double(2.4),
-              gapValue = cms.untracked.double(2.0),
+              					  gapValue = cms.untracked.double(2.0),
 						  etaLowHF = cms.untracked.double(4.4),
                                                   etaHighHF = cms.untracked.double(5.0),
                                                   K0sPtLow = cms.untracked.double(0.3),
@@ -57,8 +55,6 @@ ana = cms.EDAnalyzer('CVEandMixedHarmonics',
                                                   Lam_pointingAngleCut = cms.untracked.double(0.999),
                                                   lambdaMassWindow = cms.untracked.double(0.01), 
                                                   ksMassWindow = cms.untracked.double(0.02), 
-
-
                                                   etaBins = cms.untracked.vdouble(-2.4,-2.3,-2.2,-2.1,-2,-1.9,-1.8,-1.7,-1.6,-1.5,-1.4,
                                                                                   -1.3,-1.2,-1.1,-1,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,
                                                                                   -0.2,-0.1,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,

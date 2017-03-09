@@ -42,6 +42,7 @@ process.source = cms.Source("PoolSource",
 'root://cmsxrootd.fnal.gov//store/hidata/PARun2016C/PAHighMultiplicity7/AOD/PromptReco-v1/000/285/480/00000/02BA31E5-08AF-E611-AAA3-FA163ED00180.root'
 #'root://cmsxrootd.fnal.gov//store/hidata/PARun2016C/PAMinimumBias1/AOD/PromptReco-v1/000/285/480/00000/32A34AA3-2CAF-E611-9C0D-FA163E8F093D.root'
 #'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity7/RecoSkim2016_Pbp_V0Cascade_v1/170301_191341/0000/pPb_HM_1.root'
+#'root://cmsxrootd.fnal.gov//store/hidata/PARun2016C/PAHighMultiplicity1/AOD/PromptReco-v1/000/285/480/00000/4C0D189A-1BAF-E611-B5CA-FA163EAF1F45.root'
 )
 )
 
@@ -51,15 +52,14 @@ process.load("CVEandMixedHarmonics.CVEandMixedHarmonics.cmeandmixedharmonics_cfi
 #define the cuts
 process.ana.useCentrality = False
 process.ana.doEffCorrection = True
-process.ana.Nmin = 250
-process.ana.Nmax = 1000
-process.ana.etaHighHF = 5.0
-process.ana.etaLowHF = 3.0
+#process.ana.Nmin = 250
+#process.ana.Nmax = 400
+process.ana.eff = 0
 process.ana.n1 = +1
 process.ana.n2 = +1
 process.ana.n3 = -2
 
-process.TFileService = cms.Service("TFileService",fileName = cms.string("test.root"))
+process.TFileService = cms.Service("TFileService",fileName = cms.string("test_cme.root"))
 process.p = cms.Path(  process.hfCoincFilter *
                        process.PAprimaryVertexFilter *
                        process.NoScraping *
