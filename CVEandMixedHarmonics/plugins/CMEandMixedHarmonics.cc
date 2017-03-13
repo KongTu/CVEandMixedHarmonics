@@ -307,7 +307,7 @@ where Q_coefficient_power (P_coefficient_power) is used in the following names
     for(int eta = 0; eta < NetaBins; eta++){
       if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
 
-        Q_nC_trk[eta] += q_vector(2, 1, weight, phi);
+        Q_nC_trk[eta] += q_vector(-n3_, 1, weight, phi);
         Q_0_nC_trk[eta] += q_vector(0, 1, weight, phi);
 
         if( trk.charge() == +1 ){//positive charge
@@ -426,7 +426,7 @@ calculate the 3-particles correlator with the charged-particles
           N_2 = Q_nC_trk[ieta]*TComplex::Conjugate(Q_nC_trk[jeta]);
           D_2 = Q_0_nC_trk[ieta]*Q_0_nC_trk[jeta];
 
-          c2_tracker->Fill(N_2.Re()/D_2.Re(), D_2.Re());
+          cn_tracker->Fill(N_2.Re()/D_2.Re(), D_2.Re());
       }
 
       for(int deta = 0; deta < NdEtaBins; deta++){
@@ -607,7 +607,7 @@ CMEandMixedHarmonics::beginJob()
   c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
   c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 20000,-1,1);
 
-  c2_tracker = fs->make<TH1D>("c2_tracker",";c2_tracker", 20000,-1,1);
+  cn_tracker = fs->make<TH1D>("cn_tracker",";cn_tracker", 20000,-1,1);
 
   
   for(int deta = 0; deta < NdEtaBins; deta++){
