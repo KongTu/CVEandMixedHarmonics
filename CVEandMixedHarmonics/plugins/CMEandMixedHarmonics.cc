@@ -588,7 +588,7 @@ calculate the 3-particles correlator with the charged-particles
 
 /*
 calculate the 2-particles correlator with the charged-particles
- */
+*/
 
   for(int ieta = 0; ieta < NetaBins; ieta++){
     for(int jeta = 0; jeta < NetaBins; jeta++){
@@ -782,6 +782,102 @@ calculate the 3-particles correlator with the charged-particles
     }
   }
 
+/*
+calculate the 2-particles correlator with the charged-particles
+*/
+
+  for(int ipt = 0; ipt < NptBins; ipt++){
+    for(int jpt = 0; jpt < NptBins; jpt++){
+
+      double deltaPt = fabs( ptBins_[ipt] - ptBins_[jpt] );
+      double pTave = (ptBins_[ipt] + ptBins_[jpt])/2.0;
+      
+      for(int dpt = 0; dpt < NdPtBins; dpt++){
+        //begin of delta pT
+        if( deltaPt > dPtBinsArray[dpt] && deltaPt < dPtBinsArray[dpt+1] ){
+          
+          TComplex N_2;
+          TComplex D_2;
+
+          //same sign correlator:
+          for(int sign = 0; sign < 2; sign++){
+            if( ipt == jpt ){
+
+              delPt2p[sign]->Fill( deltaPt );
+
+
+              N_2 = P_pT_n1_1[ipt][sign]*P_pT_n2_1[ipt][sign] - P_pT_n1n2_2[ipt][sign];
+              D_2 = P_pT_0_1[ipt][sign]*P_pT_0_1[ipt][sign] - P_pT_0_2[ipt][sign];
+
+            }
+            else{
+
+              delPt2p[sign]->Fill( deltaPt );
+
+              N_2 = P_pT_n1_1[ipt][sign]*P_pT_n2_1[jpt][sign];
+              D_2 = P_pT_0_1[ipt][sign]*P_pT_0_1[jpt][sign];
+
+            }        
+
+            c2_dpT_real[dpt][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
+            c2_dpT_imag[dpt][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+
+          }
+
+          delPt2p[2]->Fill( deltaPt );
+
+          //opposite sign correlator:
+          N_2 = P_pT_n1_1[ipt][0]*P_pT_n2_1[jpt][1];
+          D_2 = P_pT_0_1[ipt][0]*P_pT_0_1[jpt][1];
+
+          c2_dpT_real[dpt][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
+          c2_dpT_imag[dpt][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+
+        }//end of delta pT
+        
+        //begin of pTave
+        if( pTave > dPtBinsArray[dpt] && pTave < dPtBinsArray[dpt+1] ){
+          
+          TComplex N_2;
+          TComplex D_2;
+
+          //same sign correlator:
+          for(int sign = 0; sign < 2; sign++){
+            if( ipt == jpt ){
+
+              ptAve2p[sign]->Fill( pTave );
+
+              N_2 = P_pT_n1_1[ipt][sign]*P_pT_n2_1[ipt][sign] - P_pT_n1n2_2[ipt][sign];
+              D_2 = P_pT_0_1[ipt][sign]*P_pT_0_1[ipt][sign] - P_pT_0_2[ipt][sign];
+
+            }
+            else{
+
+              ptAve2p[sign]->Fill( pTave );
+
+              N_2 = P_pT_n1_1[ipt][sign]*P_pT_n2_1[jpt][sign];
+              D_2 = P_pT_0_1[ipt][sign]*P_pT_0_1[jpt][sign];
+
+            }        
+
+            c2_pTave_real[dpt][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
+            c2_pTave_imag[dpt][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+
+          }
+
+          ptAve2p[2]->Fill( pTave );
+
+          //opposite sign correlator:
+          N_2 = P_pT_n1_1[ipt][0]*P_pT_n2_1[jpt][1];
+          D_2 = P_pT_0_1[ipt][0]*P_pT_0_1[jpt][1];
+
+          c2_pTave_real[dpt][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
+          c2_pTave_imag[dpt][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+
+        }//end of pTave
+      }
+    }
+  }
 
 
 }
@@ -796,7 +892,6 @@ CMEandMixedHarmonics::beginJob()
   const int NdEtaBins = dEtaBins_.size() - 1;
   const int NetaBins = etaBins_.size() - 1;
 
-  //const int NptBins = ptBins_.size() - 1;
   const int NdPtBins = dPtBins_.size() - 1;
   
   double etaBinsArray[100];
