@@ -214,8 +214,8 @@ q2 calculation at HF and selections:
 
     if( caloEta < 3.0 || caloEta > 5.0 ) continue;
 
-    qHFcos += w*cos(2*caloPhi);
-    qHFsin += w*sin(2*caloPhi);
+    qHFcos += w*cos(-n3_*caloPhi);
+    qHFsin += w*sin(-n3_*caloPhi);
     qHF_count += w;
 
   }
