@@ -423,23 +423,23 @@ Share Q_n3 for both dimensions:
         }
         if( trk.charge() == -1 ){//negative charge
 
-          Q_pT_n1_1[eta][1] += q_vector(n1_, 1, weight, phi);
-          Q_pT_n2_1[eta][1] += q_vector(n2_, 1, weight, phi);
+          Q_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, phi);
+          Q_pT_n2_1[pt][1] += q_vector(n2_, 1, weight, phi);
 
-          Q_pT_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, weight, phi);
+          Q_pT_n1n2_2[pt][1] += q_vector(n1_+n2_, 2, weight, phi);
 
-          Q_pT_0_1[eta][1] += q_vector(0, 1, weight, phi);
-          Q_pT_0_2[eta][1] += q_vector(0, 2, weight, phi);
+          Q_pT_0_1[pt][1] += q_vector(0, 1, weight, phi);
+          Q_pT_0_2[pt][1] += q_vector(0, 2, weight, phi);
 
           //2p: (similar way but be careful of the order of harmonics)
 
-          P_pT_n1_1[eta][1] += q_vector(n1_, 1, weight, phi);
-          P_pT_n2_1[eta][1] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
+          P_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, phi);
+          P_pT_n2_1[pt][1] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
 
-          P_pT_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, weight, phi);
+          P_pT_n1n2_2[pt][1] += q_vector(n1_-n2_, 2, weight, phi);
 
-          P_pT_0_1[eta][1] += q_vector(0, 1, weight, phi);
-          P_pT_0_2[eta][1] += q_vector(0, 2, weight, phi);
+          P_pT_0_1[pt][1] += q_vector(0, 1, weight, phi);
+          P_pT_0_2[pt][1] += q_vector(0, 2, weight, phi);
 
         }
       }
