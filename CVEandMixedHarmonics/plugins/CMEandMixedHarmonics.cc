@@ -655,6 +655,7 @@ calculate the 3-particles correlator with the charged-particles
       double pTave = (ptBins_[ipt] + ptBins_[jpt])/2.0;
 
       for(int dpt = 0; dpt < NdPtBins; dpt++){
+        //begin of delta pT
         if( deltaPt > dPtBinsArray[dpt] && deltaPt < dPtBinsArray[dpt+1] ){
           
           TComplex N_2;
@@ -714,11 +715,9 @@ calculate the 3-particles correlator with the charged-particles
           c3_dpT_real[dpt][2][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
           c3_dpT_imag[dpt][2][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
 
-        }
-      }//end of delta pT
+        }//end of delta pT
 
-      //begin of pTave
-      for(int dpt = 0; dpt < NdPtBins; dpt++){
+        //begin of pTave
         if( pTave > dPtBinsArray[dpt] && pTave < dPtBinsArray[dpt+1] ){
           
           TComplex N_2;
@@ -778,8 +777,8 @@ calculate the 3-particles correlator with the charged-particles
           c3_pTave_real[dpt][2][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
           c3_pTave_imag[dpt][2][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
 
-        }
-      }//end of pt average
+        }//end of pTave
+      }
     }
   }
 
@@ -797,7 +796,7 @@ CMEandMixedHarmonics::beginJob()
   const int NdEtaBins = dEtaBins_.size() - 1;
   const int NetaBins = etaBins_.size() - 1;
 
-  const int NptBins = ptBins_.size() - 1;
+  //const int NptBins = ptBins_.size() - 1;
   const int NdPtBins = dPtBins_.size() - 1;
   
   double etaBinsArray[100];
