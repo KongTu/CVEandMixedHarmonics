@@ -396,7 +396,7 @@ Share Q_n3 for both dimensions:
 
     //begin of pT dimension
     for(int pt = 0; pt < NptBins; pt++){
-      if( trkPt > ptBins_[pt] && trkPt < ptBins_[pt+1] ){
+      if( trk.pt() > ptBins_[pt] && trk.pt() < ptBins_[pt+1] ){
 
         if( trk.charge() == +1 ){//positive charge
 
