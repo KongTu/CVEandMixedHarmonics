@@ -186,8 +186,26 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       TH1D* c3_real[48][3][2];
       TH1D* c3_imag[48][3][2];
 
+      TH1D* c2_dpT_real[48][3];
+      TH1D* c2_dpT_imag[48][3];
+
+      TH1D* c3_dpT_real[48][3][2];
+      TH1D* c3_dpT_imag[48][3][2];
+
+      TH1D* c2_pTave_real[48][3];
+      TH1D* c2_pTave_imag[48][3];
+
+      TH1D* c3_pTave_real[48][3][2];
+      TH1D* c3_pTave_imag[48][3][2];
+
       TH1D* delEta3p[3];
       TH1D* delEta2p[3];
+
+      TH1D* delPt3p[3];
+      TH1D* delPt2p[3];
+
+      TH1D* ptAve3p[3];
+      TH1D* ptAve2p[3];
 
       TH1D* Ntrk;
       TH1D* vtxZ;
@@ -237,6 +255,7 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
       std::vector<double> ptBins_;
+      std::vector<double> dPtBins_;
       std::vector<double> centBins_;
 
 };
