@@ -39,6 +39,7 @@
 
 <use name="SimDataFormats/TrackingAnalysis"/>
 <use name="SimDataFormats/TrackingHit"/>
+<use name="SimDataFormats/GeneratorProducts"/>
 <use name="SimGeneral/HepPDTRecord"/>
 
 <use name="SimTracker/TrackAssociation"/>
