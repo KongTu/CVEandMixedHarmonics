@@ -330,7 +330,6 @@ Share Q_n3 for both dimensions:
 
     const reco::GenParticle & genCand = (*genParticleCollection)[it];
     int status = genCand.status();
-    double genpt = genCand.pt();
     double geneta = genCand.eta();
     double genphi = genCand.phi();
     int gencharge = genCand.charge();
