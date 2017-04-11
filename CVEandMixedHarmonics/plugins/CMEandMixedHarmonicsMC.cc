@@ -567,11 +567,8 @@ Share Q_n3 for both dimensions:
       for(unsigned it=0; it<genParticleCollection->size(); ++it) {
 
         const reco::GenParticle & genCand = (*genParticleCollection)[it];
-        int status = genCand.status();
         double geneta = genCand.eta();
         double genphi = genCand.phi();
-        double w = 1.0;
-
         double w = 1.0;
 
         if( reverseBeam_ ) geneta = -geneta;
