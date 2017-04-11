@@ -45,10 +45,5 @@
 <use name="SimTracker/TrackAssociation"/>
 <use name="SimTracker/Records"/>
 
-<use name="HepMC/GenEvent"/>
-<use name="HepMC/HeavyIon"/>
-
-
-
 <flags EDM_PLUGIN="1"/>
 

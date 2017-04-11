@@ -277,8 +277,8 @@ Share Q_n3 for both dimensions:
 
     int pdg_id = (*it)->pdg_id();
     const ParticleData * part = pdt->particle(pdg_id);
-    int charge = static_cast<int>(part->charge());
-    if(charge == 0) continue;
+    int gencharge = static_cast<int>(part->charge());
+    if(gencharge == 0) continue;
 
     if((*it)->momentum().perp()<0.01) continue;
     if(fabs((*it)->momentum().eta())>20) continue;
