@@ -252,7 +252,6 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       bool doEffCorrection_;
       bool useEtaGap_;
       bool dopPb_;
-      bool doGenOnly_;
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;

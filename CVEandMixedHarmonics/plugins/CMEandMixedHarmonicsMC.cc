@@ -102,112 +102,24 @@ CMEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   edm::Handle<reco::GenParticleCollection> genParticleCollection;
   iEvent.getByToken(genSrc_, genParticleCollection);
 
-  edm::Handle<reco::VertexCollection> vertices;
-  iEvent.getByToken(vertexSrc_,vertices);
+  int nTracks_gen = 0;
+  for(unsigned it=0; it<genParticleCollection->size(); ++it) {
 
-  Handle<CaloTowerCollection> towers;
-  iEvent.getByToken(towerSrc_, towers);
+    const reco::GenParticle & genCand = (*genParticleCollection)[it];
+    int status = genCand.status();
+    double genpt = genCand.pt();
+    double geneta = genCand.eta();
+    int gencharge = genCand.charge();
 
-  Handle<reco::TrackCollection> tracks;
-  iEvent.getByToken(trackSrc_, tracks);
-
-  if( doGenOnly_ ){
-    
-    int nTracks_gen = 0;
-    for(unsigned it=0; it<genParticleCollection->size(); ++it) {
-
-      const reco::GenParticle & genCand = (*genParticleCollection)[it];
-      int status = genCand.status();
-      double genpt = genCand.pt();
-      double geneta = genCand.eta();
-      int gencharge = genCand.charge();
-
-      if( status != 1 || gencharge == 0 ) continue;
-      if( genpt < 0.4 || fabs(geneta) > 2.4 ) continue;
-      nTracks_gen++;
-
-    }
-  
-    if( nTracks_gen < Nmin_ || nTracks_gen >= Nmax_ ) return;
-      Ntrk->Fill( nTracks_gen );//fill Ngentrk, multiply by efficiency to get estimate Ntrkoffline
+    if( status != 1 || gencharge == 0 ) continue;
+    if( genpt < 0.4 || fabs(geneta) > 2.4 ) continue;
+    nTracks_gen++;
 
   }
-  else{
 
-      double bestvz=-999.9, bestvx=-999.9, bestvy=-999.9;
-      double bestvzError=-999.9, bestvxError=-999.9, bestvyError=-999.9;
-      const reco::Vertex & vtx = (*vertices)[0];
-      bestvz = vtx.z(); 
-      bestvx = vtx.x(); 
-      bestvy = vtx.y();
-      bestvzError = vtx.zError(); 
-      bestvxError = vtx.xError(); 
-      bestvyError = vtx.yError();
+  if( nTracks_gen < Nmin_ || nTracks_gen >= Nmax_ ) return;
+    Ntrk->Fill( nTracks_gen );//fill Ngentrk, multiply by efficiency to get estimate Ntrkoffline
 
-      //first selection; vertices
-      if( fabs(bestvz) < vzLow_ || fabs(bestvz) > vzHigh_ ) return;
-
-      vtxZ->Fill( bestvz );
-
-      
-
-      int nTracks = 0;
-      for(unsigned it = 0; it < tracks->size(); it++){
-
-         const reco::Track & trk = (*tracks)[it];
-      
-         math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
-
-            double dzvtx = trk.dz(bestvtx);
-            double dxyvtx = trk.dxy(bestvtx);
-            double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
-            double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError); 
-
-            if(!trk.quality(reco::TrackBase::highPurity)) continue;
-            if(fabs(trk.ptError())/trk.pt() > 0.1 ) continue;
-            if(fabs(dzvtx/dzerror) > 3.0) continue;
-            if(fabs(dxyvtx/dxyerror) > 3.0) continue;
-            if(trk.pt() < 0.4 || fabs(trk.eta()) > 2.4) continue;
-            nTracks++;//count multiplicity
-
-      }
-
-      if( !useCentrality_ ) if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
-
-      double etHFtowerSumPlus = 0.0;
-      double etHFtowerSumMinus = 0.0;
-      double etHFtowerSum = 0.0;
-      
-      if( useCentrality_ ){
-
-        for( unsigned i = 0; i<towers->size(); ++ i){
-           const CaloTower & tower = (*towers)[ i ];
-           double eta = tower.eta();
-           bool isHF = tower.ietaAbs() > 29;
-              if(isHF && eta > 0){
-                etHFtowerSumPlus += tower.pt();
-              }
-              if(isHF && eta < 0){
-                etHFtowerSumMinus += tower.pt();
-              }
-        }
-        etHFtowerSum=etHFtowerSumPlus + etHFtowerSumMinus;
-
-        int bin = -1;
-        for(int j=0; j<200; j++){
-          if( etHFtowerSum >= centBins_[j] ){
-             bin = j; break;
-          }
-        }
-
-        int hiBin = bin;
-        if( hiBin < Nmin_ || hiBin >= Nmax_ ) return;
-        cbinHist->Fill( hiBin );
-
-      }
-
-      Ntrk->Fill( nTracks );
-  }//end of else of doGenOnly_
   
 
   const int NetaBins = etaBins_.size() - 1 ;
@@ -227,43 +139,6 @@ CMEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
     dPtBinsArray[i] = dPtBins_[i]-0.0001;
   }
-
-/*
-q2 calculation at HF and selections:
-*/
-
-  if( !doGenOnly_ ){
-    
-    double qHFcos = 0.;
-    double qHFsin = 0.;
-    double qHF_count = 0.;
-    for(unsigned i = 0; i < towers->size(); ++i){
-
-            const CaloTower & hit= (*towers)[i];
-
-            double caloEta = hit.eta();
-            double caloPhi = hit.phi();
-            double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
-            if( reverseBeam_ ) caloEta = -hit.eta();
-
-      if( caloEta < 3.0 || caloEta > 5.0 ) continue;
-
-      qHFcos += w*cos(-n3_*caloPhi);
-      qHFsin += w*sin(-n3_*caloPhi);
-      qHF_count += w;
-
-    }
-
-    double q2HF_real = qHFcos/qHF_count;
-    double q2HF_imag = qHFsin/qHF_count;
-    double magnitude_HF = sqrt(q2HF_imag*q2HF_imag + q2HF_real*q2HF_real);
-
-    if( magnitude_HF > q2max_ || magnitude_HF < q2min_ ) return;//q2 selections. 
-    
-    q2_mag->Fill( magnitude_HF );
-    Ntrk_q2->Fill(nTracks);
-  }//doGenOnly_ ignores q2 calculation
-
 
 /*
 define all the ingredients for CME correlator (gamma) <cos(n1*phi_1 + n2*phi_2 + n3*phi_3)>
@@ -326,354 +201,161 @@ Share Q_n3 for both dimensions:
 
 //------------------------------------------------------------------
 
-  if( doGenOnly_ ){
+  for(unsigned it=0; it<genParticleCollection->size(); ++it) {
 
-    for(unsigned it=0; it<genParticleCollection->size(); ++it) {
+    const reco::GenParticle & genCand = (*genParticleCollection)[it];
+    int status = genCand.status();
+    double genpt = genCand.pt();
+    double geneta = genCand.eta();
+    double genphi = genCand.phi();
+    int gencharge = genCand.charge();
+    double weight = 1.0;
 
-      const reco::GenParticle & genCand = (*genParticleCollection)[it];
-      int status = genCand.status();
-      double genpt = genCand.pt();
-      double geneta = genCand.eta();
-      double genphi = genCand.phi();
-      int gencharge = genCand.charge();
-      double weight = 1.0;
+    if( status != 1 || gencharge == 0 ) continue;
+    if( genpt < ptLow_ || genpt > ptHigh_) continue;
+    if( fabs(geneta) > etaTracker_ ) continue;
 
-      if( status != 1 || gencharge == 0 ) continue;
-      if( genpt < ptLow_ || genpt > ptHigh_) continue;
-      if( fabs(geneta) > etaTracker_ ) continue;
+    Q_n3_trk += q_vector(-n3_, 1, weight, genphi);//for scalar product in tracker
+    Q_0_trk += q_vector(0, 1, weight, genphi);
 
-      Q_n3_trk += q_vector(-n3_, 1, weight, genphi);//for scalar product in tracker
-      Q_0_trk += q_vector(0, 1, weight, genphi);
+    for(int eta = 0; eta < NetaBins; eta++){
+      if( geneta > etaBins_[eta] && geneta < etaBins_[eta+1] ){
 
-      for(int eta = 0; eta < NetaBins; eta++){
-        if( geneta > etaBins_[eta] && geneta < etaBins_[eta+1] ){
+        Q_nC_trk[eta] += q_vector(-n3_, 1, weight, genphi);
+        Q_0_nC_trk[eta] += q_vector(0, 1, weight, genphi);
 
-          Q_nC_trk[eta] += q_vector(-n3_, 1, weight, genphi);
-          Q_0_nC_trk[eta] += q_vector(0, 1, weight, genphi);
+        if( gencharge == +1 ){//positive charge
 
-          if( gencharge == +1 ){//positive charge
+          //3p:
+          Q_n1_1[eta][0] += q_vector(n1_, 1, weight, genphi);
+          Q_n2_1[eta][0] += q_vector(n2_, 1, weight, genphi);
 
-            //3p:
-            Q_n1_1[eta][0] += q_vector(n1_, 1, weight, genphi);
-            Q_n2_1[eta][0] += q_vector(n2_, 1, weight, genphi);
+          Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, weight, genphi);
 
-            Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, weight, genphi);
+          Q_0_1[eta][0] += q_vector(0, 1, weight, genphi);
+          Q_0_2[eta][0] += q_vector(0, 2, weight, genphi);
 
-            Q_0_1[eta][0] += q_vector(0, 1, weight, genphi);
-            Q_0_2[eta][0] += q_vector(0, 2, weight, genphi);
+          //2p: (similar way but be careful of the order of harmonics)
 
-            //2p: (similar way but be careful of the order of harmonics)
+          P_n1_1[eta][0] += q_vector(n1_, 1, weight, genphi);
+          P_n2_1[eta][0] += q_vector(-n2_, 1, weight, genphi);//it is a minus n2_ because n2_ = 1
 
-            P_n1_1[eta][0] += q_vector(n1_, 1, weight, genphi);
-            P_n2_1[eta][0] += q_vector(-n2_, 1, weight, genphi);//it is a minus n2_ because n2_ = 1
+          P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, weight, genphi);
 
-            P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, weight, genphi);
-
-            P_0_1[eta][0] += q_vector(0, 1, weight, genphi);
-            P_0_2[eta][0] += q_vector(0, 2, weight, genphi);
+          P_0_1[eta][0] += q_vector(0, 1, weight, genphi);
+          P_0_2[eta][0] += q_vector(0, 2, weight, genphi);
 
 
-          }
-          if( gencharge == -1 ){//negative charge
-
-            Q_n1_1[eta][1] += q_vector(n1_, 1, weight, genphi);
-            Q_n2_1[eta][1] += q_vector(n2_, 1, weight, genphi);
-
-            Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, weight, genphi);
-
-            Q_0_1[eta][1] += q_vector(0, 1, weight, genphi);
-            Q_0_2[eta][1] += q_vector(0, 2, weight, genphi);
-
-            //2p: (similar way but be careful of the order of harmonics)
-
-            P_n1_1[eta][1] += q_vector(n1_, 1, weight, genphi);
-            P_n2_1[eta][1] += q_vector(-n2_, 1, weight, genphi);//it is a minus n2_ because n2_ = 1
-
-            P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, weight, genphi);
-
-            P_0_1[eta][1] += q_vector(0, 1, weight, genphi);
-            P_0_2[eta][1] += q_vector(0, 2, weight, genphi);
-
-          }
         }
-      }//end of eta dimension
+        if( gencharge == -1 ){//negative charge
 
-      //begin of pT dimension
-      for(int pt = 0; pt < NptBins; pt++){
-        if( trk.pt() > ptBins_[pt] && trk.pt() < ptBins_[pt+1] ){
+          Q_n1_1[eta][1] += q_vector(n1_, 1, weight, genphi);
+          Q_n2_1[eta][1] += q_vector(n2_, 1, weight, genphi);
 
-          if( gencharge == +1 ){//positive charge
+          Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, weight, genphi);
 
-            //3p:
-            Q_pT_n1_1[pt][0] += q_vector(n1_, 1, weight, genphi);
-            Q_pT_n2_1[pt][0] += q_vector(n2_, 1, weight, genphi);
+          Q_0_1[eta][1] += q_vector(0, 1, weight, genphi);
+          Q_0_2[eta][1] += q_vector(0, 2, weight, genphi);
 
-            Q_pT_n1n2_2[pt][0] += q_vector(n1_+n2_, 2, weight, genphi);
+          //2p: (similar way but be careful of the order of harmonics)
 
-            Q_pT_0_1[pt][0] += q_vector(0, 1, weight, genphi);
-            Q_pT_0_2[pt][0] += q_vector(0, 2, weight, genphi);
+          P_n1_1[eta][1] += q_vector(n1_, 1, weight, genphi);
+          P_n2_1[eta][1] += q_vector(-n2_, 1, weight, genphi);//it is a minus n2_ because n2_ = 1
 
-            //2p: (similar way but be careful of the order of harmonics)
+          P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, weight, genphi);
 
-            P_pT_n1_1[pt][0] += q_vector(n1_, 1, weight, genphi);
-            P_pT_n2_1[pt][0] += q_vector(-n2_, 1, weight, genphi);//it is a minus n2_ because n2_ = 1
+          P_0_1[eta][1] += q_vector(0, 1, weight, genphi);
+          P_0_2[eta][1] += q_vector(0, 2, weight, genphi);
 
-            P_pT_n1n2_2[pt][0] += q_vector(n1_-n2_, 2, weight, genphi);
-
-            P_pT_0_1[pt][0] += q_vector(0, 1, weight, genphi);
-            P_pT_0_2[pt][0] += q_vector(0, 2, weight, genphi);
-
-
-          }
-          if( gencharge == -1 ){//negative charge
-
-            Q_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, genphi);
-            Q_pT_n2_1[pt][1] += q_vector(n2_, 1, weight, genphi);
-
-            Q_pT_n1n2_2[pt][1] += q_vector(n1_+n2_, 2, weight, genphi);
-
-            Q_pT_0_1[pt][1] += q_vector(0, 1, weight, genphi);
-            Q_pT_0_2[pt][1] += q_vector(0, 2, weight, genphi);
-
-            //2p: (similar way but be careful of the order of harmonics)
-
-            P_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, genphi);
-            P_pT_n2_1[pt][1] += q_vector(-n2_, 1, weight, genphi);//it is a minus n2_ because n2_ = 1
-
-            P_pT_n1n2_2[pt][1] += q_vector(n1_-n2_, 2, weight, genphi);
-
-            P_pT_0_1[pt][1] += q_vector(0, 1, weight, genphi);
-            P_pT_0_2[pt][1] += q_vector(0, 2, weight, genphi);
-
-          }
         }
-      }//end of pT dimension
-    }//end of gen loop
-  }//end of doGenOnly_
-  else{
-
-      //Start filling Q-vectors;
-
-    //track loop to fill charged particles Q-vectors
-    for(unsigned it = 0; it < tracks->size(); it++){
-
-      const reco::Track & trk = (*tracks)[it];
-
-      math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
-
-      double dzvtx = trk.dz(bestvtx);
-      double dxyvtx = trk.dxy(bestvtx);
-      double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
-      double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError); 
-      double nhits = trk.numberOfValidHits();
-      double chi2n = trk.normalizedChi2();
-      double nlayers = trk.hitPattern().trackerLayersWithMeasurement();
-      chi2n = chi2n/nlayers;
-      double nPixelLayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
-      double phi = trk.phi();
-      double trkEta = trk.eta();
-
-      double weight = 1.0;
-      if( doEffCorrection_ ) { 
-
-        if( dopPb_ ){
-          weight = 1.0/effTable_pPb[eff_]->GetBinContent( effTable_pPb[eff_]->FindBin(trk.eta(), trk.pt()) );
-        }
-        else{
-          weight = 1.0/effTable[eff_]->GetBinContent( effTable[eff_]->FindBin(trk.eta(), trk.pt()) );
-        }
-
       }
+    }//end of eta dimension
 
-      if(!trk.quality(reco::TrackBase::highPurity)) continue;
-      if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
-      if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
-      if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
-      if(chi2n > offlineChi2_ ) continue;
-      if(nhits < offlinenhits_ ) continue;
-      if( nPixelLayers <= 0 ) continue;
-      if(trk.pt() < ptLow_ || trk.pt() > ptHigh_ ) continue;
-      if(fabs(trkEta) > etaTracker_ ) continue;
+    //begin of pT dimension
+    for(int pt = 0; pt < NptBins; pt++){
+      if( trk.pt() > ptBins_[pt] && trk.pt() < ptBins_[pt+1] ){
 
-      trkPhi->Fill(phi, weight);
-      trkPt->Fill(trk.pt(), weight);
-      trk_eta->Fill(trkEta, weight);
+        if( gencharge == +1 ){//positive charge
 
-      Q_n3_trk += q_vector(-n3_, 1, weight, phi);//for scalar product in tracker
-      Q_0_trk += q_vector(0, 1, weight, phi);
+          //3p:
+          Q_pT_n1_1[pt][0] += q_vector(n1_, 1, weight, genphi);
+          Q_pT_n2_1[pt][0] += q_vector(n2_, 1, weight, genphi);
 
-      for(int eta = 0; eta < NetaBins; eta++){
-        if( trkEta > etaBins_[eta] && trkEta < etaBins_[eta+1] ){
+          Q_pT_n1n2_2[pt][0] += q_vector(n1_+n2_, 2, weight, genphi);
 
-          Q_nC_trk[eta] += q_vector(-n3_, 1, weight, phi);
-          Q_0_nC_trk[eta] += q_vector(0, 1, weight, phi);
+          Q_pT_0_1[pt][0] += q_vector(0, 1, weight, genphi);
+          Q_pT_0_2[pt][0] += q_vector(0, 2, weight, genphi);
 
-          if( trk.charge() == +1 ){//positive charge
+          //2p: (similar way but be careful of the order of harmonics)
 
-            //3p:
-            Q_n1_1[eta][0] += q_vector(n1_, 1, weight, phi);
-            Q_n2_1[eta][0] += q_vector(n2_, 1, weight, phi);
+          P_pT_n1_1[pt][0] += q_vector(n1_, 1, weight, genphi);
+          P_pT_n2_1[pt][0] += q_vector(-n2_, 1, weight, genphi);//it is a minus n2_ because n2_ = 1
 
-            Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, weight, phi);
+          P_pT_n1n2_2[pt][0] += q_vector(n1_-n2_, 2, weight, genphi);
 
-            Q_0_1[eta][0] += q_vector(0, 1, weight, phi);
-            Q_0_2[eta][0] += q_vector(0, 2, weight, phi);
-
-            //2p: (similar way but be careful of the order of harmonics)
-
-            P_n1_1[eta][0] += q_vector(n1_, 1, weight, phi);
-            P_n2_1[eta][0] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
-
-            P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, weight, phi);
-
-            P_0_1[eta][0] += q_vector(0, 1, weight, phi);
-            P_0_2[eta][0] += q_vector(0, 2, weight, phi);
+          P_pT_0_1[pt][0] += q_vector(0, 1, weight, genphi);
+          P_pT_0_2[pt][0] += q_vector(0, 2, weight, genphi);
 
 
-          }
-          if( trk.charge() == -1 ){//negative charge
-
-            Q_n1_1[eta][1] += q_vector(n1_, 1, weight, phi);
-            Q_n2_1[eta][1] += q_vector(n2_, 1, weight, phi);
-
-            Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, weight, phi);
-
-            Q_0_1[eta][1] += q_vector(0, 1, weight, phi);
-            Q_0_2[eta][1] += q_vector(0, 2, weight, phi);
-
-            //2p: (similar way but be careful of the order of harmonics)
-
-            P_n1_1[eta][1] += q_vector(n1_, 1, weight, phi);
-            P_n2_1[eta][1] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
-
-            P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, weight, phi);
-
-            P_0_1[eta][1] += q_vector(0, 1, weight, phi);
-            P_0_2[eta][1] += q_vector(0, 2, weight, phi);
-
-          }
         }
-      }//end of eta dimension
+        if( gencharge == -1 ){//negative charge
 
-      //begin of pT dimension
-      for(int pt = 0; pt < NptBins; pt++){
-        if( trk.pt() > ptBins_[pt] && trk.pt() < ptBins_[pt+1] ){
+          Q_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, genphi);
+          Q_pT_n2_1[pt][1] += q_vector(n2_, 1, weight, genphi);
 
-          if( trk.charge() == +1 ){//positive charge
+          Q_pT_n1n2_2[pt][1] += q_vector(n1_+n2_, 2, weight, genphi);
 
-            //3p:
-            Q_pT_n1_1[pt][0] += q_vector(n1_, 1, weight, phi);
-            Q_pT_n2_1[pt][0] += q_vector(n2_, 1, weight, phi);
+          Q_pT_0_1[pt][1] += q_vector(0, 1, weight, genphi);
+          Q_pT_0_2[pt][1] += q_vector(0, 2, weight, genphi);
 
-            Q_pT_n1n2_2[pt][0] += q_vector(n1_+n2_, 2, weight, phi);
+          //2p: (similar way but be careful of the order of harmonics)
 
-            Q_pT_0_1[pt][0] += q_vector(0, 1, weight, phi);
-            Q_pT_0_2[pt][0] += q_vector(0, 2, weight, phi);
+          P_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, genphi);
+          P_pT_n2_1[pt][1] += q_vector(-n2_, 1, weight, genphi);//it is a minus n2_ because n2_ = 1
 
-            //2p: (similar way but be careful of the order of harmonics)
+          P_pT_n1n2_2[pt][1] += q_vector(n1_-n2_, 2, weight, genphi);
 
-            P_pT_n1_1[pt][0] += q_vector(n1_, 1, weight, phi);
-            P_pT_n2_1[pt][0] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
+          P_pT_0_1[pt][1] += q_vector(0, 1, weight, genphi);
+          P_pT_0_2[pt][1] += q_vector(0, 2, weight, genphi);
 
-            P_pT_n1n2_2[pt][0] += q_vector(n1_-n2_, 2, weight, phi);
-
-            P_pT_0_1[pt][0] += q_vector(0, 1, weight, phi);
-            P_pT_0_2[pt][0] += q_vector(0, 2, weight, phi);
-
-
-          }
-          if( trk.charge() == -1 ){//negative charge
-
-            Q_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, phi);
-            Q_pT_n2_1[pt][1] += q_vector(n2_, 1, weight, phi);
-
-            Q_pT_n1n2_2[pt][1] += q_vector(n1_+n2_, 2, weight, phi);
-
-            Q_pT_0_1[pt][1] += q_vector(0, 1, weight, phi);
-            Q_pT_0_2[pt][1] += q_vector(0, 2, weight, phi);
-
-            //2p: (similar way but be careful of the order of harmonics)
-
-            P_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, phi);
-            P_pT_n2_1[pt][1] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
-
-            P_pT_n1n2_2[pt][1] += q_vector(n1_-n2_, 2, weight, phi);
-
-            P_pT_0_1[pt][1] += q_vector(0, 1, weight, phi);
-            P_pT_0_2[pt][1] += q_vector(0, 2, weight, phi);
-
-          }
         }
-      }//end of pT dimension
-    }
-  }//end of else when !doGenOnly_
-
-
+      }
+    }//end of pT dimension
+  }//end of gen loop
+  
   //Declaring TComplex varaibles for Q-vectors of particle c (HF)
 
   TComplex  Q_n3_1_HFplus, Q_n3_1_HFminus, Q_0_1_HFplus, Q_0_1_HFminus;
   
-  if( doGenOnly_ ){
+  for(unsigned it=0; it<genParticleCollection->size(); ++it) {
 
-    for(unsigned it=0; it<genParticleCollection->size(); ++it) {
+    const reco::GenParticle & genCand = (*genParticleCollection)[it];
+    int status = genCand.status();
+    double genpt = genCand.pt();
+    double geneta = genCand.eta();
+    double genphi = genCand.phi();
+    int gencharge = genCand.charge();
+    double w = 1.0;
 
-      const reco::GenParticle & genCand = (*genParticleCollection)[it];
-      int status = genCand.status();
-      double genpt = genCand.pt();
-      double geneta = genCand.eta();
-      double genphi = genCand.phi();
-      int gencharge = genCand.charge();
-      double w = 1.0;
+    if( status != 1 || gencharge == 0 ) continue;
 
-      if( status != 1 || gencharge == 0 ) continue;
+    if( reverseBeam_ ) geneta = -genCand.eta();
+    if( geneta < etaHighHF_ && geneta > etaLowHF_ ){
 
-      if( reverseBeam_ ) geneta = -genCand.eta();
-      if( geneta < etaHighHF_ && geneta > etaLowHF_ ){
-
-          Q_n3_1_HFplus += q_vector(n3_, 1, w, genphi);
-          Q_0_1_HFplus += q_vector(0, 1, w, genphi);
-
-      }
-      else if( geneta < -etaLowHF_ && geneta > -etaHighHF_ ){
-
-          Q_n3_1_HFminus += q_vector(n3_, 1, w, genphi);
-          Q_0_1_HFminus += q_vector(0, 1, w, genphi);
-      }
-      else{continue;}
+        Q_n3_1_HFplus += q_vector(n3_, 1, w, genphi);
+        Q_0_1_HFplus += q_vector(0, 1, w, genphi);
 
     }
+    else if( geneta < -etaLowHF_ && geneta > -etaHighHF_ ){
 
-  }
-  else{
-    //HF towers loop to fill the towers' Q-vectors:
-    for(unsigned i = 0; i < towers->size(); ++i){
-
-            const CaloTower & hit= (*towers)[i];
-
-            double caloEta = hit.eta();
-            double caloPhi = hit.phi();
-            double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
-
-            hfPhi->Fill(caloPhi, w);
-            
-            if( reverseBeam_ ) caloEta = -hit.eta();          
-            if( caloEta < etaHighHF_ && caloEta > etaLowHF_ ){
-              
-                Q_n3_1_HFplus += q_vector(n3_, 1, w, caloPhi);
-                Q_0_1_HFplus += q_vector(0, 1, w, caloPhi);
-
-            }
-            else if( caloEta < -etaLowHF_ && caloEta > -etaHighHF_ ){
-
-                Q_n3_1_HFminus += q_vector(n3_, 1, w, caloPhi);
-                Q_0_1_HFminus += q_vector(0, 1, w, caloPhi); 
-
-            }
-            else{continue;}
+        Q_n3_1_HFminus += q_vector(n3_, 1, w, genphi);
+        Q_0_1_HFminus += q_vector(0, 1, w, genphi);
     }
+    else{continue;}
+
   }
 
-
+  
 /*
 calculate the Scalar product denominator, v_{2,c}
 */
