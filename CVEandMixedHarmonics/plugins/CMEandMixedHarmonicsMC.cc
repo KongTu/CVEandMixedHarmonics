@@ -144,6 +144,7 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
     }
 
     if( nTracks_gen < Nmin_ || nTracks_gen >= Nmax_ ) return;
+    Ntrk->Fill( nTracks_gen );
   }
   else{
 
