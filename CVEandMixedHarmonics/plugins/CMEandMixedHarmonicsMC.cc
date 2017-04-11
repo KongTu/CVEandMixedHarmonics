@@ -100,6 +100,7 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
 {
   using namespace edm;
   using namespace std;
+  using namespace HepMC;
 
   edm::Handle<HepMCProduct> mc;
   iEvent.getByToken(hepSrc_,mc);
