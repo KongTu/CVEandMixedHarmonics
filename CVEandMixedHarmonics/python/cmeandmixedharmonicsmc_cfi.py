@@ -2,6 +2,9 @@ import FWCore.ParameterSet.Config as cms
 
 				
 ana = cms.EDAnalyzer('CMEandMixedHarmonicsMC',
+                                                  vertexName = cms.InputTag('offlinePrimaryVertices'),
+                          trackName = cms.InputTag('generalTracks'),
+                                                  towerName = cms.InputTag("towerMaker"),
                                                   genName = cms.InputTag("genParticles"),
                                                   offlineDCA = cms.untracked.double(3.0),
                                                   offlineptErr = cms.untracked.double(0.1),
