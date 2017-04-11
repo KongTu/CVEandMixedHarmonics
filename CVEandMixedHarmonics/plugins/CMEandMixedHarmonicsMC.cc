@@ -214,9 +214,9 @@ Share Q_n3 for both dimensions:
     if( genpt < ptLow_ || genpt > ptHigh_) continue;
     if( fabs(geneta) > etaTracker_ ) continue;
 
-    trkPhi->Fill(phi, weight);
-    trkPt->Fill(trk.pt(), weight);
-    trk_eta->Fill(trkEta, weight);
+    trkPhi->Fill(genphi, weight);
+    trkPt->Fill(genpt, weight);
+    trk_eta->Fill(geneta, weight);
 
     Q_n3_trk += q_vector(-n3_, 1, weight, genphi);//for scalar product in tracker
     Q_0_trk += q_vector(0, 1, weight, genphi);
