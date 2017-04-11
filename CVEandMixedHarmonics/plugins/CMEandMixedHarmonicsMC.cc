@@ -20,7 +20,7 @@
 #include "CVEandMixedHarmonics/CVEandMixedHarmonics/interface/CMEandMixedHarmonicsBase.h"
 
 
-CMEandMixedHarmonicsMC::CMEandMixedHarmonicsMC(const edm::ParameterSet& iConfig)
+CMEandMixedHarmonics::CMEandMixedHarmonics(const edm::ParameterSet& iConfig)
 {
 
   trackName_  =  iConfig.getParameter<edm::InputTag>("trackName");
@@ -79,7 +79,7 @@ CMEandMixedHarmonicsMC::CMEandMixedHarmonicsMC(const edm::ParameterSet& iConfig)
 }
 
 
-CMEandMixedHarmonicsMC::~CMEandMixedHarmonicsMC()
+CMEandMixedHarmonics::~CMEandMixedHarmonics()
 {
  
    // do anything here that needs to be done at desctruction time
@@ -94,7 +94,7 @@ CMEandMixedHarmonicsMC::~CMEandMixedHarmonicsMC()
 
 // ------------ method called for each event  ------------
 void
-CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+CMEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   using namespace edm;
   using namespace std;
@@ -1078,7 +1078,7 @@ calculate the 2-particles correlator with the charged-particles
 }
 // ------------ method called once each job just before starting event loop  ------------
 void 
-CMEandMixedHarmonicsMC::beginJob()
+CMEandMixedHarmonics::beginJob()
 {
   edm::Service<TFileService> fs;
     
@@ -1199,7 +1199,7 @@ CMEandMixedHarmonicsMC::beginJob()
 
 }
 TComplex 
-CMEandMixedHarmonicsMC::q_vector(double n, double p, double w, double phi) 
+CMEandMixedHarmonics::q_vector(double n, double p, double w, double phi) 
 {
   double term1 = pow(w,p);
   TComplex e(1, n*phi, 1);
@@ -1207,34 +1207,34 @@ CMEandMixedHarmonicsMC::q_vector(double n, double p, double w, double phi)
 }
 // ------------ method called once each job just after ending the event loop  ------------
 void 
-CMEandMixedHarmonicsMC::endJob() 
+CMEandMixedHarmonics::endJob() 
 {
 }
 void 
-CMEandMixedHarmonicsMC::beginRun(edm::Run const&, edm::EventSetup const&)
+CMEandMixedHarmonics::beginRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a run  ------------
 void 
-CMEandMixedHarmonicsMC::endRun(edm::Run const&, edm::EventSetup const&)
+CMEandMixedHarmonics::endRun(edm::Run const&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when starting to processes a luminosity block  ------------
 void 
-CMEandMixedHarmonicsMC::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+CMEandMixedHarmonics::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 
 // ------------ method called when ending the processing of a luminosity block  ------------
 void 
-CMEandMixedHarmonicsMC::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+CMEandMixedHarmonics::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
-CMEandMixedHarmonicsMC::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+CMEandMixedHarmonics::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 }
 
 //define this as a plug-in
