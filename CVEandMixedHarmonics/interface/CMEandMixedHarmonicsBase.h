@@ -263,4 +263,126 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
 
 };
 
+class CMEandMixedHarmonicsTest : public edm::EDAnalyzer {
+   public:
+      explicit CMEandMixedHarmonicsTest(const edm::ParameterSet&);
+      ~CMEandMixedHarmonicsTest();
+
+      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+
+
+   private:
+      virtual void beginJob() ;
+      virtual void analyze(const edm::Event&, const edm::EventSetup&);
+      virtual void endJob() ;
+      virtual void beginRun(edm::Run const&, edm::EventSetup const&);
+      virtual void endRun(edm::Run const&, edm::EventSetup const&);
+      virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
+      virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
+      virtual TComplex q_vector(double n, double p, double w, double phi);
+
+      // ----------member data ---------------------------
+      edm::EDGetTokenT<reco::VertexCollection> vertexSrc_;
+      edm::EDGetTokenT<reco::TrackCollection> trackSrc_;
+      edm::EDGetTokenT<CaloTowerCollection> towerSrc_;
+      edm::EDGetTokenT<reco::GenParticleCollection> genSrc_;
+
+      edm::InputTag vertexName_;
+      edm::InputTag trackName_;
+      edm::InputTag pfCandName_;
+      edm::InputTag towerName_;
+      edm::InputTag genName_;
+
+      //correction table
+      TH2D* effTable[5];
+      TH2D* effTable_pPb[5];
+
+      TH1D* c2_ab;
+      TH1D* c2_ac;
+      TH1D* c2_cb;
+
+      TH1D* cn_tracker;
+
+      TH1D* cn_eta[48][2];
+
+      TH1D* c2_real[48][3];
+      TH1D* c2_imag[48][3];
+
+      TH1D* c3_real[48][3][2];
+      TH1D* c3_imag[48][3][2];
+
+      TH1D* c2_dpT_real[48][3];
+      TH1D* c2_dpT_imag[48][3];
+
+      TH1D* c3_dpT_real[48][3][2];
+      TH1D* c3_dpT_imag[48][3][2];
+
+      TH1D* c2_pTave_real[48][3];
+      TH1D* c2_pTave_imag[48][3];
+
+      TH1D* c3_pTave_real[48][3][2];
+      TH1D* c3_pTave_imag[48][3][2];
+
+      TH1D* delEta3p[3];
+      TH1D* delEta2p[3];
+
+      TH1D* delPt3p[3];
+      TH1D* delPt2p[3];
+
+      TH1D* ptAve3p[3];
+      TH1D* ptAve2p[3];
+
+      TH1D* Ntrk;
+      TH1D* vtxZ;
+      TH1D* trkPhi;
+      TH1D* hfPhi;
+      TH1D* trkPt;
+      TH1D* trk_eta;
+      TH1D* cbinHist;
+      TH1D* q2_mag;
+      TH1D* Ntrk_q2;
+
+      int Nmin_;
+      int Nmax_;
+
+      int eff_;
+
+      int n1_;
+      int n2_;
+      int n3_;
+      int n4_;
+
+      double etaTracker_;
+      double gapValue_;
+      double etaLowHF_;
+      double etaHighHF_;
+      
+      double vzLow_;
+      double vzHigh_;
+      
+      double ptLow_;
+      double ptHigh_;
+
+      double q2max_;
+      double q2min_;
+      
+      double offlineptErr_;
+      double offlineDCA_;
+      double offlineChi2_;
+      double offlinenhits_;
+
+      bool useCentrality_;
+      bool reverseBeam_;
+      bool doEffCorrection_;
+      bool useEtaGap_;
+      bool dopPb_;
+
+      std::vector<double> etaBins_;
+      std::vector<double> dEtaBins_;
+      std::vector<double> ptBins_;
+      std::vector<double> dPtBins_;
+      std::vector<double> centBins_;
+
+};
+
 #endif
