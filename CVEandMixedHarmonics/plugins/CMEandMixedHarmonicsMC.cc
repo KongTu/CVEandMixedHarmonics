@@ -46,6 +46,7 @@ CMEandMixedHarmonicsMC::CMEandMixedHarmonicsMC(const edm::ParameterSet& iConfig)
   doEffCorrection_ = iConfig.getUntrackedParameter<bool>("doEffCorrection");
   useEtaGap_ = iConfig.getUntrackedParameter<bool>("useEtaGap");
   dopPb_ = iConfig.getUntrackedParameter<bool>("dopPb");
+  doGenOnly_ = iConfig.getUntrackedParameter<bool>("doGenOnly");
 
   eff_ = iConfig.getUntrackedParameter<int>("eff");
 
@@ -98,28 +99,94 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
   using namespace edm;
   using namespace std;
 
+  edm::Handle<HepMCProduct> mc;
+  iEvent.getByToken("generator",mc);
+
   edm::Handle<reco::GenParticleCollection> genParticleCollection;
   iEvent.getByToken(genSrc_, genParticleCollection);
+ 
+  edm::Handle<reco::VertexCollection> vertices;
+  iEvent.getByToken(vertexSrc_,vertices);
 
-  int nTracks_gen = 0;
-  for(unsigned it=0; it<genParticleCollection->size(); ++it) {
+  Handle<CaloTowerCollection> towers;
+  iEvent.getByToken(towerSrc_, towers);
 
-    const reco::GenParticle & genCand = (*genParticleCollection)[it];
-    int status = genCand.status();
-    double genpt = genCand.pt();
-    double geneta = genCand.eta();
-    int gencharge = genCand.charge();
+  Handle<reco::TrackCollection> tracks;
+  iEvent.getByToken(trackSrc_, tracks);
 
-    if( status != 1 || gencharge == 0 ) continue;
-    if( genpt < 0.4 || fabs(geneta) > 2.4 ) continue;
-    nTracks_gen++;
+  if( doGenOnly_ ){
+
+    int nTracks_gen = 0;
+    const GenEvent* evt = mc->GetEvent();
+
+    HepMC::GenEvent::particle_const_iterator begin = evt->particles_begin();
+    HepMC::GenEvent::particle_const_iterator end = evt->particles_end();
+    for(HepMC::GenEvent::particle_const_iterator it = begin; it != end; ++it){
+
+      if((*it)->status() != 1) continue;
+
+       int pdg_id = (*it)->pdg_id();
+       const ParticleData * part = pdt->particle(pdg_id);
+       int charge = static_cast<int>(part->charge());
+       if(charge == 0 && ischarge) continue;
+
+       if(pdg_id != pdgid && pdgid!=-999999) continue;
+       if((*it)->momentum().perp()<0.01) continue;
+       if(fabs((*it)->momentum().eta())>20) continue;
+
+       double eta = (*it)->momentum().eta();
+       double phi = (*it)->momentum().phi();
+       double pt = (*it)->momentum().perp();
+       double mass = (*it)->momentum().m();
+
+       if( pt < 0.4 || fabs(eta) > 2.4 ) continue;
+       nTracks_gen++;
+    }
+
+    if( nTracks_gen < Nmin_ || nTracks_gen >= Nmax_ ) return;
+  }
+  else{
+
+    double bestvz=-999.9, bestvx=-999.9, bestvy=-999.9;
+    double bestvzError=-999.9, bestvxError=-999.9, bestvyError=-999.9;
+    const reco::Vertex & vtx = (*vertices)[0];
+    bestvz = vtx.z(); 
+    bestvx = vtx.x(); 
+    bestvy = vtx.y();
+    bestvzError = vtx.zError(); 
+    bestvxError = vtx.xError(); 
+    bestvyError = vtx.yError();
+
+    //first selection; vertices
+    if( fabs(bestvz) < vzLow_ || fabs(bestvz) > vzHigh_ ) return;
+
+    vtxZ->Fill( bestvz );
+
+    int nTracks = 0;
+    for(unsigned it = 0; it < tracks->size(); it++){
+
+     const reco::Track & trk = (*tracks)[it];
+
+     math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
+
+        double dzvtx = trk.dz(bestvtx);
+        double dxyvtx = trk.dxy(bestvtx);
+        double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
+        double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError); 
+
+        if(!trk.quality(reco::TrackBase::highPurity)) continue;
+        if(fabs(trk.ptError())/trk.pt() > 0.1 ) continue;
+        if(fabs(dzvtx/dzerror) > 3.0) continue;
+        if(fabs(dxyvtx/dxyerror) > 3.0) continue;
+        if(trk.pt() < 0.4 || fabs(trk.eta()) > 2.4) continue;
+        nTracks++;//count multiplicity
+
+    }
+
+    if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
+    Ntrk->Fill( nTracks );
 
   }
-
-  if( nTracks_gen < Nmin_ || nTracks_gen >= Nmax_ ) return;
-    Ntrk->Fill( nTracks_gen );//fill Ngentrk, multiply by efficiency to get estimate Ntrkoffline
-
-  
 
   const int NetaBins = etaBins_.size() - 1 ;
   const int NdEtaBins = dEtaBins_.size() - 1;
