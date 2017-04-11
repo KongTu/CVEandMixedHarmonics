@@ -27,11 +27,13 @@ CMEandMixedHarmonicsMC::CMEandMixedHarmonicsMC(const edm::ParameterSet& iConfig)
   vertexName_ =  iConfig.getParameter<edm::InputTag>("vertexName");
   towerName_ =  iConfig.getParameter<edm::InputTag>("towerName");
   genName_ =  iConfig.getParameter<edm::InputTag>("genName");
+  hepName_ = iConfig.getParameter<edm::InputTag>("hepName");
 
   trackSrc_ = consumes<reco::TrackCollection>(trackName_);
   vertexSrc_ = consumes<reco::VertexCollection>(vertexName_);
   towerSrc_ = consumes<CaloTowerCollection>(towerName_);
   genSrc_ = consumes<reco::GenParticleCollection>(genName_);
+  hepSrc_ = consumes<HepMCProduct>(hepName_);
 
   Nmin_ = iConfig.getUntrackedParameter<int>("Nmin");
   Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");
@@ -100,7 +102,7 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
   using namespace std;
 
   edm::Handle<HepMCProduct> mc;
-  iEvent.getByToken("generator",mc);
+  iEvent.getByToken(hepSrc_,mc);
 
   edm::Handle<reco::GenParticleCollection> genParticleCollection;
   iEvent.getByToken(genSrc_, genParticleCollection);

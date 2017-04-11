@@ -164,12 +164,14 @@ class CMEandMixedHarmonicsMC : public edm::EDAnalyzer {
       edm::EDGetTokenT<reco::TrackCollection> trackSrc_;
       edm::EDGetTokenT<CaloTowerCollection> towerSrc_;
       edm::EDGetTokenT<reco::GenParticleCollection> genSrc_;
+      edm::EDGetTokenT<HepMCProduct> hepSrc_;
 
       edm::InputTag vertexName_;
       edm::InputTag trackName_;
       edm::InputTag pfCandName_;
       edm::InputTag towerName_;
       edm::InputTag genName_;
+      edm::InputTag hepName_;
 
       //correction table
       TH2D* effTable[5];
