@@ -844,7 +844,7 @@ calculate the 2-particles correlator with the charged-particles
 void 
 CMEandMixedHarmonicsMC::beginJob()
 {
-
+  const edm::EventSetup& iSetup;
   iSetup.getData(pdt);
 
   edm::Service<TFileService> fs;
