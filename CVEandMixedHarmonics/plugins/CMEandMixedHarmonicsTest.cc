@@ -17,7 +17,7 @@
 //
 
 
-#include "CVEandMixedHarmonics/CVEandMixedHarmonics/interface/CMEandMixedHarmonicsTestBase.h"
+#include "CVEandMixedHarmonics/CVEandMixedHarmonics/interface/CMEandMixedHarmonicsBase.h"
 
 
 
