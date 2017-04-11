@@ -417,7 +417,7 @@ Share Q_n3 for both dimensions:
     double genpt = (*it)->momentum().perp();
     double w = 1.0;
 
-    if( reverseBeam_ ) geneta = -genCand.eta();
+    if( reverseBeam_ ) geneta = -geneta;
     if( geneta < etaHighHF_ && geneta > etaLowHF_ ){
 
         Q_n3_1_HFplus += q_vector(n3_, 1, w, genphi);
