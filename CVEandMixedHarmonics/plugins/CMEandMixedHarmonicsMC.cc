@@ -844,8 +844,8 @@ calculate the 2-particles correlator with the charged-particles
 void 
 CMEandMixedHarmonicsMC::beginJob()
 {
-  const edm::EventSetup& iSetup;
-  iSetup.getData(pdt);
+
+  
 
   edm::Service<TFileService> fs;
     
@@ -978,8 +978,9 @@ CMEandMixedHarmonicsMC::endJob()
 {
 }
 void 
-CMEandMixedHarmonicsMC::beginRun(edm::Run const&, edm::EventSetup const&)
+CMEandMixedHarmonicsMC::beginRun(edm::Run const&, edm::EventSetup const& iSetup)
 {
+  iSetup.getData(pdt);
 }
 
 // ------------ method called when ending the processing of a run  ------------
