@@ -102,7 +102,7 @@ CMEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   if( doGenOnly_ ){
     
     edm::Handle<reco::GenParticleCollection> genParticleCollection;
-    iEvent.getByLabel(genSrc_, genParticleCollection);
+    iEvent.getByToken(genSrc_, genParticleCollection);
 
     int nTracks_gen = 0;
     for(unsigned it=0; it<genParticleCollection->size(); ++it) {
