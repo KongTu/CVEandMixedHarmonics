@@ -31,7 +31,7 @@ CMEandMixedHarmonics::CMEandMixedHarmonics(const edm::ParameterSet& iConfig)
   trackSrc_ = consumes<reco::TrackCollection>(trackName_);
   vertexSrc_ = consumes<reco::VertexCollection>(vertexName_);
   towerSrc_ = consumes<CaloTowerCollection>(towerName_);
-  genParticleSrc_ = consumes<reco::GenParticleCollection>(genName_);
+  genSrc_ = consumes<reco::GenParticleCollection>(genName_);
 
   Nmin_ = iConfig.getUntrackedParameter<int>("Nmin");
   Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");
@@ -102,7 +102,7 @@ CMEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   if( doGenOnly_ ){
     
     edm::Handle<reco::GenParticleCollection> genParticleCollection;
-    iEvent.getByLabel(genParticleSrc_, genParticleCollection);
+    iEvent.getByLabel(genSrc_, genParticleCollection);
 
     int nTracks_gen = 0;
     for(unsigned it=0; it<genParticleCollection->size(); ++it) {
