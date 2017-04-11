@@ -119,6 +119,9 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   if( doGenOnly_ ){
 
+
+    return;
+
     int nTracks_gen = 0;
     const GenEvent* evt = mc->GetEvent();
 
@@ -265,7 +268,6 @@ Share Q_n3 for both dimensions:
   TComplex Q_nC_trk[NetaBins], Q_0_nC_trk[NetaBins];
 
 
-  return;
 //------------------------------------------------------------------
 
   const GenEvent* evt = mc->GetEvent();
