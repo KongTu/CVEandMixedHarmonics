@@ -132,6 +132,9 @@
 //#include "RiceHIG/V0Analysis/interface/V0Validator.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
+#include "HepMC/GenEvent.h"
+#include "HepMC/HeavyIon.h"
+
 #define PI 2
 #define K0sMass 0.497614
 #define LambdaMass 1.115683
