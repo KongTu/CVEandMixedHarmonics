@@ -181,6 +181,8 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
 
       TH1D* cn_tracker;
 
+      TH1D* cn_eta[48][2];
+
       TH1D* c2_real[48][3];
       TH1D* c2_imag[48][3];
 

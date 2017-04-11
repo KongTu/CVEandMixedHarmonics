@@ -497,6 +497,27 @@ calculate the Scalar product denominator, v_{2,c}
 
   c2_ab->Fill(N_2_trk.Re()/D_2_trk.Re(), D_2_trk.Re());
     
+
+/*
+v_{n} in eta slices
+*/
+
+  for(int ieta = 0; ieta < NetaBins; ieta++){
+
+    TComplex N_2_trk, D_2_trk;
+
+    N_2_trk = Q_nC_trk[ieta]*Q_n3_1_HFplus;
+    D_2_trk = Q_0_nC_trk[ieta]*Q_0_1_HFplus;
+
+    cn_eta[ieta][0]->Fill(N_2_trk.Re()/D_2_trk.Re(), D_2_trk.Re());
+
+    N_2_trk = Q_nC_trk[ieta]*Q_n3_1_HFminus;
+    D_2_trk = Q_0_nC_trk[ieta]*Q_0_1_HFminus;
+
+    cn_eta[ieta][1]->Fill(N_2_trk.Re()/D_2_trk.Re(), D_2_trk.Re());
+  }
+
+
 /*
 1. eta dimension:
 */
@@ -957,6 +978,12 @@ CMEandMixedHarmonics::beginJob()
 
   cn_tracker = fs->make<TH1D>("cn_tracker",";cn_tracker", 20000,-1,1);
 
+  for(int eta = 0; eta < NetaBins; eta++){
+    for(int HF = 0; HF < 2; HF++){
+
+      cn_eta[eta][HF] = fs->make<TH1D>(Form("cn_eta_%d_%d", eta, HF),";cn_eta", 20000,-1,1);
+    }
+  }
   
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
