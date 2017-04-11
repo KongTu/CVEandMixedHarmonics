@@ -179,22 +179,7 @@ CMEandMixedHarmonicsTest::analyze(const edm::Event& iEvent, const edm::EventSetu
   Ntrk->Fill( nTracks );
 
   const int NetaBins = etaBins_.size() - 1 ;
-  const int NdEtaBins = dEtaBins_.size() - 1;
-
   const int NptBins = ptBins_.size() - 1;
-  const int NdPtBins = dPtBins_.size() - 1;
-
-  double dEtaBinsArray[100];
-  double dPtBinsArray[100];
-
-  for(unsigned i = 0; i < dEtaBins_.size(); i++){
-
-    dEtaBinsArray[i] = dEtaBins_[i]-0.0001;
-  }
-  for(unsigned i = 0; i < dPtBins_.size(); i++){
-
-    dPtBinsArray[i] = dPtBins_[i]-0.0001;
-  }
 
 /*
 q2 calculation at HF and selections:
@@ -528,31 +513,17 @@ CMEandMixedHarmonicsTest::beginJob()
     
   TH1D::SetDefaultSumw2();
 
-  const int NdEtaBins = dEtaBins_.size() - 1;
   const int NetaBins = etaBins_.size() - 1;
-
-  const int NdPtBins = dPtBins_.size() - 1;
   
   double etaBinsArray[100];
   for(unsigned i = 0; i < etaBins_.size(); i++){
     etaBinsArray[i] = etaBins_[i];
   }
 
-  double dEtaBinsArray[100];
-  for(unsigned i = 0; i < dEtaBins_.size(); i++){
-    dEtaBinsArray[i] = dEtaBins_[i]-0.0001;
-  }
-
   double ptBinsArray[100];
   const int Nptbins = ptBins_.size() - 1;
   for(unsigned i = 0; i < ptBins_.size(); i++){
     ptBinsArray[i] = ptBins_[i];
-  }
-
-  double dPtBinsArray[100];
-  for(unsigned i = 0; i < dPtBins_.size(); i++){
-
-    dPtBinsArray[i] = dPtBins_[i]-0.0001;
   }
 
   edm::FileInPath fip1("CVEandMixedHarmonics/CVEandMixedHarmonics/data/Hydjet_eff_mult_v1.root");
