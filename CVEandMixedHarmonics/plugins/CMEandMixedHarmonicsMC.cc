@@ -265,6 +265,7 @@ Share Q_n3 for both dimensions:
   TComplex Q_nC_trk[NetaBins], Q_0_nC_trk[NetaBins];
 
 
+  return;
 //------------------------------------------------------------------
 
   const GenEvent* evt = mc->GetEvent();
