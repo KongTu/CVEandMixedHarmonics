@@ -99,11 +99,20 @@ CMEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   using namespace edm;
   using namespace std;
 
+  edm::Handle<reco::GenParticleCollection> genParticleCollection;
+  iEvent.getByToken(genSrc_, genParticleCollection);
+
+  edm::Handle<reco::VertexCollection> vertices;
+  iEvent.getByToken(vertexSrc_,vertices);
+
+  Handle<CaloTowerCollection> towers;
+  iEvent.getByToken(towerSrc_, towers);
+
+  Handle<reco::TrackCollection> tracks;
+  iEvent.getByToken(trackSrc_, tracks);
+
   if( doGenOnly_ ){
     
-    edm::Handle<reco::GenParticleCollection> genParticleCollection;
-    iEvent.getByToken(genSrc_, genParticleCollection);
-
     int nTracks_gen = 0;
     for(unsigned it=0; it<genParticleCollection->size(); ++it) {
 
@@ -125,8 +134,6 @@ CMEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
   else{
 
-      edm::Handle<reco::VertexCollection> vertices;
-      iEvent.getByToken(vertexSrc_,vertices);
       double bestvz=-999.9, bestvx=-999.9, bestvy=-999.9;
       double bestvzError=-999.9, bestvxError=-999.9, bestvyError=-999.9;
       const reco::Vertex & vtx = (*vertices)[0];
@@ -142,11 +149,7 @@ CMEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
       vtxZ->Fill( bestvz );
 
-      Handle<CaloTowerCollection> towers;
-      iEvent.getByToken(towerSrc_, towers);
-
-      Handle<reco::TrackCollection> tracks;
-      iEvent.getByToken(trackSrc_, tracks);
+      
 
       int nTracks = 0;
       for(unsigned it = 0; it < tracks->size(); it++){
