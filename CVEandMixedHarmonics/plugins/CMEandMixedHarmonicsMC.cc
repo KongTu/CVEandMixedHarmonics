@@ -265,14 +265,18 @@ Share Q_n3 for both dimensions:
 
   TComplex Q_nC_trk[NetaBins], Q_0_nC_trk[NetaBins];
 
+//HF
+  TComplex  Q_n3_1_HFplus, Q_n3_1_HFminus, Q_0_1_HFplus, Q_0_1_HFminus;
 
 //------------------------------------------------------------------
 
-  const GenEvent* evt = mc->GetEvent();
+  if( doGenOnly_ ){
 
-  HepMC::GenEvent::particle_const_iterator begin = evt->particles_begin();
-  HepMC::GenEvent::particle_const_iterator end = evt->particles_end();
-  for(HepMC::GenEvent::particle_const_iterator it = begin; it != end; ++it){
+    const GenEvent* evt = mc->GetEvent();
+
+    HepMC::GenEvent::particle_const_iterator begin = evt->particles_begin();
+    HepMC::GenEvent::particle_const_iterator end = evt->particles_end();
+    for(HepMC::GenEvent::particle_const_iterator it = begin; it != end; ++it){
 
     if((*it)->status() != 1) continue;
 
@@ -402,13 +406,10 @@ Share Q_n3 for both dimensions:
         }
       }
     }//end of pT dimension
-  }//end of gen loop
-  
-  //Declaring TComplex varaibles for Q-vectors of particle c (HF)
+    }//end of gen loop
 
-  TComplex  Q_n3_1_HFplus, Q_n3_1_HFminus, Q_0_1_HFplus, Q_0_1_HFminus;
-  
-  for(HepMC::GenEvent::particle_const_iterator it = begin; it != end; ++it){
+    //Declaring TComplex varaibles for Q-vectors of particle c (HF)
+    for(HepMC::GenEvent::particle_const_iterator it = begin; it != end; ++it){
 
     if((*it)->momentum().perp()<0.01) continue;
     if(fabs((*it)->momentum().eta())>20) continue;
@@ -431,7 +432,165 @@ Share Q_n3 for both dimensions:
     }
     else{continue;}
 
+    }
+
   }
+  else{
+
+    for(unsigned it=0; it<genParticleCollection->size(); ++it) {
+
+      const reco::GenParticle & genCand = (*genParticleCollection)[it];
+      int status = genCand.status();
+      double genpt = genCand.pt();
+      double geneta = genCand.eta();
+      double genphi = genCand.phi();
+      int gencharge = genCand.charge();
+      double weight = 1.0;
+
+      if( status != 1 || gencharge == 0 ) continue;
+      if( genpt < ptLow_ || genpt > ptHigh_) continue;
+      if( fabs(geneta) > etaTracker_ ) continue;
+
+      trkPhi->Fill(genphi, weight);
+      trkPt->Fill(genpt, weight);
+      trk_eta->Fill(geneta, weight);
+
+      Q_n3_trk += q_vector(-n3_, 1, weight, genphi);//for scalar product in tracker
+      Q_0_trk += q_vector(0, 1, weight, genphi);
+
+      for(int eta = 0; eta < NetaBins; eta++){
+        if( geneta > etaBins_[eta] && geneta < etaBins_[eta+1] ){
+
+          Q_nC_trk[eta] += q_vector(-n3_, 1, weight, genphi);
+          Q_0_nC_trk[eta] += q_vector(0, 1, weight, genphi);
+
+          if( gencharge == +1 ){//positive charge
+
+            //3p:
+            Q_n1_1[eta][0] += q_vector(n1_, 1, weight, genphi);
+            Q_n2_1[eta][0] += q_vector(n2_, 1, weight, genphi);
+
+            Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, weight, genphi);
+
+            Q_0_1[eta][0] += q_vector(0, 1, weight, genphi);
+            Q_0_2[eta][0] += q_vector(0, 2, weight, genphi);
+
+            //2p: (similar way but be careful of the order of harmonics)
+
+            P_n1_1[eta][0] += q_vector(n1_, 1, weight, genphi);
+            P_n2_1[eta][0] += q_vector(-n2_, 1, weight, genphi);//it is a minus n2_ because n2_ = 1
+
+            P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, weight, genphi);
+
+            P_0_1[eta][0] += q_vector(0, 1, weight, genphi);
+            P_0_2[eta][0] += q_vector(0, 2, weight, genphi);
+
+
+          }
+          if( gencharge == -1 ){//negative charge
+
+            Q_n1_1[eta][1] += q_vector(n1_, 1, weight, genphi);
+            Q_n2_1[eta][1] += q_vector(n2_, 1, weight, genphi);
+
+            Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, weight, genphi);
+
+            Q_0_1[eta][1] += q_vector(0, 1, weight, genphi);
+            Q_0_2[eta][1] += q_vector(0, 2, weight, genphi);
+
+            //2p: (similar way but be careful of the order of harmonics)
+
+            P_n1_1[eta][1] += q_vector(n1_, 1, weight, genphi);
+            P_n2_1[eta][1] += q_vector(-n2_, 1, weight, genphi);//it is a minus n2_ because n2_ = 1
+
+            P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, weight, genphi);
+
+            P_0_1[eta][1] += q_vector(0, 1, weight, genphi);
+            P_0_2[eta][1] += q_vector(0, 2, weight, genphi);
+
+          }
+        }
+      }//end of eta dimension
+
+      //begin of pT dimension
+      for(int pt = 0; pt < NptBins; pt++){
+        if( genpt > ptBins_[pt] && genpt < ptBins_[pt+1] ){
+
+          if( gencharge == +1 ){//positive charge
+
+            //3p:
+            Q_pT_n1_1[pt][0] += q_vector(n1_, 1, weight, genphi);
+            Q_pT_n2_1[pt][0] += q_vector(n2_, 1, weight, genphi);
+
+            Q_pT_n1n2_2[pt][0] += q_vector(n1_+n2_, 2, weight, genphi);
+
+            Q_pT_0_1[pt][0] += q_vector(0, 1, weight, genphi);
+            Q_pT_0_2[pt][0] += q_vector(0, 2, weight, genphi);
+
+            //2p: (similar way but be careful of the order of harmonics)
+
+            P_pT_n1_1[pt][0] += q_vector(n1_, 1, weight, genphi);
+            P_pT_n2_1[pt][0] += q_vector(-n2_, 1, weight, genphi);//it is a minus n2_ because n2_ = 1
+
+            P_pT_n1n2_2[pt][0] += q_vector(n1_-n2_, 2, weight, genphi);
+
+            P_pT_0_1[pt][0] += q_vector(0, 1, weight, genphi);
+            P_pT_0_2[pt][0] += q_vector(0, 2, weight, genphi);
+
+
+          }
+          if( gencharge == -1 ){//negative charge
+
+            Q_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, genphi);
+            Q_pT_n2_1[pt][1] += q_vector(n2_, 1, weight, genphi);
+
+            Q_pT_n1n2_2[pt][1] += q_vector(n1_+n2_, 2, weight, genphi);
+
+            Q_pT_0_1[pt][1] += q_vector(0, 1, weight, genphi);
+            Q_pT_0_2[pt][1] += q_vector(0, 2, weight, genphi);
+
+            //2p: (similar way but be careful of the order of harmonics)
+
+            P_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, genphi);
+            P_pT_n2_1[pt][1] += q_vector(-n2_, 1, weight, genphi);//it is a minus n2_ because n2_ = 1
+
+            P_pT_n1n2_2[pt][1] += q_vector(n1_-n2_, 2, weight, genphi);
+
+            P_pT_0_1[pt][1] += q_vector(0, 1, weight, genphi);
+            P_pT_0_2[pt][1] += q_vector(0, 2, weight, genphi);
+
+          }
+        }
+      }//end of pT dimension
+      }//end of gen loop
+
+      //Declaring TComplex varaibles for Q-vectors of particle c (HF)
+      for(unsigned it=0; it<genParticleCollection->size(); ++it) {
+
+        const reco::GenParticle & genCand = (*genParticleCollection)[it];
+        int status = genCand.status();
+        double geneta = genCand.eta();
+        double genphi = genCand.phi();
+        double w = 1.0;
+
+        double w = 1.0;
+
+        if( reverseBeam_ ) geneta = -geneta;
+        if( geneta < etaHighHF_ && geneta > etaLowHF_ ){
+
+            Q_n3_1_HFplus += q_vector(n3_, 1, w, genphi);
+            Q_0_1_HFplus += q_vector(0, 1, w, genphi);
+
+        }
+        else if( geneta < -etaLowHF_ && geneta > -etaHighHF_ ){
+
+            Q_n3_1_HFminus += q_vector(n3_, 1, w, genphi);
+            Q_0_1_HFminus += q_vector(0, 1, w, genphi);
+        }
+        else{continue;}
+      }
+  }
+
+  
 
   
 /*
