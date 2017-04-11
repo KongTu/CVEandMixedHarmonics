@@ -169,6 +169,7 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       edm::InputTag trackName_;
       edm::InputTag pfCandName_;
       edm::InputTag towerName_;
+      edm::InputTag genName_;
 
       //correction table
       TH2D* effTable[5];
@@ -251,6 +252,7 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       bool doEffCorrection_;
       bool useEtaGap_;
       bool dopPb_;
+      bool doGenOnly_;
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;
