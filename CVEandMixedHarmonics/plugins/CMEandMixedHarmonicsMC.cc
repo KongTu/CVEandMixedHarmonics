@@ -407,16 +407,15 @@ Share Q_n3 for both dimensions:
 
   TComplex  Q_n3_1_HFplus, Q_n3_1_HFminus, Q_0_1_HFplus, Q_0_1_HFminus;
   
-  for(unsigned it=0; it<genParticleCollection->size(); ++it) {
+  for(HepMC::GenEvent::particle_const_iterator it = begin; it != end; ++it){
 
-    const reco::GenParticle & genCand = (*genParticleCollection)[it];
-    int status = genCand.status();
-    double geneta = genCand.eta();
-    double genphi = genCand.phi();
-    int gencharge = genCand.charge();
+    if((*it)->momentum().perp()<0.01) continue;
+    if(fabs((*it)->momentum().eta())>20) continue;
+
+    double geneta = (*it)->momentum().eta();
+    double genphi = (*it)->momentum().phi();
+    double genpt = (*it)->momentum().perp();
     double w = 1.0;
-
-    if( status != 1 || gencharge == 0 ) continue;
 
     if( reverseBeam_ ) geneta = -genCand.eta();
     if( geneta < etaHighHF_ && geneta > etaLowHF_ ){
