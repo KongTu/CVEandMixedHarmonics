@@ -137,9 +137,7 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
        if(fabs((*it)->momentum().eta())>20) continue;
 
        double eta = (*it)->momentum().eta();
-       double phi = (*it)->momentum().phi();
        double pt = (*it)->momentum().perp();
-       double mass = (*it)->momentum().m();
 
        if( pt < 0.4 || fabs(eta) > 2.4 ) continue;
        nTracks_gen++;
@@ -269,17 +267,27 @@ Share Q_n3 for both dimensions:
 
 //------------------------------------------------------------------
 
-  for(unsigned it=0; it<genParticleCollection->size(); ++it) {
+  const GenEvent* evt = mc->GetEvent();
 
-    const reco::GenParticle & genCand = (*genParticleCollection)[it];
-    int status = genCand.status();
-    double genpt = genCand.pt();
-    double geneta = genCand.eta();
-    double genphi = genCand.phi();
-    int gencharge = genCand.charge();
+  HepMC::GenEvent::particle_const_iterator begin = evt->particles_begin();
+  HepMC::GenEvent::particle_const_iterator end = evt->particles_end();
+  for(HepMC::GenEvent::particle_const_iterator it = begin; it != end; ++it){
+
+    if((*it)->status() != 1) continue;
+
+    int pdg_id = (*it)->pdg_id();
+    const ParticleData * part = pdt->particle(pdg_id);
+    int charge = static_cast<int>(part->charge());
+    if(charge == 0) continue;
+
+    if((*it)->momentum().perp()<0.01) continue;
+    if(fabs((*it)->momentum().eta())>20) continue;
+
+    double geneta = (*it)->momentum().eta();
+    double genphi = (*it)->momentum().phi();
+    double genpt = (*it)->momentum().perp();
     double weight = 1.0;
 
-    if( status != 1 || gencharge == 0 ) continue;
     if( genpt < ptLow_ || genpt > ptHigh_) continue;
     if( fabs(geneta) > etaTracker_ ) continue;
 
