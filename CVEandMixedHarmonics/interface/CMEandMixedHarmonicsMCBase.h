@@ -115,6 +115,9 @@
 #include "DataFormats/RecoCandidate/interface/TrackAssociation.h"
 #include "DataFormats/TrackReco/interface/DeDxData.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
+#include "SimGeneral/HepPDTRecord/interface/ParticleDataTable.h"
+
 
 // Particle Flow
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
@@ -175,6 +178,8 @@ class CMEandMixedHarmonicsMC : public edm::EDAnalyzer {
       edm::InputTag towerName_;
       edm::InputTag genName_;
       edm::InputTag hepName_;
+
+      edm::ESHandle<ParticleDataTable> pdt;
 
       //correction table
       TH2D* effTable[5];
