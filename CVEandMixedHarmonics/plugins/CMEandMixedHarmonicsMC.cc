@@ -131,9 +131,8 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
        int pdg_id = (*it)->pdg_id();
        const ParticleData * part = pdt->particle(pdg_id);
        int charge = static_cast<int>(part->charge());
-       if(charge == 0 && ischarge) continue;
+       if(charge == 0) continue;
 
-       if(pdg_id != pdgid && pdgid!=-999999) continue;
        if((*it)->momentum().perp()<0.01) continue;
        if(fabs((*it)->momentum().eta())>20) continue;
 
