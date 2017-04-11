@@ -414,7 +414,6 @@ Share Q_n3 for both dimensions:
 
     double geneta = (*it)->momentum().eta();
     double genphi = (*it)->momentum().phi();
-    double genpt = (*it)->momentum().perp();
     double w = 1.0;
 
     if( reverseBeam_ ) geneta = -geneta;
