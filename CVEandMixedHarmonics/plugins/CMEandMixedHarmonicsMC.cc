@@ -136,11 +136,11 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
       //  if((*it)->momentum().perp()<0.01) continue;
       //  if(fabs((*it)->momentum().eta())>20) continue;
 
-      //  double eta = (*it)->momentum().eta();
-      //  double pt = (*it)->momentum().perp();
+       double eta = (*it)->momentum().eta();
+       double pt = (*it)->momentum().perp();
 
-      //  if( pt < 0.4 || fabs(eta) > 2.4 ) continue;
-      //  nTracks_gen++;
+       if( pt < 0.4 || fabs(eta) > 2.4 ) continue;
+       nTracks_gen++;
     }
 
     return;
