@@ -119,7 +119,7 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   if( doGenOnly_ ){
 
-    int nTracks_gen = 0;
+    double nTracks_gen = 0.0;
     const GenEvent* evt = mc->GetEvent();
 
     HepMC::GenEvent::particle_const_iterator begin = evt->particles_begin();
