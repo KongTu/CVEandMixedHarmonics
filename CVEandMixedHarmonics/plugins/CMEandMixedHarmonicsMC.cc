@@ -140,9 +140,20 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
        double pt = (*it)->momentum().perp();
 
        if( pt < 0.4 || fabs(eta) > 2.4 ) continue;
-       nTracks_gen++;
+       double weight = 1.0;
+       if( doEffCorrection_ ) { 
+          if( dopPb_ ){
+            weight = effTable_pPb[eff_]->GetBinContent( effTable_pPb[eff_]->FindBin(eta, pt) );
+          }
+          else{
+            weight = effTable[eff_]->GetBinContent( effTable[eff_]->FindBin(eta, pt) );
+          }
+
+       }
+       nTracks_gen += weight;
     }
 
+    Ntrk_MB->Fill( nTracks_gen );
     if( nTracks_gen < Nmin_ || nTracks_gen >= Nmax_ ) return;
     Ntrk->Fill( nTracks_gen );
   }
@@ -184,6 +195,7 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
     }
 
+    Ntrk_MB->Fill( nTracks );
     if( nTracks < Nmin_ || nTracks >= Nmax_ ) return;
     Ntrk->Fill( nTracks );
 
@@ -1045,7 +1057,8 @@ CMEandMixedHarmonicsMC::beginJob()
      effTable_pPb[i] = (TH2D*)f2.Get(Form("rTotalEff3D_%d",i));
   }
 
-  Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
+  Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",10000,0,10000);
+  Ntrk_MB = fs->make<TH1D>("Ntrk_MB",";Ntrk",10000,0,10000);
   vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
