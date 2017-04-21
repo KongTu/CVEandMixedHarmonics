@@ -548,16 +548,16 @@ CMEandMixedHarmonicsTest::beginJob()
   q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
   Ntrk_q2 = fs->make<TH1D>("Ntrk_q2",";Ntrk",5000,0,5000);
 
-  c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
-  c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
-  c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 20000,-1,1);
+  c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 2000,-1,1);
+  c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 2000,-1,1);
+  c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 2000,-1,1);
 
-  cn_tracker = fs->make<TH1D>("cn_tracker",";cn_tracker", 20000,-1,1);
+  cn_tracker = fs->make<TH1D>("cn_tracker",";cn_tracker", 2000,-1,1);
 
   for(int eta = 0; eta < NetaBins; eta++){
     for(int HF = 0; HF < 2; HF++){
 
-      cn_eta[eta][HF] = fs->make<TH1D>(Form("cn_eta_%d_%d", eta, HF),";cn_eta", 20000,-1,1);
+      cn_eta[eta][HF] = fs->make<TH1D>(Form("cn_eta_%d_%d", eta, HF),";cn_eta", 2000,-1,1);
     }
   }
  
