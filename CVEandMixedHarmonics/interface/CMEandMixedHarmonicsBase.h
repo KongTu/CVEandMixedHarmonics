@@ -13,7 +13,7 @@
 
 #include <TMath.h>
 #include <TH1D.h>
-#include <TH1F.h>
+#include <TH1D.h>
 #include <TH2D.h>
 #include <TH3D.h>
 #include <TNtuple.h>
@@ -176,50 +176,50 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       TH2D* effTable[5];
       TH2D* effTable_pPb[5];
 
-      TH1F* c2_ab;
-      TH1F* c2_ac;
-      TH1F* c2_cb;
+      TH1D* c2_ab;
+      TH1D* c2_ac;
+      TH1D* c2_cb;
 
-      TH1F* cn_tracker;
+      TH1D* cn_tracker;
 
-      TH1F* cn_eta[48][2];
+      TH1D* cn_eta[48][2];
 
-      TH1F* c2_real[48][3];
-      TH1F* c2_imag[48][3];
+      TH1D* c2_real[48][3];
+      TH1D* c2_imag[48][3];
 
-      TH1F* c3_real[48][3][2];
-      TH1F* c3_imag[48][3][2];
+      TH1D* c3_real[48][3][2];
+      TH1D* c3_imag[48][3][2];
 
-      TH1F* c2_dpT_real[48][3];
-      TH1F* c2_dpT_imag[48][3];
+      TH1D* c2_dpT_real[48][3];
+      TH1D* c2_dpT_imag[48][3];
 
-      TH1F* c3_dpT_real[48][3][2];
-      TH1F* c3_dpT_imag[48][3][2];
+      TH1D* c3_dpT_real[48][3][2];
+      TH1D* c3_dpT_imag[48][3][2];
 
-      TH1F* c2_pTave_real[48][3];
-      TH1F* c2_pTave_imag[48][3];
+      TH1D* c2_pTave_real[48][3];
+      TH1D* c2_pTave_imag[48][3];
 
-      TH1F* c3_pTave_real[48][3][2];
-      TH1F* c3_pTave_imag[48][3][2];
+      TH1D* c3_pTave_real[48][3][2];
+      TH1D* c3_pTave_imag[48][3][2];
 
-      TH1F* delEta3p[3];
-      TH1F* delEta2p[3];
+      TH1D* delEta3p[3];
+      TH1D* delEta2p[3];
 
-      TH1F* delPt3p[3];
-      TH1F* delPt2p[3];
+      TH1D* delPt3p[3];
+      TH1D* delPt2p[3];
 
-      TH1F* ptAve3p[3];
-      TH1F* ptAve2p[3];
+      TH1D* ptAve3p[3];
+      TH1D* ptAve2p[3];
 
-      TH1F* Ntrk;
-      TH1F* vtxZ;
-      TH1F* trkPhi;
-      TH1F* hfPhi;
-      TH1F* trkPt;
-      TH1F* trk_eta;
-      TH1F* cbinHist;
-      TH1F* q2_mag;
-      TH1F* Ntrk_q2;
+      TH1D* Ntrk;
+      TH1D* vtxZ;
+      TH1D* trkPhi;
+      TH1D* hfPhi;
+      TH1D* trkPt;
+      TH1D* trk_eta;
+      TH1D* cbinHist;
+      TH1D* q2_mag;
+      TH1D* Ntrk_q2;
 
       int Nmin_;
       int Nmax_;
