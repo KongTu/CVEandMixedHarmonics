@@ -46,6 +46,7 @@ CMEandMixedHarmonics::CMEandMixedHarmonics(const edm::ParameterSet& iConfig)
   doEffCorrection_ = iConfig.getUntrackedParameter<bool>("doEffCorrection");
   useEtaGap_ = iConfig.getUntrackedParameter<bool>("useEtaGap");
   dopPb_ = iConfig.getUntrackedParameter<bool>("dopPb");
+  doLightWeight_ = iConfig.getUntrackedParameter<bool>("doLightWeight");
 
   eff_ = iConfig.getUntrackedParameter<int>("eff");
 
@@ -55,6 +56,9 @@ CMEandMixedHarmonics::CMEandMixedHarmonics(const edm::ParameterSet& iConfig)
   etaLowHF_ = iConfig.getUntrackedParameter<double>("etaLowHF");
   etaHighHF_ = iConfig.getUntrackedParameter<double>("etaHighHF");
   
+  etaLowQ2_ = iConfig.getUntrackedParameter<double>("etaLowQ2");
+  etaHighQ2_ = iConfig.getUntrackedParameter<double>("etaHighQ2");
+   
   vzLow_ = iConfig.getUntrackedParameter<double>("vzLow");
   vzHigh_ = iConfig.getUntrackedParameter<double>("vzHigh");
   
@@ -212,7 +216,8 @@ q2 calculation at HF and selections:
           double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
           if( reverseBeam_ ) caloEta = -hit.eta();
 
-    if( caloEta < 3.0 || caloEta > 5.0 ) continue;
+    if( dopPb_ ) {if( caloEta < etaLowQ2_ || caloEta > etaHighQ2_ ) continue;}
+    else{ if( fabs(caloEta) < etaLowQ2_ || fabs(caloEta) > etaHighQ2_ ) continue; }
 
     qHFcos += w*cos(-n3_*caloPhi);
     qHFsin += w*sin(-n3_*caloPhi);
@@ -394,56 +399,59 @@ Share Q_n3 for both dimensions:
       }
     }//end of eta dimension
 
-    //begin of pT dimension
-    for(int pt = 0; pt < NptBins; pt++){
-      if( trk.pt() > ptBins_[pt] && trk.pt() < ptBins_[pt+1] ){
+    if( !doLightWeight_ ){
+      //begin of pT dimension
+      for(int pt = 0; pt < NptBins; pt++){
+        if( trk.pt() > ptBins_[pt] && trk.pt() < ptBins_[pt+1] ){
 
-        if( trk.charge() == +1 ){//positive charge
+          if( trk.charge() == +1 ){//positive charge
 
-          //3p:
-          Q_pT_n1_1[pt][0] += q_vector(n1_, 1, weight, phi);
-          Q_pT_n2_1[pt][0] += q_vector(n2_, 1, weight, phi);
+            //3p:
+            Q_pT_n1_1[pt][0] += q_vector(n1_, 1, weight, phi);
+            Q_pT_n2_1[pt][0] += q_vector(n2_, 1, weight, phi);
 
-          Q_pT_n1n2_2[pt][0] += q_vector(n1_+n2_, 2, weight, phi);
+            Q_pT_n1n2_2[pt][0] += q_vector(n1_+n2_, 2, weight, phi);
 
-          Q_pT_0_1[pt][0] += q_vector(0, 1, weight, phi);
-          Q_pT_0_2[pt][0] += q_vector(0, 2, weight, phi);
+            Q_pT_0_1[pt][0] += q_vector(0, 1, weight, phi);
+            Q_pT_0_2[pt][0] += q_vector(0, 2, weight, phi);
 
-          //2p: (similar way but be careful of the order of harmonics)
+            //2p: (similar way but be careful of the order of harmonics)
 
-          P_pT_n1_1[pt][0] += q_vector(n1_, 1, weight, phi);
-          P_pT_n2_1[pt][0] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
+            P_pT_n1_1[pt][0] += q_vector(n1_, 1, weight, phi);
+            P_pT_n2_1[pt][0] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
 
-          P_pT_n1n2_2[pt][0] += q_vector(n1_-n2_, 2, weight, phi);
+            P_pT_n1n2_2[pt][0] += q_vector(n1_-n2_, 2, weight, phi);
 
-          P_pT_0_1[pt][0] += q_vector(0, 1, weight, phi);
-          P_pT_0_2[pt][0] += q_vector(0, 2, weight, phi);
+            P_pT_0_1[pt][0] += q_vector(0, 1, weight, phi);
+            P_pT_0_2[pt][0] += q_vector(0, 2, weight, phi);
 
 
+          }
+          if( trk.charge() == -1 ){//negative charge
+
+            Q_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, phi);
+            Q_pT_n2_1[pt][1] += q_vector(n2_, 1, weight, phi);
+
+            Q_pT_n1n2_2[pt][1] += q_vector(n1_+n2_, 2, weight, phi);
+
+            Q_pT_0_1[pt][1] += q_vector(0, 1, weight, phi);
+            Q_pT_0_2[pt][1] += q_vector(0, 2, weight, phi);
+
+            //2p: (similar way but be careful of the order of harmonics)
+
+            P_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, phi);
+            P_pT_n2_1[pt][1] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
+
+            P_pT_n1n2_2[pt][1] += q_vector(n1_-n2_, 2, weight, phi);
+
+            P_pT_0_1[pt][1] += q_vector(0, 1, weight, phi);
+            P_pT_0_2[pt][1] += q_vector(0, 2, weight, phi);
+
+          }
         }
-        if( trk.charge() == -1 ){//negative charge
+      }//end of pT dimension
+    }
 
-          Q_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, phi);
-          Q_pT_n2_1[pt][1] += q_vector(n2_, 1, weight, phi);
-
-          Q_pT_n1n2_2[pt][1] += q_vector(n1_+n2_, 2, weight, phi);
-
-          Q_pT_0_1[pt][1] += q_vector(0, 1, weight, phi);
-          Q_pT_0_2[pt][1] += q_vector(0, 2, weight, phi);
-
-          //2p: (similar way but be careful of the order of harmonics)
-
-          P_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, phi);
-          P_pT_n2_1[pt][1] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
-
-          P_pT_n1n2_2[pt][1] += q_vector(n1_-n2_, 2, weight, phi);
-
-          P_pT_0_1[pt][1] += q_vector(0, 1, weight, phi);
-          P_pT_0_2[pt][1] += q_vector(0, 2, weight, phi);
-
-        }
-      }
-    }//end of pT dimension
   }
 
   //Declaring TComplex varaibles for Q-vectors of particle c (HF)
@@ -661,244 +669,248 @@ calculate the 2-particles correlator with the charged-particles
     }
   }
 
-/*
-2. pt dimension:
-*/
 
-/*
-calculate the 3-particles correlator with the charged-particles
- */
+  if( !doLightWeight_ ){
 
-  for(int ipt = 0; ipt < NptBins; ipt++){
-    for(int jpt = 0; jpt < NptBins; jpt++){
+  /*
+  2. pt dimension:
+  */
 
-      double deltaPt = fabs( ptBins_[ipt] - ptBins_[jpt] );
-      double pTave = (ptBins_[ipt] + ptBins_[jpt])/2.0;
+  /*
+  calculate the 3-particles correlator with the charged-particles
+   */
 
-      for(int dpt = 0; dpt < NdPtBins; dpt++){
-        //begin of delta pT
-        if( deltaPt > dPtBinsArray[dpt] && deltaPt < dPtBinsArray[dpt+1] ){
-          
-          TComplex N_2;
-          TComplex D_2;
+    for(int ipt = 0; ipt < NptBins; ipt++){
+      for(int jpt = 0; jpt < NptBins; jpt++){
 
-          TComplex N_3_HFplus, N_3_HFminus;
-          TComplex D_3_HFplus, D_3_HFminus;
+        double deltaPt = fabs( ptBins_[ipt] - ptBins_[jpt] );
+        double pTave = (ptBins_[ipt] + ptBins_[jpt])/2.0;
 
-          //same sign correlator:
-          for(int sign = 0; sign < 2; sign++){
-            if( ipt == jpt ){
+        for(int dpt = 0; dpt < NdPtBins; dpt++){
+          //begin of delta pT
+          if( deltaPt > dPtBinsArray[dpt] && deltaPt < dPtBinsArray[dpt+1] ){
+            
+            TComplex N_2;
+            TComplex D_2;
 
-              delPt3p[sign]->Fill( deltaPt );
+            TComplex N_3_HFplus, N_3_HFminus;
+            TComplex D_3_HFplus, D_3_HFminus;
 
-              N_2 = Q_pT_n1_1[ipt][sign]*Q_pT_n2_1[ipt][sign] - Q_pT_n1n2_2[ipt][sign];
-              D_2 = Q_pT_0_1[ipt][sign]*Q_pT_0_1[ipt][sign] - Q_pT_0_2[ipt][sign];
+            //same sign correlator:
+            for(int sign = 0; sign < 2; sign++){
+              if( ipt == jpt ){
 
+                delPt3p[sign]->Fill( deltaPt );
+
+                N_2 = Q_pT_n1_1[ipt][sign]*Q_pT_n2_1[ipt][sign] - Q_pT_n1n2_2[ipt][sign];
+                D_2 = Q_pT_0_1[ipt][sign]*Q_pT_0_1[ipt][sign] - Q_pT_0_2[ipt][sign];
+
+              }
+              else{
+
+                delPt3p[sign]->Fill( deltaPt );
+
+                N_2 = Q_pT_n1_1[ipt][sign]*Q_pT_n2_1[jpt][sign];
+                D_2 = Q_pT_0_1[ipt][sign]*Q_pT_0_1[jpt][sign];
+
+              }        
+
+              N_3_HFplus = N_2*Q_n3_1_HFplus;
+              D_3_HFplus = D_2*Q_0_1_HFplus;
+
+              c3_dpT_real[dpt][sign][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+              //c3_dpT_imag[dpt][sign][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+
+              N_3_HFminus = N_2*Q_n3_1_HFminus;
+              D_3_HFminus = D_2*Q_0_1_HFminus;
+
+              c3_dpT_real[dpt][sign][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+              //c3_dpT_imag[dpt][sign][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+    
             }
-            else{
+            //opposite sign correlator:
 
-              delPt3p[sign]->Fill( deltaPt );
+            delPt3p[2]->Fill( deltaPt );
 
-              N_2 = Q_pT_n1_1[ipt][sign]*Q_pT_n2_1[jpt][sign];
-              D_2 = Q_pT_0_1[ipt][sign]*Q_pT_0_1[jpt][sign];
-
-            }        
+            N_2 = Q_pT_n1_1[ipt][0]*Q_pT_n2_1[jpt][1];
+            D_2 = Q_pT_0_1[ipt][0]*Q_pT_0_1[jpt][1];
 
             N_3_HFplus = N_2*Q_n3_1_HFplus;
             D_3_HFplus = D_2*Q_0_1_HFplus;
 
-            c3_dpT_real[dpt][sign][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
-            //c3_dpT_imag[dpt][sign][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+            c3_dpT_real[dpt][2][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+            //c3_dpT_imag[dpt][2][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
 
             N_3_HFminus = N_2*Q_n3_1_HFminus;
             D_3_HFminus = D_2*Q_0_1_HFminus;
 
-            c3_dpT_real[dpt][sign][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-            //c3_dpT_imag[dpt][sign][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-  
-          }
-          //opposite sign correlator:
+            c3_dpT_real[dpt][2][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+            //c3_dpT_imag[dpt][2][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
 
-          delPt3p[2]->Fill( deltaPt );
+          }//end of delta pT
 
-          N_2 = Q_pT_n1_1[ipt][0]*Q_pT_n2_1[jpt][1];
-          D_2 = Q_pT_0_1[ipt][0]*Q_pT_0_1[jpt][1];
+          //begin of pTave
+          if( pTave > dPtBinsArray[dpt] && pTave < dPtBinsArray[dpt+1] ){
+            
+            TComplex N_2;
+            TComplex D_2;
 
-          N_3_HFplus = N_2*Q_n3_1_HFplus;
-          D_3_HFplus = D_2*Q_0_1_HFplus;
+            TComplex N_3_HFplus, N_3_HFminus;
+            TComplex D_3_HFplus, D_3_HFminus;
 
-          c3_dpT_real[dpt][2][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
-          //c3_dpT_imag[dpt][2][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+            //same sign correlator:
+            for(int sign = 0; sign < 2; sign++){
+              if( ipt == jpt ){
 
-          N_3_HFminus = N_2*Q_n3_1_HFminus;
-          D_3_HFminus = D_2*Q_0_1_HFminus;
+                ptAve3p[sign]->Fill( pTave );
 
-          c3_dpT_real[dpt][2][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-          //c3_dpT_imag[dpt][2][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+                N_2 = Q_pT_n1_1[ipt][sign]*Q_pT_n2_1[ipt][sign] - Q_pT_n1n2_2[ipt][sign];
+                D_2 = Q_pT_0_1[ipt][sign]*Q_pT_0_1[ipt][sign] - Q_pT_0_2[ipt][sign];
 
-        }//end of delta pT
+              }
+              else{
 
-        //begin of pTave
-        if( pTave > dPtBinsArray[dpt] && pTave < dPtBinsArray[dpt+1] ){
-          
-          TComplex N_2;
-          TComplex D_2;
+                ptAve3p[sign]->Fill( pTave );
 
-          TComplex N_3_HFplus, N_3_HFminus;
-          TComplex D_3_HFplus, D_3_HFminus;
+                N_2 = Q_pT_n1_1[ipt][sign]*Q_pT_n2_1[jpt][sign];
+                D_2 = Q_pT_0_1[ipt][sign]*Q_pT_0_1[jpt][sign];
 
-          //same sign correlator:
-          for(int sign = 0; sign < 2; sign++){
-            if( ipt == jpt ){
+              }        
 
-              ptAve3p[sign]->Fill( pTave );
+              N_3_HFplus = N_2*Q_n3_1_HFplus;
+              D_3_HFplus = D_2*Q_0_1_HFplus;
 
-              N_2 = Q_pT_n1_1[ipt][sign]*Q_pT_n2_1[ipt][sign] - Q_pT_n1n2_2[ipt][sign];
-              D_2 = Q_pT_0_1[ipt][sign]*Q_pT_0_1[ipt][sign] - Q_pT_0_2[ipt][sign];
+              c3_pTave_real[dpt][sign][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+              //c3_pTave_imag[dpt][sign][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
 
+              N_3_HFminus = N_2*Q_n3_1_HFminus;
+              D_3_HFminus = D_2*Q_0_1_HFminus;
+
+              c3_pTave_real[dpt][sign][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+              //c3_pTave_imag[dpt][sign][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+    
             }
-            else{
+            //opposite sign correlator:
 
-              ptAve3p[sign]->Fill( pTave );
+            ptAve3p[2]->Fill( pTave );
 
-              N_2 = Q_pT_n1_1[ipt][sign]*Q_pT_n2_1[jpt][sign];
-              D_2 = Q_pT_0_1[ipt][sign]*Q_pT_0_1[jpt][sign];
-
-            }        
+            N_2 = Q_pT_n1_1[ipt][0]*Q_pT_n2_1[jpt][1];
+            D_2 = Q_pT_0_1[ipt][0]*Q_pT_0_1[jpt][1];
 
             N_3_HFplus = N_2*Q_n3_1_HFplus;
             D_3_HFplus = D_2*Q_0_1_HFplus;
 
-            c3_pTave_real[dpt][sign][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
-            //c3_pTave_imag[dpt][sign][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+            c3_pTave_real[dpt][2][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+            //c3_pTave_imag[dpt][2][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
 
             N_3_HFminus = N_2*Q_n3_1_HFminus;
             D_3_HFminus = D_2*Q_0_1_HFminus;
 
-            c3_pTave_real[dpt][sign][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-            //c3_pTave_imag[dpt][sign][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-  
-          }
-          //opposite sign correlator:
+            c3_pTave_real[dpt][2][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+            //c3_pTave_imag[dpt][2][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
 
-          ptAve3p[2]->Fill( pTave );
-
-          N_2 = Q_pT_n1_1[ipt][0]*Q_pT_n2_1[jpt][1];
-          D_2 = Q_pT_0_1[ipt][0]*Q_pT_0_1[jpt][1];
-
-          N_3_HFplus = N_2*Q_n3_1_HFplus;
-          D_3_HFplus = D_2*Q_0_1_HFplus;
-
-          c3_pTave_real[dpt][2][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
-          //c3_pTave_imag[dpt][2][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
-
-          N_3_HFminus = N_2*Q_n3_1_HFminus;
-          D_3_HFminus = D_2*Q_0_1_HFminus;
-
-          c3_pTave_real[dpt][2][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-          //c3_pTave_imag[dpt][2][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-
-        }//end of pTave
+          }//end of pTave
+        }
       }
     }
-  }
 
-/*
-calculate the 2-particles correlator with the charged-particles
-*/
+  /*
+  calculate the 2-particles correlator with the charged-particles
+  */
 
-  for(int ipt = 0; ipt < NptBins; ipt++){
-    for(int jpt = 0; jpt < NptBins; jpt++){
+    for(int ipt = 0; ipt < NptBins; ipt++){
+      for(int jpt = 0; jpt < NptBins; jpt++){
 
-      double deltaPt = fabs( ptBins_[ipt] - ptBins_[jpt] );
-      double pTave = (ptBins_[ipt] + ptBins_[jpt])/2.0;
-      
-      for(int dpt = 0; dpt < NdPtBins; dpt++){
-        //begin of delta pT
-        if( deltaPt > dPtBinsArray[dpt] && deltaPt < dPtBinsArray[dpt+1] ){
-          
-          TComplex N_2;
-          TComplex D_2;
-
-          //same sign correlator:
-          for(int sign = 0; sign < 2; sign++){
-            if( ipt == jpt ){
-
-              delPt2p[sign]->Fill( deltaPt );
-
-
-              N_2 = P_pT_n1_1[ipt][sign]*P_pT_n2_1[ipt][sign] - P_pT_n1n2_2[ipt][sign];
-              D_2 = P_pT_0_1[ipt][sign]*P_pT_0_1[ipt][sign] - P_pT_0_2[ipt][sign];
-
-            }
-            else{
-
-              delPt2p[sign]->Fill( deltaPt );
-
-              N_2 = P_pT_n1_1[ipt][sign]*P_pT_n2_1[jpt][sign];
-              D_2 = P_pT_0_1[ipt][sign]*P_pT_0_1[jpt][sign];
-
-            }        
-
-            c2_dpT_real[dpt][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
-            //c2_dpT_imag[dpt][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
-
-          }
-
-          delPt2p[2]->Fill( deltaPt );
-
-          //opposite sign correlator:
-          N_2 = P_pT_n1_1[ipt][0]*P_pT_n2_1[jpt][1];
-          D_2 = P_pT_0_1[ipt][0]*P_pT_0_1[jpt][1];
-
-          c2_dpT_real[dpt][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
-          //c2_dpT_imag[dpt][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
-
-        }//end of delta pT
+        double deltaPt = fabs( ptBins_[ipt] - ptBins_[jpt] );
+        double pTave = (ptBins_[ipt] + ptBins_[jpt])/2.0;
         
-        //begin of pTave
-        if( pTave > dPtBinsArray[dpt] && pTave < dPtBinsArray[dpt+1] ){
-          
-          TComplex N_2;
-          TComplex D_2;
+        for(int dpt = 0; dpt < NdPtBins; dpt++){
+          //begin of delta pT
+          if( deltaPt > dPtBinsArray[dpt] && deltaPt < dPtBinsArray[dpt+1] ){
+            
+            TComplex N_2;
+            TComplex D_2;
 
-          //same sign correlator:
-          for(int sign = 0; sign < 2; sign++){
-            if( ipt == jpt ){
+            //same sign correlator:
+            for(int sign = 0; sign < 2; sign++){
+              if( ipt == jpt ){
 
-              ptAve2p[sign]->Fill( pTave );
+                delPt2p[sign]->Fill( deltaPt );
 
-              N_2 = P_pT_n1_1[ipt][sign]*P_pT_n2_1[ipt][sign] - P_pT_n1n2_2[ipt][sign];
-              D_2 = P_pT_0_1[ipt][sign]*P_pT_0_1[ipt][sign] - P_pT_0_2[ipt][sign];
+
+                N_2 = P_pT_n1_1[ipt][sign]*P_pT_n2_1[ipt][sign] - P_pT_n1n2_2[ipt][sign];
+                D_2 = P_pT_0_1[ipt][sign]*P_pT_0_1[ipt][sign] - P_pT_0_2[ipt][sign];
+
+              }
+              else{
+
+                delPt2p[sign]->Fill( deltaPt );
+
+                N_2 = P_pT_n1_1[ipt][sign]*P_pT_n2_1[jpt][sign];
+                D_2 = P_pT_0_1[ipt][sign]*P_pT_0_1[jpt][sign];
+
+              }        
+
+              c2_dpT_real[dpt][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
+              //c2_dpT_imag[dpt][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
 
             }
-            else{
 
-              ptAve2p[sign]->Fill( pTave );
+            delPt2p[2]->Fill( deltaPt );
 
-              N_2 = P_pT_n1_1[ipt][sign]*P_pT_n2_1[jpt][sign];
-              D_2 = P_pT_0_1[ipt][sign]*P_pT_0_1[jpt][sign];
+            //opposite sign correlator:
+            N_2 = P_pT_n1_1[ipt][0]*P_pT_n2_1[jpt][1];
+            D_2 = P_pT_0_1[ipt][0]*P_pT_0_1[jpt][1];
 
-            }        
+            c2_dpT_real[dpt][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
+            //c2_dpT_imag[dpt][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
 
-            c2_pTave_real[dpt][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
-            //c2_pTave_imag[dpt][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+          }//end of delta pT
+          
+          //begin of pTave
+          if( pTave > dPtBinsArray[dpt] && pTave < dPtBinsArray[dpt+1] ){
+            
+            TComplex N_2;
+            TComplex D_2;
 
-          }
+            //same sign correlator:
+            for(int sign = 0; sign < 2; sign++){
+              if( ipt == jpt ){
 
-          ptAve2p[2]->Fill( pTave );
+                ptAve2p[sign]->Fill( pTave );
 
-          //opposite sign correlator:
-          N_2 = P_pT_n1_1[ipt][0]*P_pT_n2_1[jpt][1];
-          D_2 = P_pT_0_1[ipt][0]*P_pT_0_1[jpt][1];
+                N_2 = P_pT_n1_1[ipt][sign]*P_pT_n2_1[ipt][sign] - P_pT_n1n2_2[ipt][sign];
+                D_2 = P_pT_0_1[ipt][sign]*P_pT_0_1[ipt][sign] - P_pT_0_2[ipt][sign];
 
-          c2_pTave_real[dpt][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
-          //c2_pTave_imag[dpt][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+              }
+              else{
 
-        }//end of pTave
+                ptAve2p[sign]->Fill( pTave );
+
+                N_2 = P_pT_n1_1[ipt][sign]*P_pT_n2_1[jpt][sign];
+                D_2 = P_pT_0_1[ipt][sign]*P_pT_0_1[jpt][sign];
+
+              }        
+
+              c2_pTave_real[dpt][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
+              //c2_pTave_imag[dpt][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+
+            }
+
+            ptAve2p[2]->Fill( pTave );
+
+            //opposite sign correlator:
+            N_2 = P_pT_n1_1[ipt][0]*P_pT_n2_1[jpt][1];
+            D_2 = P_pT_0_1[ipt][0]*P_pT_0_1[jpt][1];
+
+            c2_pTave_real[dpt][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
+            //c2_pTave_imag[dpt][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+
+          }//end of pTave
+        }
       }
     }
-  }
+  }//end of doLightWeight
 
 
 }
@@ -908,7 +920,7 @@ CMEandMixedHarmonics::beginJob()
 {
   edm::Service<TFileService> fs;
     
-  TH1D::SetDefaultSumw2();
+  TH1F::SetDefaultSumw2();
 
   const int NdEtaBins = dEtaBins_.size() - 1;
   const int NetaBins = etaBins_.size() - 1;
@@ -949,39 +961,40 @@ CMEandMixedHarmonics::beginJob()
      effTable_pPb[i] = (TH2D*)f2.Get(Form("rTotalEff3D_%d",i));
   }
 
-  Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
-  vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);
-  cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
-  trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
-  hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
-  trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
-  trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
-  q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
-  Ntrk_q2 = fs->make<TH1D>("Ntrk_q2",";Ntrk",5000,0,5000);
+  Ntrk = fs->make<TH1F>("Ntrk",";Ntrk",5000,0,5000);
+  vtxZ = fs->make<TH1F>("vtxZ",";vz", 400,-20,20);
+  cbinHist = fs->make<TH1F>("cbinHist",";cbin",200,0,200);
+  trkPhi = fs->make<TH1F>("trkPhi", ";#phi", 700, -3.5, 3.5);
+  hfPhi = fs->make<TH1F>("hfPhi", ";#phi", 700, -3.5, 3.5);
+  trkPt = fs->make<TH1F>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
+  trk_eta = fs->make<TH1F>("trk_eta", ";#eta", NetaBins, etaBinsArray);
+  q2_mag = fs->make<TH1F>("q2_mag", "q2", 2000,-1,1);
+  Ntrk_q2 = fs->make<TH1F>("Ntrk_q2",";Ntrk",5000,0,5000);
 
   for(int sign = 0; sign < 3; sign++){
 
-    delEta2p[sign] = fs->make<TH1D>(Form("delEta2p_%d",sign),";#Delta#eta", NdEtaBins, dEtaBinsArray);
-    delEta3p[sign] = fs->make<TH1D>(Form("delEta3p_%d",sign),";#Delta#eta", NdEtaBins, dEtaBinsArray);
+    delEta2p[sign] = fs->make<TH1F>(Form("delEta2p_%d",sign),";#Delta#eta", NdEtaBins, dEtaBinsArray);
+    delEta3p[sign] = fs->make<TH1F>(Form("delEta3p_%d",sign),";#Delta#eta", NdEtaBins, dEtaBinsArray);
     
-    delPt2p[sign] = fs->make<TH1D>(Form("delPt2p_%d",sign),";#Deltap_{T}", NdPtBins, dPtBinsArray);
-    delPt3p[sign] = fs->make<TH1D>(Form("delPt3p_%d",sign),";#Deltap_{T}", NdPtBins, dPtBinsArray);
-    
-    ptAve2p[sign] = fs->make<TH1D>(Form("ptAve2p_%d",sign),";bar{p_{T}}", NdPtBins, dPtBinsArray);
-    ptAve3p[sign] = fs->make<TH1D>(Form("ptAve3p_%d",sign),";bar{p_{T}}", NdPtBins, dPtBinsArray);
-    
+    if( !doLightWeight_){
+      delPt2p[sign] = fs->make<TH1F>(Form("delPt2p_%d",sign),";#Deltap_{T}", NdPtBins, dPtBinsArray);
+      delPt3p[sign] = fs->make<TH1F>(Form("delPt3p_%d",sign),";#Deltap_{T}", NdPtBins, dPtBinsArray);
+      
+      ptAve2p[sign] = fs->make<TH1F>(Form("ptAve2p_%d",sign),";bar{p_{T}}", NdPtBins, dPtBinsArray);
+      ptAve3p[sign] = fs->make<TH1F>(Form("ptAve3p_%d",sign),";bar{p_{T}}", NdPtBins, dPtBinsArray);
+    }   
   }
 
-  c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 20000,-1,1);
-  c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 20000,-1,1);
-  c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 20000,-1,1);
+  c2_ab = fs->make<TH1F>("c2_ab",";c2_ab", 20000,-1,1);
+  c2_ac = fs->make<TH1F>("c2_ac",";c2_ac", 20000,-1,1);
+  c2_cb = fs->make<TH1F>("c2_cb",";c2_cb", 20000,-1,1);
 
-  cn_tracker = fs->make<TH1D>("cn_tracker",";cn_tracker", 20000,-1,1);
+  cn_tracker = fs->make<TH1F>("cn_tracker",";cn_tracker", 20000,-1,1);
 
   for(int eta = 0; eta < NetaBins; eta++){
     for(int HF = 0; HF < 2; HF++){
 
-      cn_eta[eta][HF] = fs->make<TH1D>(Form("cn_eta_%d_%d", eta, HF),";cn_eta", 20000,-1,1);
+      cn_eta[eta][HF] = fs->make<TH1F>(Form("cn_eta_%d_%d", eta, HF),";cn_eta", 20000,-1,1);
     }
   }
   
@@ -989,22 +1002,8 @@ CMEandMixedHarmonics::beginJob()
     for(int sign = 0; sign < 3; sign++){
       for(int HF = 0; HF < 2; HF++){
 
-        c3_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_real_%d_%d_%d", deta, sign, HF),";c3", 20000,-1,1);
-        //c3_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_imag_%d_%d_%d", deta, sign, HF),";c3", 20000,-1,1);
-      }
-    }    
-  }
-
-  for(int dpt = 0; dpt < NdPtBins; dpt++){
-    for(int sign = 0; sign < 3; sign++){
-      for(int HF = 0; HF < 2; HF++){
-
-        c3_dpT_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_real_%d_%d_%d", dpt, sign, HF),";c3", 20000,-1,1);
-        //c3_dpT_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_imag_%d_%d_%d", dpt, sign, HF),";c3", 20000,-1,1);
-
-        c3_pTave_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_real_%d_%d_%d", dpt, sign, HF),";c3", 20000,-1,1);
-        //c3_pTave_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_imag_%d_%d_%d", dpt, sign, HF),";c3", 20000,-1,1);
-
+        c3_real[deta][sign][HF] = fs->make<TH1F>(Form("c3_real_%d_%d_%d", deta, sign, HF),";c3", 20000,-1,1);
+        //c3_imag[deta][sign][HF] = fs->make<TH1F>(Form("c3_imag_%d_%d_%d", deta, sign, HF),";c3", 20000,-1,1);
       }
     }    
   }
@@ -1012,21 +1011,37 @@ CMEandMixedHarmonics::beginJob()
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
 
-      c2_real[deta][sign] = fs->make<TH1D>(Form("c2_real_%d_%d", deta, sign),";c2", 20000,-1,1);
-      //c2_imag[deta][sign] = fs->make<TH1D>(Form("c2_imag_%d_%d", deta, sign),";c2", 20000,-1,1);
+      c2_real[deta][sign] = fs->make<TH1F>(Form("c2_real_%d_%d", deta, sign),";c2", 20000,-1,1);
+      //c2_imag[deta][sign] = fs->make<TH1F>(Form("c2_imag_%d_%d", deta, sign),";c2", 20000,-1,1);
     }    
   }
 
-  for(int dpt = 0; dpt < NdPtBins; dpt++){
-    for(int sign = 0; sign < 3; sign++){
+  if( !doLightWeight_ ){
+    for(int dpt = 0; dpt < NdPtBins; dpt++){
+      for(int sign = 0; sign < 3; sign++){
+        for(int HF = 0; HF < 2; HF++){
 
-      c2_dpT_real[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_real_%d_%d", dpt, sign),";c2", 20000,-1,1);
-      //c2_dpT_imag[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_imag_%d_%d", dpt, sign),";c2", 20000,-1,1);
-   
-      c2_pTave_real[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_real_%d_%d", dpt, sign),";c2", 20000,-1,1);
-      //c2_pTave_imag[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_imag_%d_%d", dpt, sign),";c2", 20000,-1,1);
-   
-    }    
+          c3_dpT_real[dpt][sign][HF] = fs->make<TH1F>(Form("c3_dpT_real_%d_%d_%d", dpt, sign, HF),";c3", 20000,-1,1);
+          //c3_dpT_imag[dpt][sign][HF] = fs->make<TH1F>(Form("c3_dpT_imag_%d_%d_%d", dpt, sign, HF),";c3", 20000,-1,1);
+
+          c3_pTave_real[dpt][sign][HF] = fs->make<TH1F>(Form("c3_pTave_real_%d_%d_%d", dpt, sign, HF),";c3", 20000,-1,1);
+          //c3_pTave_imag[dpt][sign][HF] = fs->make<TH1F>(Form("c3_pTave_imag_%d_%d_%d", dpt, sign, HF),";c3", 20000,-1,1);
+
+        }
+      }    
+    }
+
+    for(int dpt = 0; dpt < NdPtBins; dpt++){
+      for(int sign = 0; sign < 3; sign++){
+
+        c2_dpT_real[dpt][sign] = fs->make<TH1F>(Form("c2_dpT_real_%d_%d", dpt, sign),";c2", 20000,-1,1);
+        //c2_dpT_imag[dpt][sign] = fs->make<TH1F>(Form("c2_dpT_imag_%d_%d", dpt, sign),";c2", 20000,-1,1);
+     
+        c2_pTave_real[dpt][sign] = fs->make<TH1F>(Form("c2_pTave_real_%d_%d", dpt, sign),";c2", 20000,-1,1);
+        //c2_pTave_imag[dpt][sign] = fs->make<TH1F>(Form("c2_pTave_imag_%d_%d", dpt, sign),";c2", 20000,-1,1);
+     
+      }    
+    }
   }
 
 
