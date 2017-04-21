@@ -920,7 +920,7 @@ CMEandMixedHarmonics::beginJob()
 {
   edm::Service<TFileService> fs;
     
-  TH1F::SetDefaultSumw2();
+  TH1D::SetDefaultSumw2();
 
   const int NdEtaBins = dEtaBins_.size() - 1;
   const int NetaBins = etaBins_.size() - 1;
@@ -955,46 +955,46 @@ CMEandMixedHarmonics::beginJob()
      effTable[i] = (TH2D*)f1.Get(Form("rTotalEff3D_%d",i));
   }
 
-  edm::FileInPath fip2("CVEandMixedHarmonics/CVEandMixedHarmonics/data/Hijing_8TeV_CME_dataBS.root");
+  edm::FileInPath fip2("CVEandMixedHarmonics/CVEandMixedHarmonics/data/Hijing_8TeV_CME_dataBS_tight.root");
   TFile f2(fip2.fullPath().c_str(),"READ");
   for(int i = 0; i < 1; i++){
      effTable_pPb[i] = (TH2D*)f2.Get(Form("rTotalEff3D_%d",i));
   }
 
-  Ntrk = fs->make<TH1F>("Ntrk",";Ntrk",5000,0,5000);
-  vtxZ = fs->make<TH1F>("vtxZ",";vz", 400,-20,20);
-  cbinHist = fs->make<TH1F>("cbinHist",";cbin",200,0,200);
-  trkPhi = fs->make<TH1F>("trkPhi", ";#phi", 700, -3.5, 3.5);
-  hfPhi = fs->make<TH1F>("hfPhi", ";#phi", 700, -3.5, 3.5);
-  trkPt = fs->make<TH1F>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
-  trk_eta = fs->make<TH1F>("trk_eta", ";#eta", NetaBins, etaBinsArray);
-  q2_mag = fs->make<TH1F>("q2_mag", "q2", 2000,-1,1);
-  Ntrk_q2 = fs->make<TH1F>("Ntrk_q2",";Ntrk",5000,0,5000);
+  Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
+  vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);
+  cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
+  trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
+  hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
+  trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
+  trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
+  q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
+  Ntrk_q2 = fs->make<TH1D>("Ntrk_q2",";Ntrk",5000,0,5000);
 
   for(int sign = 0; sign < 3; sign++){
 
-    delEta2p[sign] = fs->make<TH1F>(Form("delEta2p_%d",sign),";#Delta#eta", NdEtaBins, dEtaBinsArray);
-    delEta3p[sign] = fs->make<TH1F>(Form("delEta3p_%d",sign),";#Delta#eta", NdEtaBins, dEtaBinsArray);
+    delEta2p[sign] = fs->make<TH1D>(Form("delEta2p_%d",sign),";#Delta#eta", NdEtaBins, dEtaBinsArray);
+    delEta3p[sign] = fs->make<TH1D>(Form("delEta3p_%d",sign),";#Delta#eta", NdEtaBins, dEtaBinsArray);
     
     if( !doLightWeight_){
-      delPt2p[sign] = fs->make<TH1F>(Form("delPt2p_%d",sign),";#Deltap_{T}", NdPtBins, dPtBinsArray);
-      delPt3p[sign] = fs->make<TH1F>(Form("delPt3p_%d",sign),";#Deltap_{T}", NdPtBins, dPtBinsArray);
+      delPt2p[sign] = fs->make<TH1D>(Form("delPt2p_%d",sign),";#Deltap_{T}", NdPtBins, dPtBinsArray);
+      delPt3p[sign] = fs->make<TH1D>(Form("delPt3p_%d",sign),";#Deltap_{T}", NdPtBins, dPtBinsArray);
       
-      ptAve2p[sign] = fs->make<TH1F>(Form("ptAve2p_%d",sign),";bar{p_{T}}", NdPtBins, dPtBinsArray);
-      ptAve3p[sign] = fs->make<TH1F>(Form("ptAve3p_%d",sign),";bar{p_{T}}", NdPtBins, dPtBinsArray);
+      ptAve2p[sign] = fs->make<TH1D>(Form("ptAve2p_%d",sign),";bar{p_{T}}", NdPtBins, dPtBinsArray);
+      ptAve3p[sign] = fs->make<TH1D>(Form("ptAve3p_%d",sign),";bar{p_{T}}", NdPtBins, dPtBinsArray);
     }   
   }
 
-  c2_ab = fs->make<TH1F>("c2_ab",";c2_ab", 2000,-1,1);
-  c2_ac = fs->make<TH1F>("c2_ac",";c2_ac", 2000,-1,1);
-  c2_cb = fs->make<TH1F>("c2_cb",";c2_cb", 2000,-1,1);
+  c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 2000,-1,1);
+  c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 2000,-1,1);
+  c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 2000,-1,1);
 
-  cn_tracker = fs->make<TH1F>("cn_tracker",";cn_tracker", 2000,-1,1);
+  cn_tracker = fs->make<TH1D>("cn_tracker",";cn_tracker", 2000,-1,1);
 
   for(int eta = 0; eta < NetaBins; eta++){
     for(int HF = 0; HF < 2; HF++){
 
-      cn_eta[eta][HF] = fs->make<TH1F>(Form("cn_eta_%d_%d", eta, HF),";cn_eta", 2000,-1,1);
+      cn_eta[eta][HF] = fs->make<TH1D>(Form("cn_eta_%d_%d", eta, HF),";cn_eta", 2000,-1,1);
     }
   }
   
@@ -1002,8 +1002,8 @@ CMEandMixedHarmonics::beginJob()
     for(int sign = 0; sign < 3; sign++){
       for(int HF = 0; HF < 2; HF++){
 
-        c3_real[deta][sign][HF] = fs->make<TH1F>(Form("c3_real_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
-        //c3_imag[deta][sign][HF] = fs->make<TH1F>(Form("c3_imag_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
+        c3_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_real_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
+        //c3_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_imag_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
       }
     }    
   }
@@ -1011,8 +1011,8 @@ CMEandMixedHarmonics::beginJob()
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
 
-      c2_real[deta][sign] = fs->make<TH1F>(Form("c2_real_%d_%d", deta, sign),";c2", 2000,-1,1);
-      //c2_imag[deta][sign] = fs->make<TH1F>(Form("c2_imag_%d_%d", deta, sign),";c2", 2000,-1,1);
+      c2_real[deta][sign] = fs->make<TH1D>(Form("c2_real_%d_%d", deta, sign),";c2", 2000,-1,1);
+      //c2_imag[deta][sign] = fs->make<TH1D>(Form("c2_imag_%d_%d", deta, sign),";c2", 2000,-1,1);
     }    
   }
 
@@ -1021,11 +1021,11 @@ CMEandMixedHarmonics::beginJob()
       for(int sign = 0; sign < 3; sign++){
         for(int HF = 0; HF < 2; HF++){
 
-          c3_dpT_real[dpt][sign][HF] = fs->make<TH1F>(Form("c3_dpT_real_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
-          //c3_dpT_imag[dpt][sign][HF] = fs->make<TH1F>(Form("c3_dpT_imag_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
+          c3_dpT_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_real_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
+          //c3_dpT_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_imag_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
 
-          c3_pTave_real[dpt][sign][HF] = fs->make<TH1F>(Form("c3_pTave_real_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
-          //c3_pTave_imag[dpt][sign][HF] = fs->make<TH1F>(Form("c3_pTave_imag_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
+          c3_pTave_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_real_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
+          //c3_pTave_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_imag_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
 
         }
       }    
@@ -1034,11 +1034,11 @@ CMEandMixedHarmonics::beginJob()
     for(int dpt = 0; dpt < NdPtBins; dpt++){
       for(int sign = 0; sign < 3; sign++){
 
-        c2_dpT_real[dpt][sign] = fs->make<TH1F>(Form("c2_dpT_real_%d_%d", dpt, sign),";c2", 2000,-1,1);
-        //c2_dpT_imag[dpt][sign] = fs->make<TH1F>(Form("c2_dpT_imag_%d_%d", dpt, sign),";c2", 2000,-1,1);
+        c2_dpT_real[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_real_%d_%d", dpt, sign),";c2", 2000,-1,1);
+        //c2_dpT_imag[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_imag_%d_%d", dpt, sign),";c2", 2000,-1,1);
      
-        c2_pTave_real[dpt][sign] = fs->make<TH1F>(Form("c2_pTave_real_%d_%d", dpt, sign),";c2", 2000,-1,1);
-        //c2_pTave_imag[dpt][sign] = fs->make<TH1F>(Form("c2_pTave_imag_%d_%d", dpt, sign),";c2", 2000,-1,1);
+        c2_pTave_real[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_real_%d_%d", dpt, sign),";c2", 2000,-1,1);
+        //c2_pTave_imag[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_imag_%d_%d", dpt, sign),";c2", 2000,-1,1);
      
       }    
     }
