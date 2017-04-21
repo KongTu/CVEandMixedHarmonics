@@ -28,7 +28,7 @@ void V0cutsOptimazation(){
 				for(int k = 0; k < 6; k++){
 					
 					common_cut[mult][i][j][k].str("");
-					common_cut[mult][i][j][k] << "pt > 0.1 && pt < 5.0 && TMath::Abs(eta) < 2.4 && trkNHits1 > 3 &&  trkNHits2 > 3";
+					common_cut[mult][i][j][k] << "pt > 0.3 && pt < 5.0 && TMath::Abs(eta) < 2.4 && trkNHits1 > 3 &&  trkNHits2 > 3";
 				}
 			}
 		}

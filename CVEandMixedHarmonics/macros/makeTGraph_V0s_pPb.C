@@ -5,8 +5,8 @@
 
 using namespace std;
 
-double PbPb_centralityBinCenter[] = {35, 45, 55, 65, 75, 85};
-int mult_ = 6;
+double pPb_ntrkBinCenter[] = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
+int mult_ = 10;
 
 double V0sV0s_correlator( double gamma_obs, double gamma_sig_bkg, double gamma_bkg_sig, double gamma_bkg_bkg, double f_sig_1, double f_sig_2){
 
@@ -27,54 +27,74 @@ double V0sH_correlator(double gamma_obs, double gamma_bkg, double f_sig){
 	return numerator/f_sig;
 }
 
-void makeTGraph_V0s(){
+void makeTGraph_V0s_pPb(){
 
-	TFile* file1[6];
+	TFile* file1[10];
+
+	TH1D* Ntrk[10];
 /*
 Fit V0s under-fly 
 */
 	
-	TH3D* ks_mass[6];
-	TH3D* la_mass_1[6];
-	TH3D* la_mass_2[6];
+	TH3D* ks_mass[10];
+	TH3D* la_mass_1[10];
+	TH3D* la_mass_2[10];
 
-	TH1D* ks_mass_1D[6];
-	TH1D* la_mass_1D_1[6];
-	TH1D* la_mass_1D_2[6];
+	TH1D* ks_mass_1D[10];
+	TH1D* la_mass_1D_1[10];
+	TH1D* la_mass_1D_2[10];
+
+	file1[0] = new TFile("../rootfiles/CVEandMixedHarmonics_pPb_MB_v1_1.root");
+	file1[1] = new TFile("../rootfiles/CVEandMixedHarmonics_pPb_MB_v1_2.root");
+	file1[2] = new TFile("../rootfiles/CVEandMixedHarmonics_pPb_MB_v1_3.root");
+	file1[3] = new TFile("../rootfiles/CVEandMixedHarmonics_pPb_MB_v1_4.root");
+
+	file1[4] = new TFile("../rootfiles/CVEandMixedHarmonics_pPb_HM_v2_1.root");
+	file1[5] = new TFile("../rootfiles/CVEandMixedHarmonics_pPb_HM_v2_2.root");
+	file1[6] = new TFile("../rootfiles/CVEandMixedHarmonics_pPb_HM_v2_3.root");
+	file1[7] = new TFile("../rootfiles/CVEandMixedHarmonics_pPb_HM_v2_4.root");
+	file1[8] = new TFile("../rootfiles/CVEandMixedHarmonics_pPb_HM_v2_5.root");
+	file1[9] = new TFile("../rootfiles/CVEandMixedHarmonics_pPb_HM_v2_6.root");
 	
 	for(int i = 0; i < mult_; i++){
 
-		file1[i] = new TFile(Form("../rootfiles/CVEandMixedHarmonics_PbPb_30_100_v3_%d.root", i+1));
 		ks_mass[i] = (TH3D*) file1[i]->Get("ana/ks_mass");
 		la_mass_1[i] = (TH3D*) file1[i]->Get("ana/la_mass_1");
 		la_mass_2[i] = (TH3D*) file1[i]->Get("ana/la_mass_2");
+
+		Ntrk[i] = (TH1D*) file1[i]->Get("ana/Ntrk");
+		cout << "Ntrk: " << Ntrk[i]->GetMean();
+		pPb_ntrkBinCenter[i] = Ntrk[i]->GetMean();
 
 		ks_mass_1D[i] = (TH1D*) ks_mass[i]->ProjectionZ(Form("ks_mass_1D_%d", i), 11,59,1,50);//|eta| < 2.4, 0.0<pT<5.0
 		la_mass_1D_1[i] = (TH1D*) la_mass_1[i]->ProjectionZ(Form("la_mass_1D_1_%d", i), 11,59,4,50);//|eta| < 2.4, 0.4<pT<5.0
 		la_mass_1D_2[i] = (TH1D*) la_mass_2[i]->ProjectionZ(Form("la_mass_1D_2_%d", i), 11,59,4,50);//|eta| < 2.4, 0.4<pT<5.0
 	}
 
-	double f_sig_K0s[6];
+	double f_sig_K0s[10];
 	TCanvas* c1 = new TCanvas("c1","c1",800,800);
-	c1->Divide(3,2);
+	c1->Divide(3,4);
 	for(int i = 0; i < mult_; i++){
 
 		c1->cd(i+1);
 		vector<double> fitParameters_K0s;
-		InitialFit(c1, ks_mass_1D[i], 1, 1, 1, fitParameters_K0s);
+		InitialFit(c1, ks_mass_1D[i], 1, 1, 1, 1, fitParameters_K0s);
 		f_sig_K0s[i] = fitParameters_K0s[6];
+		cout << "f_sig_K0s: " << f_sig_K0s[i] << endl;
 	}
-	double f_sig_Lam[6];
+	double f_sig_Lam[10];
 	TCanvas* c2 = new TCanvas("c2","c2",800,800);
-	c2->Divide(3,2);
+	c2->Divide(3,4);
 	for(int i = 0; i < mult_; i++){
 		c2->cd(i+1);
 		vector<double> fitParameters_Lam;
-		InitialFit_la(c2, la_mass_1D_1[i], 1, 1, 1, fitParameters_Lam);
-		f_sig_Lam[i] = fitParameters_Lam[5];
+		fitParameters_Lam = la_YieldCal(la_mass_1D_1[i], 1, 1, 1);
+		f_sig_Lam[i] = fitParameters_Lam[1];
+		cout << "f_sig_Lam: " << f_sig_Lam[i] << endl;
+
 	}
 
-	TH1D* QaQb[6]; TH1D* QaQc[6]; TH1D* QcQb[6];
+	TH1D* QaQb[10]; TH1D* QaQc[10]; TH1D* QcQb[10];
 
 	for(int mult = 0; mult < mult_; mult++){
 
@@ -98,27 +118,29 @@ Fit V0s under-fly
 		v2[mult][0] = sqrt(c2_b );
 		v2[mult][1] = sqrt(c2_a );
 		v2[mult][2] = sqrt(c2_ab );
+
+		cout << "v2: " << v2[mult][0] << endl;
 	}
 
-	TH1D* c3_LL_real[6][3][4][2];
-	double c3_LL_value[6][3][4][2];
-	double c3_LL_error[6][3][4][2];
+	TH1D* c3_LL_real[10][3][4][2];
+	double c3_LL_value[10][3][4][2];
+	double c3_LL_error[10][3][4][2];
 
-	TH1D* c3_KK_real[6][4][2];
-	double c3_KK_value[6][4][2];
-	double c3_KK_error[6][4][2];
+	TH1D* c3_KK_real[10][4][2];
+	double c3_KK_value[10][4][2];
+	double c3_KK_error[10][4][2];
 
-	TH1D* c3_LK_real[6][3][4][2];
-	double c3_LK_value[6][3][4][2];
-	double c3_LK_error[6][3][4][2];
+	TH1D* c3_LK_real[10][3][4][2];
+	double c3_LK_value[10][3][4][2];
+	double c3_LK_error[10][3][4][2];
 
-	TH1D* c3_LH_real[6][3][4][2];
-	double c3_LH_value[6][3][4][2];
-	double c3_LH_error[6][3][4][2];
+	TH1D* c3_LH_real[10][3][4][2];
+	double c3_LH_value[10][3][4][2];
+	double c3_LH_error[10][3][4][2];
 
-	TH1D* c3_KH_real[6][4][2];
-	double c3_KH_value[6][4][2];
-	double c3_KH_error[6][4][2];
+	TH1D* c3_KH_real[10][4][2];
+	double c3_KH_value[10][4][2];
+	double c3_KH_error[10][4][2];
 
 	for(int mult = 0; mult < mult_; mult++){
 		for(int sign = 0; sign < 3; sign++){//lambda baryon number
@@ -184,38 +206,38 @@ Setting up the TGraphs
 
 	for(int i = 0; i < 3; i++){
 		
-		gr1_Pb[i] = new TGraphErrors(6);
+		gr1_Pb[i] = new TGraphErrors(10);
 		gr1_Pb[i]->SetName(Form("la_la_Pb_%d", i));
 
-		gr1_p[i] = new TGraphErrors(6);
+		gr1_p[i] = new TGraphErrors(10);
 		gr1_p[i]->SetName(Form("la_la_p_%d", i));
 
 	}
 
 	for(int i = 0; i < 2; i++){
 
-		gr3_Pb[i] = new TGraphErrors(6);
+		gr3_Pb[i] = new TGraphErrors(10);
 		gr3_Pb[i]->SetName(Form("la_ks_Pb_%d", i));
 
-		gr3_p[i] = new TGraphErrors(6);
+		gr3_p[i] = new TGraphErrors(10);
 		gr3_p[i]->SetName(Form("la_ks_p_%d", i));
 
-		gr4_Pb[i] = new TGraphErrors(6);
+		gr4_Pb[i] = new TGraphErrors(10);
 		gr4_Pb[i]->SetName(Form("la_h_Pb_%d", i));
 
-		gr4_p[i] = new TGraphErrors(6);
+		gr4_p[i] = new TGraphErrors(10);
 		gr4_p[i]->SetName(Form("la_h_p_%d", i));		
 	}
 	
 
-	TGraphErrors* gr2_Pb = new TGraphErrors(6);
+	TGraphErrors* gr2_Pb = new TGraphErrors(10);
 	gr2_Pb->SetName("ks_ks_Pb");
-	TGraphErrors* gr2_p = new TGraphErrors(6);
+	TGraphErrors* gr2_p = new TGraphErrors(10);
 	gr2_p->SetName("ks_ks_p");
 
-	TGraphErrors* gr5_Pb = new TGraphErrors(6);
+	TGraphErrors* gr5_Pb = new TGraphErrors(10);
 	gr5_Pb->SetName("ks_h_Pb");
-	TGraphErrors* gr5_p = new TGraphErrors(6);
+	TGraphErrors* gr5_p = new TGraphErrors(10);
 	gr5_p->SetName("ks_h_p");
 	
 /*
@@ -230,14 +252,14 @@ Filling the TGraphs with place-holder errors
 			double Pb_value = V0sV0s_correlator(c3_LL_value[mult][i][0][0], c3_LL_value[mult][i][1][0], c3_LL_value[mult][i][2][0], c3_LL_value[mult][i][3][0], f_sig_Lam[mult], f_sig_Lam[mult]);
 			double Pb_error = c3_LL_error[mult][i][0][0];
 
-			gr1_Pb[i]->SetPoint(mult, PbPb_centralityBinCenter[mult], Pb_value/v2[mult][0]);
+			gr1_Pb[i]->SetPoint(mult, pPb_ntrkBinCenter[mult], Pb_value/v2[mult][0]);
 			gr1_Pb[i]->SetPointError(mult, 0.0, Pb_error/v2[mult][0]);
 
 			//p-going:
 			double p_value = V0sV0s_correlator(c3_LL_value[mult][i][0][1], c3_LL_value[mult][i][1][1], c3_LL_value[mult][i][2][1], c3_LL_value[mult][i][3][1], f_sig_Lam[mult], f_sig_Lam[mult]);
 			double p_error = c3_LL_error[mult][i][0][1];
 
-			gr1_p[i]->SetPoint(mult, PbPb_centralityBinCenter[mult], p_value/v2[mult][1]);
+			gr1_p[i]->SetPoint(mult, pPb_ntrkBinCenter[mult], p_value/v2[mult][1]);
 			gr1_p[i]->SetPointError(mult, 0.0, p_error/v2[mult][1]);
 
 		}
@@ -249,14 +271,14 @@ Filling the TGraphs with place-holder errors
 			double Pb_value = V0sV0s_correlator(c3_LK_value[mult][i][0][0], c3_LK_value[mult][i][1][0], c3_LK_value[mult][i][2][0], c3_LK_value[mult][i][3][0], f_sig_Lam[mult], f_sig_K0s[mult]);
 			double Pb_error = c3_LK_error[mult][i][0][0];
 
-			gr3_Pb[i]->SetPoint(mult, PbPb_centralityBinCenter[mult], Pb_value/v2[mult][0]);
+			gr3_Pb[i]->SetPoint(mult, pPb_ntrkBinCenter[mult], Pb_value/v2[mult][0]);
 			gr3_Pb[i]->SetPointError(mult, 0.0, Pb_error/v2[mult][0]);
 
 			//p-going:
 			double p_value = V0sV0s_correlator(c3_LK_value[mult][i][0][1], c3_LK_value[mult][i][1][1], c3_LK_value[mult][i][2][1], c3_LK_value[mult][i][3][1], f_sig_Lam[mult], f_sig_K0s[mult]);
 			double p_error = c3_LK_error[mult][i][0][1];
 
-			gr3_p[i]->SetPoint(mult, PbPb_centralityBinCenter[mult], p_value/v2[mult][1]);
+			gr3_p[i]->SetPoint(mult, pPb_ntrkBinCenter[mult], p_value/v2[mult][1]);
 			gr3_p[i]->SetPointError(mult, 0.0, p_error/v2[mult][1]);
 
 			//lambda-H correlation:
@@ -264,14 +286,14 @@ Filling the TGraphs with place-holder errors
 			double Pb_value = V0sH_correlator(c3_LH_value[mult][i][0][0], c3_LH_value[mult][i][1][0], f_sig_Lam[mult]);
 			double Pb_error = c3_LH_error[mult][i][0][0];
 
-			gr4_Pb[i]->SetPoint(mult, PbPb_centralityBinCenter[mult], Pb_value/v2[mult][0]);
+			gr4_Pb[i]->SetPoint(mult, pPb_ntrkBinCenter[mult], Pb_value/v2[mult][0]);
 			gr4_Pb[i]->SetPointError(mult, 0.0, Pb_error/v2[mult][0]);
 
 			//p-going:
 			double p_value = V0sH_correlator(c3_LH_value[mult][i][0][1], c3_LH_value[mult][i][1][1], f_sig_K0s[mult]);
 			double p_error = c3_LH_error[mult][i][0][1];
 
-			gr4_p[i]->SetPoint(mult, PbPb_centralityBinCenter[mult], p_value/v2[mult][1]);
+			gr4_p[i]->SetPoint(mult, pPb_ntrkBinCenter[mult], p_value/v2[mult][1]);
 			gr4_p[i]->SetPointError(mult, 0.0, p_error/v2[mult][1]);
 		}
 	
@@ -280,14 +302,14 @@ Filling the TGraphs with place-holder errors
 		double Pb_value = V0sV0s_correlator(c3_KK_value[mult][0][0], c3_KK_value[mult][1][0], c3_KK_value[mult][2][0], c3_KK_value[mult][3][0], f_sig_K0s[mult], f_sig_K0s[mult]);
 		double Pb_error = c3_KK_error[mult][0][0];
 
-		gr2_Pb->SetPoint(mult, PbPb_centralityBinCenter[mult], Pb_value/v2[mult][0]);
+		gr2_Pb->SetPoint(mult, pPb_ntrkBinCenter[mult], Pb_value/v2[mult][0]);
 		gr2_Pb->SetPointError(mult, 0.0, Pb_error/v2[mult][0]);
 
 		//p-going:
 		double p_value = V0sV0s_correlator(c3_KK_value[mult][0][1], c3_KK_value[mult][1][1], c3_KK_value[mult][2][1], c3_KK_value[mult][3][1], f_sig_K0s[mult], f_sig_K0s[mult]);
 		double p_error = c3_KK_error[mult][0][1];
 
-		gr2_p->SetPoint(mult, PbPb_centralityBinCenter[mult], p_value/v2[mult][1]);
+		gr2_p->SetPoint(mult, pPb_ntrkBinCenter[mult], p_value/v2[mult][1]);
 		gr2_p->SetPointError(mult, 0.0, p_error/v2[mult][1]);
 
 
@@ -296,20 +318,20 @@ Filling the TGraphs with place-holder errors
 		double Pb_value = V0sH_correlator(c3_KH_value[mult][0][0], c3_KH_value[mult][1][0], f_sig_K0s[mult]);
 		double Pb_error = c3_KH_error[mult][0][0];
 
-		gr5_Pb->SetPoint(mult, PbPb_centralityBinCenter[mult], Pb_value/v2[mult][0]);
+		gr5_Pb->SetPoint(mult, pPb_ntrkBinCenter[mult], Pb_value/v2[mult][0]);
 		gr5_Pb->SetPointError(mult, 0.0, Pb_error/v2[mult][0]);
 
 		//p-going:
 		double p_value = V0sH_correlator(c3_KH_value[mult][0][1], c3_KH_value[mult][1][1], f_sig_K0s[mult]);
 		double p_error = c3_KH_error[mult][0][1];
 
-		gr5_p->SetPoint(mult, PbPb_centralityBinCenter[mult], p_value/v2[mult][1]);
+		gr5_p->SetPoint(mult, pPb_ntrkBinCenter[mult], p_value/v2[mult][1]);
 		gr5_p->SetPointError(mult, 0.0, p_error/v2[mult][1]);
 
 		
 	}
 
-	TFile f1("../dataPoints/V0s_PbPb_test.root","RECREATE");
+	TFile f1("../dataPoints/V0s_pPb_test.root","RECREATE");
 	for(int i = 0; i < 3; i++){
 		gr1_Pb[i]->Write();
 		gr1_p[i]->Write();

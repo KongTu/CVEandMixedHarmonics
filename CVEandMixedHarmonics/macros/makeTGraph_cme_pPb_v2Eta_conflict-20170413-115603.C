@@ -54,7 +54,7 @@ void makeTGraph_cme_pPb_v2Eta(){
 
 	for(int mult = 0; mult < 1; mult++){
 
-		file[mult] = new TFile(Form("../rootfiles/CMEandMixedHarmonics_pPb_HM_v5.root", mult+1) ); 
+		file[mult] = new TFile(Form("../rootfiles/CMEandMixedHarmonics_PbPb_Centrality_full_v8.root", mult+1) ); 
 		Ntrk[mult] = (TH1D*) file[mult]->Get("ana/Ntrk");
 		pPb_ntrkBinCenter[mult] = Ntrk[mult]->GetMean();
 

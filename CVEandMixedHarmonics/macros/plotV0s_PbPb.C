@@ -8,7 +8,7 @@ void plotV0s_PbPb(){
 	gStyle->SetErrorX(0);
 
 	TFile* file[10];
-	file[0] = new TFile("../dataPoints/V0s_PbPb_test.root");
+	file[0] = new TFile("../dataPoints/V0s_PbPb_Cent.root");
 
 	TGraphErrors* gr1_Pb[3];
 	TGraphErrors* gr1_p[3];
@@ -48,10 +48,10 @@ void plotV0s_PbPb(){
 
 	TGaxis::SetMaxDigits(3);
 
-	TH1D* base1 = makeHist("base1", "Pb-going", "Centrality", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c}", 100,0,100,kBlack);
+	TH1D* base1 = makeHist("base1", "Pb-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c}",1500,0,1500,kBlack);
 
 	base1->GetYaxis()->SetRangeUser(-0.9, 10.0);
-	base1->GetXaxis()->SetRangeUser(0,100);
+	base1->GetXaxis()->SetRangeUser(0,1500);
 	base1->GetXaxis()->SetTitleColor(kBlack);
 	
 	fixedFontHist1D(base1,1.1,1.25);
@@ -73,7 +73,6 @@ void plotV0s_PbPb(){
 	gStyle->SetOptTitle(0);
 
 	base1->Draw();
-
 
 	TGraphErrors* gr1_new = new TGraphErrors(6);
 	TGraphErrors* gr2_new = new TGraphErrors(6);
@@ -234,6 +233,61 @@ void plotV0s_PbPb(){
     w1->AddEntry(gr4_new, "#Lambda-H", "P");
     w1->AddEntry(gr5_new, "K^{0}_{s}-H", "P");
     w1->Draw("same");
+
+	TH1D* base2 = makeHist("base2", "Pb-going", "N^{offline}_{trk}", "#LTcos(#phi_{#alpha}+#phi_{#beta}-2#phi_{c})#GT/v_{2,c}", 1500,0,1500,kBlack);
+
+	base2->GetYaxis()->SetRangeUser(-1.0, 1.0);
+	base2->GetXaxis()->SetRangeUser(0,1500);
+	base2->GetXaxis()->SetTitleColor(kBlack);
+	
+	fixedFontHist1D(base2,1.1,1.25);
+
+	base2->GetYaxis()->SetTitleOffset(1.23);
+	base2->GetYaxis()->SetTitleSize(base2->GetYaxis()->GetTitleSize()*1.4);
+	base2->GetXaxis()->SetTitleSize(base2->GetXaxis()->GetTitleSize()*1.4);
+	base2->GetYaxis()->SetLabelSize(base2->GetYaxis()->GetLabelSize()*1.5);
+	base2->GetXaxis()->SetLabelSize(base2->GetXaxis()->GetLabelSize()*1.4);
+	base2->GetXaxis()->SetNdivisions(8,8,0);
+	base2->GetYaxis()->SetNdivisions(4,6,0);
+	
+	TCanvas* c2 = new TCanvas("c2","c2",1,1,650,650);
+	gPad->SetTicks();
+	gPad->SetLeftMargin(0.12);
+	gPad->SetBottomMargin(0.13);
+	gPad->SetRightMargin(0.05);
+	gStyle->SetPadBorderMode(0.1);
+	gStyle->SetOptTitle(0);
+
+	base2->Draw();
+
+	TGraphErrors* temp = new TGraphErrors(6);
+	for(int i = 0; i < 6; i++){
+		double xx = 0.0;
+		double yy = 0.0;
+		gr1_new->GetPoint(i, xx, yy);
+		double ey = gr1_new->GetErrorY(i);
+		
+		double x = 0.0; 
+		double y = 0.0;
+		gr1_Pb[2]->GetPoint(i, x, y);
+		double ey1 = gr1_Pb[2]->GetErrorY(i);
+
+		temp->SetPoint(i, x, y-yy);
+		temp->SetPointError(i, 0, sqrt(ey1*ey1 + ey*ey));
+
+	}
+
+	temp->SetMarkerStyle(24);
+	temp->SetMarkerSize(1.4);
+	temp->SetMarkerColor(kRed);
+	temp->SetLineColor(kRed);
+	temp->Draw("Psame");
+
+
+	TFile f1("../dataPoints/PbPb_Cent.root","RECREATE");
+	temp->Write();
+
+
 
 
 }
