@@ -574,13 +574,13 @@ calculate the 3-particles correlator with the charged-particles
             D_3_HFplus = D_2*Q_0_1_HFplus;
 
             c3_real[deta][sign][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
-            c3_imag[deta][sign][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+            //c3_imag[deta][sign][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
 
             N_3_HFminus = N_2*Q_n3_1_HFminus;
             D_3_HFminus = D_2*Q_0_1_HFminus;
 
             c3_real[deta][sign][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-            c3_imag[deta][sign][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+            //c3_imag[deta][sign][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
   
           }
           //opposite sign correlator:
@@ -594,13 +594,13 @@ calculate the 3-particles correlator with the charged-particles
           D_3_HFplus = D_2*Q_0_1_HFplus;
 
           c3_real[deta][2][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
-          c3_imag[deta][2][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+          //c3_imag[deta][2][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
 
           N_3_HFminus = N_2*Q_n3_1_HFminus;
           D_3_HFminus = D_2*Q_0_1_HFminus;
 
           c3_real[deta][2][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-          c3_imag[deta][2][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+          //c3_imag[deta][2][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
 
         }
       }
@@ -643,7 +643,7 @@ calculate the 2-particles correlator with the charged-particles
             }        
 
             c2_real[deta][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
-            c2_imag[deta][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+            //c2_imag[deta][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
 
           }
 
@@ -654,7 +654,7 @@ calculate the 2-particles correlator with the charged-particles
           D_2 = P_0_1[ieta][0]*P_0_1[jeta][1];
 
           c2_real[deta][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
-          c2_imag[deta][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+          //c2_imag[deta][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
 
         }
       }
@@ -708,13 +708,13 @@ calculate the 3-particles correlator with the charged-particles
             D_3_HFplus = D_2*Q_0_1_HFplus;
 
             c3_dpT_real[dpt][sign][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
-            c3_dpT_imag[dpt][sign][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+            //c3_dpT_imag[dpt][sign][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
 
             N_3_HFminus = N_2*Q_n3_1_HFminus;
             D_3_HFminus = D_2*Q_0_1_HFminus;
 
             c3_dpT_real[dpt][sign][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-            c3_dpT_imag[dpt][sign][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+            //c3_dpT_imag[dpt][sign][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
   
           }
           //opposite sign correlator:
@@ -728,13 +728,13 @@ calculate the 3-particles correlator with the charged-particles
           D_3_HFplus = D_2*Q_0_1_HFplus;
 
           c3_dpT_real[dpt][2][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
-          c3_dpT_imag[dpt][2][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+          //c3_dpT_imag[dpt][2][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
 
           N_3_HFminus = N_2*Q_n3_1_HFminus;
           D_3_HFminus = D_2*Q_0_1_HFminus;
 
           c3_dpT_real[dpt][2][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-          c3_dpT_imag[dpt][2][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+          //c3_dpT_imag[dpt][2][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
 
         }//end of delta pT
 
@@ -770,13 +770,13 @@ calculate the 3-particles correlator with the charged-particles
             D_3_HFplus = D_2*Q_0_1_HFplus;
 
             c3_pTave_real[dpt][sign][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
-            c3_pTave_imag[dpt][sign][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+            //c3_pTave_imag[dpt][sign][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
 
             N_3_HFminus = N_2*Q_n3_1_HFminus;
             D_3_HFminus = D_2*Q_0_1_HFminus;
 
             c3_pTave_real[dpt][sign][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-            c3_pTave_imag[dpt][sign][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+            //c3_pTave_imag[dpt][sign][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
   
           }
           //opposite sign correlator:
@@ -790,13 +790,13 @@ calculate the 3-particles correlator with the charged-particles
           D_3_HFplus = D_2*Q_0_1_HFplus;
 
           c3_pTave_real[dpt][2][0]->Fill(N_3_HFplus.Re()/D_3_HFplus.Re(), D_3_HFplus.Re() );
-          c3_pTave_imag[dpt][2][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
+          //c3_pTave_imag[dpt][2][0]->Fill(N_3_HFplus.Im()/D_3_HFplus.Re(), D_3_HFplus.Re() );
 
           N_3_HFminus = N_2*Q_n3_1_HFminus;
           D_3_HFminus = D_2*Q_0_1_HFminus;
 
           c3_pTave_real[dpt][2][1]->Fill(N_3_HFminus.Re()/D_3_HFminus.Re(), D_3_HFminus.Re() );
-          c3_pTave_imag[dpt][2][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
+          //c3_pTave_imag[dpt][2][1]->Fill(N_3_HFminus.Im()/D_3_HFminus.Re(), D_3_HFminus.Re() );
 
         }//end of pTave
       }
@@ -841,7 +841,7 @@ calculate the 2-particles correlator with the charged-particles
             }        
 
             c2_dpT_real[dpt][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
-            c2_dpT_imag[dpt][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+            //c2_dpT_imag[dpt][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
 
           }
 
@@ -852,7 +852,7 @@ calculate the 2-particles correlator with the charged-particles
           D_2 = P_pT_0_1[ipt][0]*P_pT_0_1[jpt][1];
 
           c2_dpT_real[dpt][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
-          c2_dpT_imag[dpt][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+          //c2_dpT_imag[dpt][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
 
         }//end of delta pT
         
@@ -882,7 +882,7 @@ calculate the 2-particles correlator with the charged-particles
             }        
 
             c2_pTave_real[dpt][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
-            c2_pTave_imag[dpt][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+            //c2_pTave_imag[dpt][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
 
           }
 
@@ -893,7 +893,7 @@ calculate the 2-particles correlator with the charged-particles
           D_2 = P_pT_0_1[ipt][0]*P_pT_0_1[jpt][1];
 
           c2_pTave_real[dpt][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re() );
-          c2_pTave_imag[dpt][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
+          //c2_pTave_imag[dpt][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re() );
 
         }//end of pTave
       }
@@ -990,7 +990,7 @@ CMEandMixedHarmonics::beginJob()
       for(int HF = 0; HF < 2; HF++){
 
         c3_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_real_%d_%d_%d", deta, sign, HF),";c3", 20000,-1,1);
-        c3_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_imag_%d_%d_%d", deta, sign, HF),";c3", 20000,-1,1);
+        //c3_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_imag_%d_%d_%d", deta, sign, HF),";c3", 20000,-1,1);
       }
     }    
   }
@@ -1000,10 +1000,10 @@ CMEandMixedHarmonics::beginJob()
       for(int HF = 0; HF < 2; HF++){
 
         c3_dpT_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_real_%d_%d_%d", dpt, sign, HF),";c3", 20000,-1,1);
-        c3_dpT_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_imag_%d_%d_%d", dpt, sign, HF),";c3", 20000,-1,1);
+        //c3_dpT_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_imag_%d_%d_%d", dpt, sign, HF),";c3", 20000,-1,1);
 
         c3_pTave_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_real_%d_%d_%d", dpt, sign, HF),";c3", 20000,-1,1);
-        c3_pTave_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_imag_%d_%d_%d", dpt, sign, HF),";c3", 20000,-1,1);
+        //c3_pTave_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_imag_%d_%d_%d", dpt, sign, HF),";c3", 20000,-1,1);
 
       }
     }    
@@ -1013,7 +1013,7 @@ CMEandMixedHarmonics::beginJob()
     for(int sign = 0; sign < 3; sign++){
 
       c2_real[deta][sign] = fs->make<TH1D>(Form("c2_real_%d_%d", deta, sign),";c2", 20000,-1,1);
-      c2_imag[deta][sign] = fs->make<TH1D>(Form("c2_imag_%d_%d", deta, sign),";c2", 20000,-1,1);
+      //c2_imag[deta][sign] = fs->make<TH1D>(Form("c2_imag_%d_%d", deta, sign),";c2", 20000,-1,1);
     }    
   }
 
@@ -1021,10 +1021,10 @@ CMEandMixedHarmonics::beginJob()
     for(int sign = 0; sign < 3; sign++){
 
       c2_dpT_real[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_real_%d_%d", dpt, sign),";c2", 20000,-1,1);
-      c2_dpT_imag[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_imag_%d_%d", dpt, sign),";c2", 20000,-1,1);
+      //c2_dpT_imag[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_imag_%d_%d", dpt, sign),";c2", 20000,-1,1);
    
       c2_pTave_real[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_real_%d_%d", dpt, sign),";c2", 20000,-1,1);
-      c2_pTave_imag[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_imag_%d_%d", dpt, sign),";c2", 20000,-1,1);
+      //c2_pTave_imag[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_imag_%d_%d", dpt, sign),";c2", 20000,-1,1);
    
     }    
   }
