@@ -46,6 +46,7 @@ CMEandMixedHarmonics::CMEandMixedHarmonics(const edm::ParameterSet& iConfig)
   doEffCorrection_ = iConfig.getUntrackedParameter<bool>("doEffCorrection");
   useEtaGap_ = iConfig.getUntrackedParameter<bool>("useEtaGap");
   dopPb_ = iConfig.getUntrackedParameter<bool>("dopPb");
+  doBothSide_ = iConfig.getUntrackedParameter<bool>("doBothSide");
   doLightWeight_ = iConfig.getUntrackedParameter<bool>("doLightWeight");
 
   eff_ = iConfig.getUntrackedParameter<int>("eff");
@@ -216,7 +217,7 @@ q2 calculation at HF and selections:
           double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
           if( reverseBeam_ ) caloEta = -hit.eta();
 
-    if( dopPb_ ) {if( caloEta < etaLowQ2_ || caloEta > etaHighQ2_ ) continue;}
+    if( dopPb_ && !doBothSide_ ) {if( caloEta < etaLowQ2_ || caloEta > etaHighQ2_ ) continue;}
     else{ if( fabs(caloEta) < etaLowQ2_ || fabs(caloEta) > etaHighQ2_ ) continue; }
 
     qHFcos += w*cos(-n3_*caloPhi);
