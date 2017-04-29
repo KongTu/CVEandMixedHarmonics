@@ -776,7 +776,32 @@ calculate the 2-particles correlator with the charged-particles
                 N_2 = Q_pT_n1_1[ipt][sign]*Q_pT_n2_1[jpt][sign];
                 D_2 = Q_pT_0_1[ipt][sign]*Q_pT_0_1[jpt][sign];
 
-              }        
+              } 
+
+              /*
+              acceptance correction terms
+              */   
+                c3_dpT_XY_real[dpt][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re());
+                c3_dpT_XY_imag[dpt][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re());
+
+                c3_dpT_X_real[dpt][sign]->Fill(Q_n1_1[ipt][sign].Re()/Q_0_1[ipt][sign].Re(), Q_0_1[ipt][sign].Re());
+                c3_dpT_X_imag[dpt][sign]->Fill(Q_n1_1[ipt][sign].Im()/Q_0_1[ipt][sign].Re(), Q_0_1[ipt][sign].Re());
+
+                TComplex N_2_XZ;
+                TComplex D_2_XZ;
+
+                N_2_XZ = Q_n1_1[ipt][sign]*Q_n3_1_HFplus;
+                D_2_XZ = Q_0_1[ipt][sign]*Q_0_1_HFplus;
+
+                c3_dpT_XZ_real[dpt][sign][0]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
+                c3_dpT_XZ_imag[dpt][sign][0]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+
+                N_2_XZ = Q_n1_1[ipt][sign]*Q_n3_1_HFminus;
+                D_2_XZ = Q_0_1[ipt][sign]*Q_0_1_HFminus;
+
+                c3_dpT_XZ_real[dpt][sign][1]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
+                c3_dpT_XZ_imag[dpt][sign][1]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+              //end acceptance correction       
 
               N_3_HFplus = N_2*Q_n3_1_HFplus;
               D_3_HFplus = D_2*Q_0_1_HFplus;
@@ -797,6 +822,31 @@ calculate the 2-particles correlator with the charged-particles
 
             N_2 = Q_pT_n1_1[ipt][0]*Q_pT_n2_1[jpt][1];
             D_2 = Q_pT_0_1[ipt][0]*Q_pT_0_1[jpt][1];
+
+            /*
+            acceptance correction terms
+            */   
+              c3_dpT_XY_real[dpt][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re());
+              c3_dpT_XY_imag[dpt][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re());
+
+              c3_dpT_X_real[dpt][2]->Fill(Q_n1_1[ipt][0].Re()/Q_0_1[ipt][0].Re(), Q_0_1[ipt][0].Re());
+              c3_dpT_X_imag[dpt][2]->Fill(Q_n1_1[ipt][0].Im()/Q_0_1[ipt][0].Re(), Q_0_1[ipt][0].Re());
+
+              TComplex N_2_XZ;
+              TComplex D_2_XZ;
+
+              N_2_XZ = Q_n1_1[ipt][0]*Q_n3_1_HFplus;
+              D_2_XZ = Q_0_1[ipt][0]*Q_0_1_HFplus;
+
+              c3_dpT_XZ_real[dpt][2][0]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
+              c3_dpT_XZ_imag[dpt][2][0]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+
+              N_2_XZ = Q_n1_1[ipt][0]*Q_n3_1_HFminus;
+              D_2_XZ = Q_0_1[ipt][0]*Q_0_1_HFminus;
+
+              c3_dpT_XZ_real[dpt][2][1]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
+              c3_dpT_XZ_imag[dpt][2][1]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+            //end acceptance correction
 
             N_3_HFplus = N_2*Q_n3_1_HFplus;
             D_3_HFplus = D_2*Q_0_1_HFplus;
@@ -838,7 +888,32 @@ calculate the 2-particles correlator with the charged-particles
                 N_2 = Q_pT_n1_1[ipt][sign]*Q_pT_n2_1[jpt][sign];
                 D_2 = Q_pT_0_1[ipt][sign]*Q_pT_0_1[jpt][sign];
 
-              }        
+              }   
+
+              /*
+              acceptance correction terms
+              */   
+                c3_pTave_XY_real[dpt][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re());
+                c3_pTave_XY_imag[dpt][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re());
+
+                c3_pTave_X_real[dpt][sign]->Fill(Q_n1_1[ipt][sign].Re()/Q_0_1[ipt][sign].Re(), Q_0_1[ipt][sign].Re());
+                c3_pTave_X_imag[dpt][sign]->Fill(Q_n1_1[ipt][sign].Im()/Q_0_1[ipt][sign].Re(), Q_0_1[ipt][sign].Re());
+
+                TComplex N_2_XZ;
+                TComplex D_2_XZ;
+
+                N_2_XZ = Q_n1_1[ipt][sign]*Q_n3_1_HFplus;
+                D_2_XZ = Q_0_1[ipt][sign]*Q_0_1_HFplus;
+
+                c3_pTave_XZ_real[dpt][sign][0]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
+                c3_pTave_XZ_imag[dpt][sign][0]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+
+                N_2_XZ = Q_n1_1[ipt][sign]*Q_n3_1_HFminus;
+                D_2_XZ = Q_0_1[ipt][sign]*Q_0_1_HFminus;
+
+                c3_pTave_XZ_real[dpt][sign][1]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
+                c3_pTave_XZ_imag[dpt][sign][1]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+              //end acceptance correction      
 
               N_3_HFplus = N_2*Q_n3_1_HFplus;
               D_3_HFplus = D_2*Q_0_1_HFplus;
@@ -859,6 +934,31 @@ calculate the 2-particles correlator with the charged-particles
 
             N_2 = Q_pT_n1_1[ipt][0]*Q_pT_n2_1[jpt][1];
             D_2 = Q_pT_0_1[ipt][0]*Q_pT_0_1[jpt][1];
+
+            /*
+            acceptance correction terms
+            */   
+              c3_pTave_XY_real[dpt][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re());
+              c3_pTave_XY_imag[dpt][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re());
+
+              c3_pTave_X_real[dpt][2]->Fill(Q_n1_1[ipt][0].Re()/Q_0_1[ipt][0].Re(), Q_0_1[ipt][0].Re());
+              c3_pTave_X_imag[dpt][2]->Fill(Q_n1_1[ipt][0].Im()/Q_0_1[ipt][0].Re(), Q_0_1[ipt][0].Re());
+
+              TComplex N_2_XZ;
+              TComplex D_2_XZ;
+
+              N_2_XZ = Q_n1_1[ipt][0]*Q_n3_1_HFplus;
+              D_2_XZ = Q_0_1[ipt][0]*Q_0_1_HFplus;
+
+              c3_pTave_XZ_real[dpt][2][0]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
+              c3_pTave_XZ_imag[dpt][2][0]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+
+              N_2_XZ = Q_n1_1[ipt][0]*Q_n3_1_HFminus;
+              D_2_XZ = Q_0_1[ipt][0]*Q_0_1_HFminus;
+
+              c3_pTave_XZ_real[dpt][2][1]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
+              c3_pTave_XZ_imag[dpt][2][1]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+            //end acceptance correction
 
             N_3_HFplus = N_2*Q_n3_1_HFplus;
             D_3_HFplus = D_2*Q_0_1_HFplus;
@@ -1116,6 +1216,33 @@ CMEandMixedHarmonics::beginJob()
           c3_pTave_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_real_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
           //c3_pTave_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_imag_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
 
+        }
+      }    
+    }
+
+    for(int dpt = 0; dpt < NdPtBins; dpt++){
+      for(int sign = 0; sign < 3; sign++){
+
+        c3_dpT_XY_real[dpt][sign] = fs->make<TH1D>(Form("c3_dpT_XY_real_%d_%d", dpt, sign),";c3", 2000,-1,1);
+        c3_dpT_XY_imag[dpt][sign] = fs->make<TH1D>(Form("c3_dpT_XY_imag_%d_%d", dpt, sign),";c3", 2000,-1,1);
+
+        c3_dpT_X_real[dpt][sign] = fs->make<TH1D>(Form("c3_dpT_X_real_%d_%d", dpt, sign),";c3", 2000,-1,1);
+        c3_dpT_X_imag[dpt][sign] = fs->make<TH1D>(Form("c3_dpT_X_imag_%d_%d", dpt, sign),";c3", 2000,-1,1);
+
+        c3_pTave_XY_real[dpt][sign] = fs->make<TH1D>(Form("c3_pTave_XY_real_%d_%d", dpt, sign),";c3", 2000,-1,1);
+        c3_pTave_XY_imag[dpt][sign] = fs->make<TH1D>(Form("c3_pTave_XY_imag_%d_%d", dpt, sign),";c3", 2000,-1,1);
+
+        c3_pTave_X_real[dpt][sign] = fs->make<TH1D>(Form("c3_pTave_X_real_%d_%d", dpt, sign),";c3", 2000,-1,1);
+        c3_pTave_X_imag[dpt][sign] = fs->make<TH1D>(Form("c3_pTave_X_imag_%d_%d", dpt, sign),";c3", 2000,-1,1);
+
+
+        for(int HF = 0; HF < 2; HF++){
+
+          c3_dpT_XZ_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_XZ_real_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
+          c3_dpT_XZ_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_XZ_imag_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
+
+          c3_pTave_XZ_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_XZ_real_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
+          c3_pTave_XZ_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_XZ_imag_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
         }
       }    
     }
