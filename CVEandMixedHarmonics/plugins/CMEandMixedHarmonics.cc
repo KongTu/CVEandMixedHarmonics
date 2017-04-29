@@ -605,13 +605,13 @@ calculate the 3-particles correlator with the charged-particles
               D_2_XZ = Q_0_1[ieta][sign]*Q_0_1_HFplus;
 
               c3_XZ_real[deta][sign][0]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
-              c3_XZ_Imag[deta][sign][0]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+              c3_XZ_imag[deta][sign][0]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
 
               N_2_XZ = Q_n1_1[ieta][sign]*Q_n3_1_HFminus;
               D_2_XZ = Q_0_1[ieta][sign]*Q_0_1_HFminus;
 
               c3_XZ_real[deta][sign][1]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
-              c3_XZ_Imag[deta][sign][1]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+              c3_XZ_imag[deta][sign][1]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
             //end acceptance correction     
 
             N_3_HFplus = N_2*Q_n3_1_HFplus;
