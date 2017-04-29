@@ -486,6 +486,17 @@ Share Q_n3 for both dimensions:
   }
 
 /*
+accpetance correction terms related to HF
+*/
+
+  c3_Z_real[0]->Fill(Q_n3_1_HFplus.Re()/Q_0_1_HFplus.Re(). Q_0_1_HFplus.Re());
+  c3_Z_imag[0]->Fill(Q_n3_1_HFplus.Im()/Q_0_1_HFplus.Re(). Q_0_1_HFplus.Re());
+
+  c3_Z_real[1]->Fill(Q_n3_1_HFminus.Re()/Q_0_1_HFminus.Re(). Q_0_1_HFminus.Re());
+  c3_Z_imag[1]->Fill(Q_n3_1_HFminus.Im()/Q_0_1_HFminus.Re(). Q_0_1_HFminus.Re());
+
+
+/*
 calculate the Scalar product denominator, v_{2,c}
 */
 
@@ -577,7 +588,31 @@ calculate the 3-particles correlator with the charged-particles
               N_2 = Q_n1_1[ieta][sign]*Q_n2_1[jeta][sign];
               D_2 = Q_0_1[ieta][sign]*Q_0_1[jeta][sign];
 
-            }        
+            }
+            /*
+            acceptance correction terms
+            */   
+              c3_XY_real[deta][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re());
+              c3_XY_imag[deta][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re());
+
+              c3_X_real[deta][sign]->Fill(Q_n1_1[ieta][sign].Re()/Q_0_1[ieta][sign].Re(). Q_0_1[ieta][sign].Re());
+              c3_X_imag[deta][sign]->Fill(Q_n1_1[ieta][sign].Im()/Q_0_1[ieta][sign].Re(). Q_0_1[ieta][sign].Re());
+
+              TComplex N_2_XZ;
+              TComplex D_2_XZ;
+
+              N_2_XZ = Q_n1_1[ieta][sign]*Q_n3_1_HFplus;
+              D_2_XZ = Q_0_1[ieta][sign]*Q_0_1_HFplus;
+
+              c3_XZ_real[deta][sign][0]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
+              c3_XZ_Imag[deta][sign][0]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+
+              N_2_XZ = Q_n1_1[ieta][sign]*Q_n3_1_HFminus;
+              D_2_XZ = Q_0_1[ieta][sign]*Q_0_1_HFminus;
+
+              c3_XZ_real[deta][sign][1]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
+              c3_XZ_Imag[deta][sign][1]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+            //end acceptance correction     
 
             N_3_HFplus = N_2*Q_n3_1_HFplus;
             D_3_HFplus = D_2*Q_0_1_HFplus;
@@ -1008,6 +1043,32 @@ CMEandMixedHarmonics::beginJob()
       }
     }    
   }
+  
+//acceptance correction
+
+  for(int HF = 0; HF < 2; HF++){
+
+    c3_Z_real[HF] = fs->make<TH1D>(Form("c3_Z_real_%d", HF),";c3", 2000,-1,1);
+    c3_Z_imag[HF] = fs->make<TH1D>(Form("c3_Z_imag_%d", HF),";c3", 2000,-1,1);
+  }
+
+  for(int deta = 0; deta < NdEtaBins; deta++){
+    for(int sign = 0; sign < 3; sign++){
+
+      c3_XY_real[deta][sign] = fs->make<TH1D>(Form("c3_XY_real_%d_%d", deta, sign),";c3", 2000,-1,1);
+      c3_XY_imag[deta][sign] = fs->make<TH1D>(Form("c3_XY_imag_%d_%d", deta, sign),";c3", 2000,-1,1);
+
+      c3_X_real[deta][sign] = fs->make<TH1D>(Form("c3_X_real_%d_%d", deta, sign),";c3", 2000,-1,1);
+      c3_X_imag[deta][sign] = fs->make<TH1D>(Form("c3_X_imag_%d_%d", deta, sign),";c3", 2000,-1,1);
+
+      for(int HF = 0; HF < 2; HF++){
+
+        c3_XZ_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_XZ_real_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
+        c3_XZ_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_XZ_imag_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
+      }
+    }    
+  }
+
 
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){

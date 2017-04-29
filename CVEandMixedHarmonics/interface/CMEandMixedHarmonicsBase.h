@@ -190,6 +190,18 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       TH1D* c3_real[48][3][2];
       TH1D* c3_imag[48][3][2];
 
+      TH1D* c3_XY_real[48][3];
+      TH1D* c3_XY_imag[48][3];
+      
+      TH1D* c3_X_real[48][3];
+      TH1D* c3_Z_real[2];
+
+      TH1D* c3_X_imag[48][3];
+      TH1D* c3_Z_imag[2];
+
+      TH1D* c3_XZ_real[48][3][2];
+      TH1D* c3_XZ_imag[48][3][2];
+
       TH1D* c2_dpT_real[48][3];
       TH1D* c2_dpT_imag[48][3];
 
