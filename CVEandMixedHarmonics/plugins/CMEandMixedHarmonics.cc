@@ -489,11 +489,11 @@ Share Q_n3 for both dimensions:
 accpetance correction terms related to HF
 */
 
-  c3_Z_real[0]->Fill(Q_n3_1_HFplus.Re()/Q_0_1_HFplus.Re(). Q_0_1_HFplus.Re());
-  c3_Z_imag[0]->Fill(Q_n3_1_HFplus.Im()/Q_0_1_HFplus.Re(). Q_0_1_HFplus.Re());
+  c3_Z_real[0]->Fill(Q_n3_1_HFplus.Re()/Q_0_1_HFplus.Re(), Q_0_1_HFplus.Re());
+  c3_Z_imag[0]->Fill(Q_n3_1_HFplus.Im()/Q_0_1_HFplus.Re(), Q_0_1_HFplus.Re());
 
-  c3_Z_real[1]->Fill(Q_n3_1_HFminus.Re()/Q_0_1_HFminus.Re(). Q_0_1_HFminus.Re());
-  c3_Z_imag[1]->Fill(Q_n3_1_HFminus.Im()/Q_0_1_HFminus.Re(). Q_0_1_HFminus.Re());
+  c3_Z_real[1]->Fill(Q_n3_1_HFminus.Re()/Q_0_1_HFminus.Re(), Q_0_1_HFminus.Re());
+  c3_Z_imag[1]->Fill(Q_n3_1_HFminus.Im()/Q_0_1_HFminus.Re(), Q_0_1_HFminus.Re());
 
 
 /*
@@ -595,8 +595,8 @@ calculate the 3-particles correlator with the charged-particles
               c3_XY_real[deta][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re());
               c3_XY_imag[deta][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re());
 
-              c3_X_real[deta][sign]->Fill(Q_n1_1[ieta][sign].Re()/Q_0_1[ieta][sign].Re(). Q_0_1[ieta][sign].Re());
-              c3_X_imag[deta][sign]->Fill(Q_n1_1[ieta][sign].Im()/Q_0_1[ieta][sign].Re(). Q_0_1[ieta][sign].Re());
+              c3_X_real[deta][sign]->Fill(Q_n1_1[ieta][sign].Re()/Q_0_1[ieta][sign].Re(), Q_0_1[ieta][sign].Re());
+              c3_X_imag[deta][sign]->Fill(Q_n1_1[ieta][sign].Im()/Q_0_1[ieta][sign].Re(), Q_0_1[ieta][sign].Re());
 
               TComplex N_2_XZ;
               TComplex D_2_XZ;
