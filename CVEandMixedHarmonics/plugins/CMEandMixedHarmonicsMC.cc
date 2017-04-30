@@ -579,9 +579,15 @@ Share Q_n3 for both dimensions:
       for(unsigned it=0; it<genParticleCollection->size(); ++it) {
 
         const reco::GenParticle & genCand = (*genParticleCollection)[it];
+        int status = genCand.status();
+        double genpt = genCand.pt();
+        int gencharge = genCand.charge();
         double geneta = genCand.eta();
         double genphi = genCand.phi();
         double w = 1.0;
+        
+        if( status != 1  || gencharge == 0 ) continue;
+        if( genpt < ptLow_ || genpt > ptHigh_ ) continue;
 
         if( reverseBeam_ ) geneta = -geneta;
         if( geneta < etaHighHF_ && geneta > etaLowHF_ ){
@@ -599,9 +605,6 @@ Share Q_n3 for both dimensions:
       }
   }
 
-  
-
-  
 /*
 calculate the Scalar product denominator, v_{2,c}
 */
