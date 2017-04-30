@@ -466,6 +466,9 @@ Share Q_n3 for both dimensions:
           double caloEta = hit.eta();
           double caloPhi = hit.phi();
           double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
+          double energy = hit.hadEnergy() + hit.emEnergy();
+
+          if( energy < 0.3 ) continue;
 
           hfPhi->Fill(caloPhi, w);
           
