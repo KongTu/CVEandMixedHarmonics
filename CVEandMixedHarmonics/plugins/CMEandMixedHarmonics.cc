@@ -1296,10 +1296,16 @@ CMEandMixedHarmonics::beginJob()
       c3_X_real[deta][sign] = fs->make<TH1D>(Form("c3_X_real_%d_%d", deta, sign),";c3", 200,-1,1);
       c3_X_imag[deta][sign] = fs->make<TH1D>(Form("c3_X_imag_%d_%d", deta, sign),";c3", 200,-1,1);
 
+      c3_Y_real[deta][sign] = fs->make<TH1D>(Form("c3_Y_real_%d_%d", deta, sign),";c3", 200,-1,1);
+      c3_Y_imag[deta][sign] = fs->make<TH1D>(Form("c3_Y_imag_%d_%d", deta, sign),";c3", 200,-1,1);
+
       for(int HF = 0; HF < 2; HF++){
 
         c3_XZ_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_XZ_real_%d_%d_%d", deta, sign, HF),";c3", 200,-1,1);
         c3_XZ_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_XZ_imag_%d_%d_%d", deta, sign, HF),";c3", 200,-1,1);
+
+        c3_YZ_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_YZ_real_%d_%d_%d", deta, sign, HF),";c3", 200,-1,1);
+        c3_YZ_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_YZ_imag_%d_%d_%d", deta, sign, HF),";c3", 200,-1,1);
       }
     }    
   }
@@ -1337,12 +1343,17 @@ CMEandMixedHarmonics::beginJob()
         c3_dpT_X_real[dpt][sign] = fs->make<TH1D>(Form("c3_dpT_X_real_%d_%d", dpt, sign),";c3", 200,-1,1);
         c3_dpT_X_imag[dpt][sign] = fs->make<TH1D>(Form("c3_dpT_X_imag_%d_%d", dpt, sign),";c3", 200,-1,1);
 
+        c3_dpT_Y_real[dpt][sign] = fs->make<TH1D>(Form("c3_dpT_Y_real_%d_%d", dpt, sign),";c3", 200,-1,1);
+        c3_dpT_Y_imag[dpt][sign] = fs->make<TH1D>(Form("c3_dpT_Y_imag_%d_%d", dpt, sign),";c3", 200,-1,1);
+
         c3_pTave_XY_real[dpt][sign] = fs->make<TH1D>(Form("c3_pTave_XY_real_%d_%d", dpt, sign),";c3", 200,-1,1);
         c3_pTave_XY_imag[dpt][sign] = fs->make<TH1D>(Form("c3_pTave_XY_imag_%d_%d", dpt, sign),";c3", 200,-1,1);
 
         c3_pTave_X_real[dpt][sign] = fs->make<TH1D>(Form("c3_pTave_X_real_%d_%d", dpt, sign),";c3", 200,-1,1);
         c3_pTave_X_imag[dpt][sign] = fs->make<TH1D>(Form("c3_pTave_X_imag_%d_%d", dpt, sign),";c3", 200,-1,1);
 
+        c3_pTave_Y_real[dpt][sign] = fs->make<TH1D>(Form("c3_pTave_Y_real_%d_%d", dpt, sign),";c3", 200,-1,1);
+        c3_pTave_Y_imag[dpt][sign] = fs->make<TH1D>(Form("c3_pTave_Y_imag_%d_%d", dpt, sign),";c3", 200,-1,1);
 
         for(int HF = 0; HF < 2; HF++){
 
@@ -1351,6 +1362,12 @@ CMEandMixedHarmonics::beginJob()
 
           c3_pTave_XZ_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_XZ_real_%d_%d_%d", dpt, sign, HF),";c3", 200,-1,1);
           c3_pTave_XZ_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_XZ_imag_%d_%d_%d", dpt, sign, HF),";c3", 200,-1,1);
+
+          c3_dpT_YZ_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_YZ_real_%d_%d_%d", dpt, sign, HF),";c3", 200,-1,1);
+          c3_dpT_YZ_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_YZ_imag_%d_%d_%d", dpt, sign, HF),";c3", 200,-1,1);
+
+          c3_pTave_YZ_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_YZ_real_%d_%d_%d", dpt, sign, HF),";c3", 200,-1,1);
+          c3_pTave_YZ_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_YZ_imag_%d_%d_%d", dpt, sign, HF),";c3", 200,-1,1);
         }
       }    
     }
