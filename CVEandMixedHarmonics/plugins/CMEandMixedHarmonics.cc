@@ -520,6 +520,12 @@ calculate the Scalar product denominator, v_{2,c}
 
   c2_ab->Fill(N_2_trk.Re()/D_2_trk.Re(), D_2_trk.Re());
     
+//acceptance correction terms, <A> <B> <C> <C*>
+
+  c2_a->Fill(Q_n3_1_HFminus.Re()/Q_0_1_HFminus.Re(). Q_0_1_HFminus.Re());
+  c2_b->Fill(Q_n3_1_HFplus.Re()/Q_0_1_HFplus.Re(). Q_0_1_HFplus.Re());
+  c2_c->Fill(Q_n3_trk.Re()/Q_0_trk.Re(). Q_0_trk.Re());
+
 
 /*
 v_{n} in eta slices
@@ -1256,16 +1262,20 @@ CMEandMixedHarmonics::beginJob()
     }   
   }
 
-  c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 2000,-1,1);
-  c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 2000,-1,1);
-  c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 2000,-1,1);
+  c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 200,-1,1);
+  c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 200,-1,1);
+  c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 200,-1,1);
 
-  cn_tracker = fs->make<TH1D>("cn_tracker",";cn_tracker", 2000,-1,1);
+  c2_a = fs->make<TH1D>("c2_a",";c2_a", 200,-1,1);
+  c2_b = fs->make<TH1D>("c2_b",";c2_b", 200,-1,1);
+  c2_c = fs->make<TH1D>("c2_c",";c2_c", 200,-1,1);
+
+  cn_tracker = fs->make<TH1D>("cn_tracker",";cn_tracker", 200,-1,1);
 
   for(int eta = 0; eta < NetaBins; eta++){
     for(int HF = 0; HF < 2; HF++){
 
-      cn_eta[eta][HF] = fs->make<TH1D>(Form("cn_eta_%d_%d", eta, HF),";cn_eta", 2000,-1,1);
+      cn_eta[eta][HF] = fs->make<TH1D>(Form("cn_eta_%d_%d", eta, HF),";cn_eta", 200,-1,1);
     }
   }
   
@@ -1273,8 +1283,8 @@ CMEandMixedHarmonics::beginJob()
     for(int sign = 0; sign < 3; sign++){
       for(int HF = 0; HF < 2; HF++){
 
-        c3_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_real_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
-        //c3_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_imag_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
+        c3_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_real_%d_%d_%d", deta, sign, HF),";c3", 200,-1,1);
+        //c3_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_imag_%d_%d_%d", deta, sign, HF),";c3", 200,-1,1);
       }
     }    
   }
@@ -1314,8 +1324,8 @@ CMEandMixedHarmonics::beginJob()
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
 
-      c2_real[deta][sign] = fs->make<TH1D>(Form("c2_real_%d_%d", deta, sign),";c2", 2000,-1,1);
-      //c2_imag[deta][sign] = fs->make<TH1D>(Form("c2_imag_%d_%d", deta, sign),";c2", 2000,-1,1);
+      c2_real[deta][sign] = fs->make<TH1D>(Form("c2_real_%d_%d", deta, sign),";c2", 200,-1,1);
+      //c2_imag[deta][sign] = fs->make<TH1D>(Form("c2_imag_%d_%d", deta, sign),";c2", 200,-1,1);
     }    
   }
 
@@ -1324,11 +1334,11 @@ CMEandMixedHarmonics::beginJob()
       for(int sign = 0; sign < 3; sign++){
         for(int HF = 0; HF < 2; HF++){
 
-          c3_dpT_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_real_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
-          //c3_dpT_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_imag_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
+          c3_dpT_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_real_%d_%d_%d", dpt, sign, HF),";c3", 200,-1,1);
+          //c3_dpT_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_imag_%d_%d_%d", dpt, sign, HF),";c3", 200,-1,1);
 
-          c3_pTave_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_real_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
-          //c3_pTave_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_imag_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
+          c3_pTave_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_real_%d_%d_%d", dpt, sign, HF),";c3", 200,-1,1);
+          //c3_pTave_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_imag_%d_%d_%d", dpt, sign, HF),";c3", 200,-1,1);
 
         }
       }    
@@ -1375,11 +1385,11 @@ CMEandMixedHarmonics::beginJob()
     for(int dpt = 0; dpt < NdPtBins; dpt++){
       for(int sign = 0; sign < 3; sign++){
 
-        c2_dpT_real[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_real_%d_%d", dpt, sign),";c2", 2000,-1,1);
-        //c2_dpT_imag[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_imag_%d_%d", dpt, sign),";c2", 2000,-1,1);
+        c2_dpT_real[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_real_%d_%d", dpt, sign),";c2", 200,-1,1);
+        //c2_dpT_imag[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_imag_%d_%d", dpt, sign),";c2", 200,-1,1);
      
-        c2_pTave_real[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_real_%d_%d", dpt, sign),";c2", 2000,-1,1);
-        //c2_pTave_imag[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_imag_%d_%d", dpt, sign),";c2", 2000,-1,1);
+        c2_pTave_real[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_real_%d_%d", dpt, sign),";c2", 200,-1,1);
+        //c2_pTave_imag[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_imag_%d_%d", dpt, sign),";c2", 200,-1,1);
      
       }    
     }
