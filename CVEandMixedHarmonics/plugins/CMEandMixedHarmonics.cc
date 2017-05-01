@@ -466,9 +466,9 @@ Share Q_n3 for both dimensions:
           double caloEta = hit.eta();
           double caloPhi = hit.phi();
           double w = hit.hadEt( vtx.z() ) + hit.emEt( vtx.z() );
-          double energy = hit.hadEnergy() + hit.emEnergy();
+          // double energy = hit.hadEnergy() + hit.emEnergy();
 
-          if( energy < 0.3 ) continue;
+          // if( energy < 0.3 ) continue;
 
           hfPhi->Fill(caloPhi, w);
           
@@ -601,6 +601,9 @@ calculate the 3-particles correlator with the charged-particles
               c3_X_real[deta][sign]->Fill(Q_n1_1[ieta][sign].Re()/Q_0_1[ieta][sign].Re(), Q_0_1[ieta][sign].Re());
               c3_X_imag[deta][sign]->Fill(Q_n1_1[ieta][sign].Im()/Q_0_1[ieta][sign].Re(), Q_0_1[ieta][sign].Re());
 
+              c3_Y_real[deta][sign]->Fill(Q_n2_1[jeta][sign].Re()/Q_0_1[jeta][sign].Re(), Q_0_1[jeta][sign].Re());
+              c3_Y_imag[deta][sign]->Fill(Q_n2_1[jeta][sign].Im()/Q_0_1[jeta][sign].Re(), Q_0_1[jeta][sign].Re());
+
               TComplex N_2_XZ;
               TComplex D_2_XZ;
 
@@ -615,6 +618,21 @@ calculate the 3-particles correlator with the charged-particles
 
               c3_XZ_real[deta][sign][1]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
               c3_XZ_imag[deta][sign][1]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+
+              TComplex N_2_YZ;
+              TComplex D_2_YZ;
+
+              N_2_YZ = Q_n2_1[jeta][sign]*Q_n3_1_HFplus;
+              D_2_YZ = Q_0_1[jeta][sign]*Q_0_1_HFplus;
+
+              c3_YZ_real[deta][sign][0]->Fill(N_2_YZ.Re()/D_2_YZ.Re(), D_2_YZ.Re());
+              c3_YZ_imag[deta][sign][0]->Fill(N_2_YZ.Im()/D_2_YZ.Re(), D_2_YZ.Re());
+
+              N_2_YZ = Q_n2_1[jeta][sign]*Q_n3_1_HFminus;
+              D_2_YZ = Q_0_1[jeta][sign]*Q_0_1_HFminus;
+
+              c3_YZ_real[deta][sign][1]->Fill(N_2_YZ.Re()/D_2_YZ.Re(), D_2_YZ.Re());
+              c3_YZ_imag[deta][sign][1]->Fill(N_2_YZ.Im()/D_2_YZ.Re(), D_2_YZ.Re());
             //end acceptance correction     
 
             N_3_HFplus = N_2*Q_n3_1_HFplus;
@@ -636,8 +654,7 @@ calculate the 3-particles correlator with the charged-particles
 
           N_2 = Q_n1_1[ieta][0]*Q_n2_1[jeta][1];
           D_2 = Q_0_1[ieta][0]*Q_0_1[jeta][1];
-
-         /*
+          /*
           acceptance correction terms
           */   
             c3_XY_real[deta][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re());
@@ -645,6 +662,9 @@ calculate the 3-particles correlator with the charged-particles
 
             c3_X_real[deta][2]->Fill(Q_n1_1[ieta][0].Re()/Q_0_1[ieta][0].Re(), Q_0_1[ieta][0].Re());
             c3_X_imag[deta][2]->Fill(Q_n1_1[ieta][0].Im()/Q_0_1[ieta][0].Re(), Q_0_1[ieta][0].Re());
+
+            c3_Y_real[deta][2]->Fill(Q_n2_1[jeta][1].Re()/Q_0_1[jeta][1].Re(), Q_0_1[jeta][1].Re());
+            c3_Y_imag[deta][2]->Fill(Q_n2_1[jeta][1].Im()/Q_0_1[jeta][1].Re(), Q_0_1[jeta][1].Re());
 
             TComplex N_2_XZ;
             TComplex D_2_XZ;
@@ -660,10 +680,23 @@ calculate the 3-particles correlator with the charged-particles
 
             c3_XZ_real[deta][2][1]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
             c3_XZ_imag[deta][2][1]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
-          //end acceptance correction     
 
+            TComplex N_2_YZ;
+            TComplex D_2_YZ;
 
+            N_2_YZ = Q_n2_1[jeta][1]*Q_n3_1_HFplus;
+            D_2_YZ = Q_0_1[jeta][1]*Q_0_1_HFplus;
 
+            c3_YZ_real[deta][2][0]->Fill(N_2_YZ.Re()/D_2_YZ.Re(), D_2_YZ.Re());
+            c3_YZ_imag[deta][2][0]->Fill(N_2_YZ.Im()/D_2_YZ.Re(), D_2_YZ.Re());
+
+            N_2_YZ = Q_n2_1[jeta][1]*Q_n3_1_HFminus;
+            D_2_YZ = Q_0_1[jeta][1]*Q_0_1_HFminus;
+
+            c3_YZ_real[deta][2][1]->Fill(N_2_YZ.Re()/D_2_YZ.Re(), D_2_YZ.Re());
+            c3_YZ_imag[deta][2][1]->Fill(N_2_YZ.Im()/D_2_YZ.Re(), D_2_YZ.Re());
+          //end acceptance correction 
+              
           N_3_HFplus = N_2*Q_n3_1_HFplus;
           D_3_HFplus = D_2*Q_0_1_HFplus;
 
@@ -787,24 +820,42 @@ calculate the 2-particles correlator with the charged-particles
                 c3_dpT_XY_real[dpt][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re());
                 c3_dpT_XY_imag[dpt][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re());
 
-                c3_dpT_X_real[dpt][sign]->Fill(Q_n1_1[ipt][sign].Re()/Q_0_1[ipt][sign].Re(), Q_0_1[ipt][sign].Re());
-                c3_dpT_X_imag[dpt][sign]->Fill(Q_n1_1[ipt][sign].Im()/Q_0_1[ipt][sign].Re(), Q_0_1[ipt][sign].Re());
+                c3_dpT_X_real[dpt][sign]->Fill(Q_pT_n1_1[ipt][sign].Re()/Q_pT_0_1[ipt][sign].Re(), Q_pT_0_1[ipt][sign].Re());
+                c3_dpT_X_imag[dpt][sign]->Fill(Q_pT_n1_1[ipt][sign].Im()/Q_pT_0_1[ipt][sign].Re(), Q_pT_0_1[ipt][sign].Re());
+
+                c3_dpT_Y_real[dpt][sign]->Fill(Q_pT_n2_1[jpt][sign].Re()/Q_pT_0_1[jpt][sign].Re(), Q_pT_0_1[jpt][sign].Re());
+                c3_dpT_Y_imag[dpt][sign]->Fill(Q_pT_n2_1[jpt][sign].Im()/Q_pT_0_1[jpt][sign].Re(), Q_pT_0_1[jpt][sign].Re());
 
                 TComplex N_2_XZ;
                 TComplex D_2_XZ;
 
-                N_2_XZ = Q_n1_1[ipt][sign]*Q_n3_1_HFplus;
-                D_2_XZ = Q_0_1[ipt][sign]*Q_0_1_HFplus;
+                N_2_XZ = Q_pT_n1_1[ipt][sign]*Q_n3_1_HFplus;
+                D_2_XZ = Q_pT_0_1[ipt][sign]*Q_0_1_HFplus;
 
                 c3_dpT_XZ_real[dpt][sign][0]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
                 c3_dpT_XZ_imag[dpt][sign][0]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
 
-                N_2_XZ = Q_n1_1[ipt][sign]*Q_n3_1_HFminus;
-                D_2_XZ = Q_0_1[ipt][sign]*Q_0_1_HFminus;
+                N_2_XZ = Q_pT_n1_1[ipt][sign]*Q_n3_1_HFminus;
+                D_2_XZ = Q_pT_0_1[ipt][sign]*Q_0_1_HFminus;
 
                 c3_dpT_XZ_real[dpt][sign][1]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
                 c3_dpT_XZ_imag[dpt][sign][1]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
-              //end acceptance correction       
+
+                TComplex N_2_YZ;
+                TComplex D_2_YZ;
+
+                N_2_YZ = Q_pT_n2_1[jpt][sign]*Q_n3_1_HFplus;
+                D_2_YZ = Q_pT_0_1[jpt][sign]*Q_0_1_HFplus;
+
+                c3_dpT_YZ_real[dpt][sign][0]->Fill(N_2_YZ.Re()/D_2_YZ.Re(), D_2_YZ.Re());
+                c3_dpT_YZ_imag[dpt][sign][0]->Fill(N_2_YZ.Im()/D_2_YZ.Re(), D_2_YZ.Re());
+
+                N_2_YZ = Q_pT_n2_1[jpt][sign]*Q_n3_1_HFminus;
+                D_2_YZ = Q_pT_0_1[jpt][sign]*Q_0_1_HFminus;
+
+                c3_dpT_YZ_real[dpt][sign][1]->Fill(N_2_YZ.Re()/D_2_YZ.Re(), D_2_YZ.Re());
+                c3_dpT_YZ_imag[dpt][sign][1]->Fill(N_2_YZ.Im()/D_2_YZ.Re(), D_2_YZ.Re());
+              //end acceptance correction     
 
               N_3_HFplus = N_2*Q_n3_1_HFplus;
               D_3_HFplus = D_2*Q_0_1_HFplus;
@@ -832,23 +883,41 @@ calculate the 2-particles correlator with the charged-particles
               c3_dpT_XY_real[dpt][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re());
               c3_dpT_XY_imag[dpt][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re());
 
-              c3_dpT_X_real[dpt][2]->Fill(Q_n1_1[ipt][0].Re()/Q_0_1[ipt][0].Re(), Q_0_1[ipt][0].Re());
-              c3_dpT_X_imag[dpt][2]->Fill(Q_n1_1[ipt][0].Im()/Q_0_1[ipt][0].Re(), Q_0_1[ipt][0].Re());
+              c3_dpT_X_real[dpt][2]->Fill(Q_pT_n1_1[ipt][0].Re()/Q_pT_0_1[ipt][0].Re(), Q_pT_0_1[ipt][0].Re());
+              c3_dpT_X_imag[dpt][2]->Fill(Q_pT_n1_1[ipt][0].Im()/Q_pT_0_1[ipt][0].Re(), Q_pT_0_1[ipt][0].Re());
+
+              c3_dpT_Y_real[dpt][2]->Fill(Q_pT_n2_1[jpt][1].Re()/Q_pT_0_1[jpt][1].Re(), Q_pT_0_1[jpt][1].Re());
+              c3_dpT_Y_imag[dpt][2]->Fill(Q_pT_n2_1[jpt][1].Im()/Q_pT_0_1[jpt][1].Re(), Q_pT_0_1[jpt][1].Re());
 
               TComplex N_2_XZ;
               TComplex D_2_XZ;
 
-              N_2_XZ = Q_n1_1[ipt][0]*Q_n3_1_HFplus;
-              D_2_XZ = Q_0_1[ipt][0]*Q_0_1_HFplus;
+              N_2_XZ = Q_pT_n1_1[ipt][0]*Q_n3_1_HFplus;
+              D_2_XZ = Q_pT_0_1[ipt][0]*Q_0_1_HFplus;
 
               c3_dpT_XZ_real[dpt][2][0]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
               c3_dpT_XZ_imag[dpt][2][0]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
 
-              N_2_XZ = Q_n1_1[ipt][0]*Q_n3_1_HFminus;
-              D_2_XZ = Q_0_1[ipt][0]*Q_0_1_HFminus;
+              N_2_XZ = Q_pT_n1_1[ipt][0]*Q_n3_1_HFminus;
+              D_2_XZ = Q_pT_0_1[ipt][0]*Q_0_1_HFminus;
 
               c3_dpT_XZ_real[dpt][2][1]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
               c3_dpT_XZ_imag[dpt][2][1]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+
+              TComplex N_2_YZ;
+              TComplex D_2_YZ;
+
+              N_2_YZ = Q_pT_n2_1[jpt][1]*Q_n3_1_HFplus;
+              D_2_YZ = Q_pT_0_1[jpt][1]*Q_0_1_HFplus;
+
+              c3_dpT_YZ_real[dpt][2][0]->Fill(N_2_YZ.Re()/D_2_YZ.Re(), D_2_YZ.Re());
+              c3_dpT_YZ_imag[dpt][2][0]->Fill(N_2_YZ.Im()/D_2_YZ.Re(), D_2_YZ.Re());
+
+              N_2_YZ = Q_pT_n2_1[jpt][1]*Q_n3_1_HFminus;
+              D_2_YZ = Q_pT_0_1[jpt][1]*Q_0_1_HFminus;
+
+              c3_dpT_YZ_real[dpt][2][1]->Fill(N_2_YZ.Re()/D_2_YZ.Re(), D_2_YZ.Re());
+              c3_dpT_YZ_imag[dpt][2][1]->Fill(N_2_YZ.Im()/D_2_YZ.Re(), D_2_YZ.Re());
             //end acceptance correction
 
             N_3_HFplus = N_2*Q_n3_1_HFplus;
@@ -899,24 +968,42 @@ calculate the 2-particles correlator with the charged-particles
                 c3_pTave_XY_real[dpt][sign]->Fill(N_2.Re()/D_2.Re(), D_2.Re());
                 c3_pTave_XY_imag[dpt][sign]->Fill(N_2.Im()/D_2.Re(), D_2.Re());
 
-                c3_pTave_X_real[dpt][sign]->Fill(Q_n1_1[ipt][sign].Re()/Q_0_1[ipt][sign].Re(), Q_0_1[ipt][sign].Re());
-                c3_pTave_X_imag[dpt][sign]->Fill(Q_n1_1[ipt][sign].Im()/Q_0_1[ipt][sign].Re(), Q_0_1[ipt][sign].Re());
+                c3_pTave_X_real[dpt][sign]->Fill(Q_pT_n1_1[ipt][sign].Re()/Q_pT_0_1[ipt][sign].Re(), Q_pT_0_1[ipt][sign].Re());
+                c3_pTave_X_imag[dpt][sign]->Fill(Q_pT_n1_1[ipt][sign].Im()/Q_pT_0_1[ipt][sign].Re(), Q_pT_0_1[ipt][sign].Re());
+
+                c3_pTave_Y_real[dpt][sign]->Fill(Q_pT_n2_1[jpt][sign].Re()/Q_pT_0_1[jpt][sign].Re(), Q_pT_0_1[jpt][sign].Re());
+                c3_pTave_Y_imag[dpt][sign]->Fill(Q_pT_n2_1[jpt][sign].Im()/Q_pT_0_1[jpt][sign].Re(), Q_pT_0_1[jpt][sign].Re());
 
                 TComplex N_2_XZ;
                 TComplex D_2_XZ;
 
-                N_2_XZ = Q_n1_1[ipt][sign]*Q_n3_1_HFplus;
-                D_2_XZ = Q_0_1[ipt][sign]*Q_0_1_HFplus;
+                N_2_XZ = Q_pT_n1_1[ipt][sign]*Q_n3_1_HFplus;
+                D_2_XZ = Q_pT_0_1[ipt][sign]*Q_0_1_HFplus;
 
                 c3_pTave_XZ_real[dpt][sign][0]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
                 c3_pTave_XZ_imag[dpt][sign][0]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
 
-                N_2_XZ = Q_n1_1[ipt][sign]*Q_n3_1_HFminus;
-                D_2_XZ = Q_0_1[ipt][sign]*Q_0_1_HFminus;
+                N_2_XZ = Q_pT_n1_1[ipt][sign]*Q_n3_1_HFminus;
+                D_2_XZ = Q_pT_0_1[ipt][sign]*Q_0_1_HFminus;
 
                 c3_pTave_XZ_real[dpt][sign][1]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
                 c3_pTave_XZ_imag[dpt][sign][1]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
-              //end acceptance correction      
+
+                TComplex N_2_YZ;
+                TComplex D_2_YZ;
+
+                N_2_YZ = Q_pT_n2_1[jpt][sign]*Q_n3_1_HFplus;
+                D_2_YZ = Q_pT_0_1[jpt][sign]*Q_0_1_HFplus;
+
+                c3_pTave_YZ_real[dpt][sign][0]->Fill(N_2_YZ.Re()/D_2_YZ.Re(), D_2_YZ.Re());
+                c3_pTave_YZ_imag[dpt][sign][0]->Fill(N_2_YZ.Im()/D_2_YZ.Re(), D_2_YZ.Re());
+
+                N_2_YZ = Q_pT_n2_1[jpt][sign]*Q_n3_1_HFminus;
+                D_2_YZ = Q_pT_0_1[jpt][sign]*Q_0_1_HFminus;
+
+                c3_pTave_YZ_real[dpt][sign][1]->Fill(N_2_YZ.Re()/D_2_YZ.Re(), D_2_YZ.Re());
+                c3_pTave_YZ_imag[dpt][sign][1]->Fill(N_2_YZ.Im()/D_2_YZ.Re(), D_2_YZ.Re());
+              //end acceptance correction     
 
               N_3_HFplus = N_2*Q_n3_1_HFplus;
               D_3_HFplus = D_2*Q_0_1_HFplus;
@@ -944,23 +1031,41 @@ calculate the 2-particles correlator with the charged-particles
               c3_pTave_XY_real[dpt][2]->Fill(N_2.Re()/D_2.Re(), D_2.Re());
               c3_pTave_XY_imag[dpt][2]->Fill(N_2.Im()/D_2.Re(), D_2.Re());
 
-              c3_pTave_X_real[dpt][2]->Fill(Q_n1_1[ipt][0].Re()/Q_0_1[ipt][0].Re(), Q_0_1[ipt][0].Re());
-              c3_pTave_X_imag[dpt][2]->Fill(Q_n1_1[ipt][0].Im()/Q_0_1[ipt][0].Re(), Q_0_1[ipt][0].Re());
+              c3_pTave_X_real[dpt][2]->Fill(Q_pT_n1_1[ipt][0].Re()/Q_pT_0_1[ipt][0].Re(), Q_pT_0_1[ipt][0].Re());
+              c3_pTave_X_imag[dpt][2]->Fill(Q_pT_n1_1[ipt][0].Im()/Q_pT_0_1[ipt][0].Re(), Q_pT_0_1[ipt][0].Re());
+
+              c3_pTave_Y_real[dpt][2]->Fill(Q_pT_n2_1[jpt][1].Re()/Q_pT_0_1[jpt][1].Re(), Q_pT_0_1[jpt][1].Re());
+              c3_pTave_Y_imag[dpt][2]->Fill(Q_pT_n2_1[jpt][1].Im()/Q_pT_0_1[jpt][1].Re(), Q_pT_0_1[jpt][1].Re());
 
               TComplex N_2_XZ;
               TComplex D_2_XZ;
 
-              N_2_XZ = Q_n1_1[ipt][0]*Q_n3_1_HFplus;
-              D_2_XZ = Q_0_1[ipt][0]*Q_0_1_HFplus;
+              N_2_XZ = Q_pT_n1_1[ipt][0]*Q_n3_1_HFplus;
+              D_2_XZ = Q_pT_0_1[ipt][0]*Q_0_1_HFplus;
 
               c3_pTave_XZ_real[dpt][2][0]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
               c3_pTave_XZ_imag[dpt][2][0]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
 
-              N_2_XZ = Q_n1_1[ipt][0]*Q_n3_1_HFminus;
-              D_2_XZ = Q_0_1[ipt][0]*Q_0_1_HFminus;
+              N_2_XZ = Q_pT_n1_1[ipt][0]*Q_n3_1_HFminus;
+              D_2_XZ = Q_pT_0_1[ipt][0]*Q_0_1_HFminus;
 
               c3_pTave_XZ_real[dpt][2][1]->Fill(N_2_XZ.Re()/D_2_XZ.Re(), D_2_XZ.Re());
               c3_pTave_XZ_imag[dpt][2][1]->Fill(N_2_XZ.Im()/D_2_XZ.Re(), D_2_XZ.Re());
+
+              TComplex N_2_YZ;
+              TComplex D_2_YZ;
+
+              N_2_YZ = Q_pT_n2_1[jpt][1]*Q_n3_1_HFplus;
+              D_2_YZ = Q_pT_0_1[jpt][1]*Q_0_1_HFplus;
+
+              c3_pTave_YZ_real[dpt][2][0]->Fill(N_2_YZ.Re()/D_2_YZ.Re(), D_2_YZ.Re());
+              c3_pTave_YZ_imag[dpt][2][0]->Fill(N_2_YZ.Im()/D_2_YZ.Re(), D_2_YZ.Re());
+
+              N_2_YZ = Q_pT_n2_1[jpt][1]*Q_n3_1_HFminus;
+              D_2_YZ = Q_pT_0_1[jpt][1]*Q_0_1_HFminus;
+
+              c3_pTave_YZ_real[dpt][2][1]->Fill(N_2_YZ.Re()/D_2_YZ.Re(), D_2_YZ.Re());
+              c3_pTave_YZ_imag[dpt][2][1]->Fill(N_2_YZ.Im()/D_2_YZ.Re(), D_2_YZ.Re());
             //end acceptance correction
 
             N_3_HFplus = N_2*Q_n3_1_HFplus;

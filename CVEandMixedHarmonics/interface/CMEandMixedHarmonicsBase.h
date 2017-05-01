@@ -194,13 +194,18 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       TH1D* c3_XY_imag[48][3];
       
       TH1D* c3_X_real[48][3];
+      TH1D* c3_Y_real[48][3];
       TH1D* c3_Z_real[2];
 
       TH1D* c3_X_imag[48][3];
+      TH1D* c3_Y_imag[48][3];
       TH1D* c3_Z_imag[2];
 
       TH1D* c3_XZ_real[48][3][2];
       TH1D* c3_XZ_imag[48][3][2];
+
+      TH1D* c3_YZ_real[48][3][2];
+      TH1D* c3_YZ_imag[48][3][2];
 
       TH1D* c2_dpT_real[48][3];
       TH1D* c2_dpT_imag[48][3];
@@ -214,8 +219,14 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       TH1D* c3_dpT_X_real[48][3];
       TH1D* c3_dpT_X_imag[48][3];
 
+      TH1D* c3_dpT_Y_real[48][3];
+      TH1D* c3_dpT_Y_imag[48][3];
+
       TH1D* c3_dpT_XZ_real[48][3][2];
       TH1D* c3_dpT_XZ_imag[48][3][2];
+
+      TH1D* c3_dpT_YZ_real[48][3][2];
+      TH1D* c3_dpT_YZ_imag[48][3][2];
 
       TH1D* c2_pTave_real[48][3];
       TH1D* c2_pTave_imag[48][3];
@@ -229,8 +240,14 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       TH1D* c3_pTave_X_real[48][3];
       TH1D* c3_pTave_X_imag[48][3];
 
+      TH1D* c3_pTave_Y_real[48][3];
+      TH1D* c3_pTave_Y_imag[48][3];
+
       TH1D* c3_pTave_XZ_real[48][3][2];
       TH1D* c3_pTave_XZ_imag[48][3][2];
+
+      TH1D* c3_pTave_YZ_real[48][3][2];
+      TH1D* c3_pTave_YZ_imag[48][3][2];
 
       TH1D* delEta3p[3];
       TH1D* delEta2p[3];
