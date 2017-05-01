@@ -587,7 +587,8 @@ Share Q_n3 for both dimensions:
         double w = 1.0;
         
         if( status != 1  || gencharge == 0 ) continue;
-        if( genpt < ptLow_ || genpt > ptHigh_ ) continue;
+        //if( genpt < ptLow_ || genpt > ptHigh_ ) continue;
+        if( genpt < 0.2 || genpt > 2.0 ) continue;
 
         if( reverseBeam_ ) geneta = -geneta;
         if( geneta < etaHighHF_ && geneta > etaLowHF_ ){
