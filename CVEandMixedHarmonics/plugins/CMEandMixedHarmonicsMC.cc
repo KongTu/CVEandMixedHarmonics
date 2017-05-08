@@ -423,6 +423,8 @@ Share Q_n3 for both dimensions:
     //Declaring TComplex varaibles for Q-vectors of particle c (HF)
     for(HepMC::GenEvent::particle_const_iterator it = begin; it != end; ++it){
 
+    int pdg_id = (*it)->pdg_id();
+    const ParticleData * part = pdt->particle(pdg_id);
     if((*it)->momentum().perp()<0.01) continue;
     if(fabs((*it)->momentum().eta())>20) continue;
 
