@@ -428,10 +428,10 @@ Share Q_n3 for both dimensions:
 
     double geneta = (*it)->momentum().eta();
     double genphi = (*it)->momentum().phi();
-    int status = (*it)->momentum().status();
-    int gencharge = (*it)->momentum().charge();
-    double genpt = (*it)->momentum().pt();
-    
+    int status = (*it)->status();
+    int gencharge = static_cast<int>(part->charge());
+    double genpt = (*it)->momentum().perp();
+
     double w = 1.0;
 
     if( status != 1  || gencharge == 0 ) continue;
