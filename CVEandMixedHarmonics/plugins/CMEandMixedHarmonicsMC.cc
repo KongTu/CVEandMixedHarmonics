@@ -428,7 +428,14 @@ Share Q_n3 for both dimensions:
 
     double geneta = (*it)->momentum().eta();
     double genphi = (*it)->momentum().phi();
+    int status = (*it)->momentum().status();
+    int gencharge = (*it)->momentum().charge();
+    double genpt = (*it)->momentum().pt();
+    
     double w = 1.0;
+
+    if( status != 1  || gencharge == 0 ) continue;
+    if( genpt < ptLow_ || genpt > ptHigh_ ) continue;
 
     if( reverseBeam_ ) geneta = -geneta;
     if( geneta < etaHighHF_ && geneta > etaLowHF_ ){
