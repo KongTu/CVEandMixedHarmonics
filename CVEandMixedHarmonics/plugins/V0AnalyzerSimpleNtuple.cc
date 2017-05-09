@@ -362,7 +362,7 @@ iSetup)
 
         //inner most hit Det id
         unsigned int id_1;
-        id_1 = dau1_algo.innerDetId();
+        id_1 = dau1.innerDetId();
         //unsigned int id_2;
         //id_2 = dau2_algo->innerDetId();
 
