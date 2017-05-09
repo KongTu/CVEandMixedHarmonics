@@ -368,7 +368,7 @@ iSetup)
 
         DetId detId(id_1);
         unsigned int subid = detId.subdetId();
-        int dau1_layer;
+        int dau1_layer = 0;
         if( subid == 1){
             PXBDetId pxbid(id_1);
             dau1_layer = (int)pxbid.layer();
