@@ -357,12 +357,12 @@ iSetup)
         double dxyos2 = dxybest2/dxyerror2;
         
         //algo
-        int dau1_algo = dau1->algo();
+        //int dau1_algo = dau1->algo();
         //int dau2_algo = dau2->algo();
 
         //inner most hit Det id
         unsigned int id_1;
-        id_1 = dau1_algo->innerDetId();
+        id_1 = dau1_algo.innerDetId();
         //unsigned int id_2;
         //id_2 = dau2_algo->innerDetId();
 
