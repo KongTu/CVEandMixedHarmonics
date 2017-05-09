@@ -372,8 +372,8 @@ iSetup)
 
         DetId detId(id_1);
         unsigned int subid1 = detId.subdetId();
-        detId(id_2);
-        unsigned int subid2 = detId.subdetId();
+        DetId detId2(id_2);
+        unsigned int subid2 = detId2.subdetId();
 
         int dau1_layer = 0;
         int dau2_layer = 0;
@@ -517,8 +517,8 @@ iSetup)
 
         DetId detId(id_1);
         unsigned int subid1 = detId.subdetId();
-        detId(id_2);
-        unsigned int subid2 = detId.subdetId();
+        DetId detId2(id_2);
+        unsigned int subid2 = detId2.subdetId();
 
         int dau1_layer = 0;
         int dau2_layer = 0;
