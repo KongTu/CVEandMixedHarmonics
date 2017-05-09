@@ -64,6 +64,10 @@
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
 #include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
 #include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
+#include "DataFormats/SiStripDetId/interface/TIBDetId.h"
+#include "DataFormats/SiStripDetId/interface/TOBDetId.h"
+#include "DataFormats/SiStripDetId/interface/TECDetId.h"
+#include "DataFormats/SiStripDetId/interface/TIDDetId.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
@@ -352,8 +356,46 @@ iSetup)
         double dzos2 = dzbest2/dzerror2;
         double dxyos2 = dxybest2/dxyerror2;
         
+        //algo
+        int dau1_algo = dau1->algo();
+        //int dau2_algo = dau2->algo();
+
+        //inner most hit Det id
+        unsigned int id_1;
+        id_1 = dau1_algo->innerDetId();
+        //unsigned int id_2;
+        //id_2 = dau2_algo->innerDetId();
+
+        DetId detId(id_1);
+        unsigned int subid = detId.subdetId();
+        int dau1_layer;
+        if( subid == 1){
+            PXBDetId pxbid(id);
+            dau1_layer = (int)pxbid.layer();
+        }
+        if( subid == 2){
+            PXFDetId pxfid(id);
+            dau1_layer = (int)pxfid.disk();
+        }
+        if( subid == 3){
+            TIBDetId tibid(id);
+            dau1_layer = tibid.layer();
+        }
+        if( subid == 4){
+            TIDDetId tidid(id);
+            dau1_layer = (int)tidid.wheel();
+        }
+        if( subid == 5){
+            TOBDetId tobid(id);
+            dau1_layer = tobid.layer();
+        }
+        if( subid == 6){
+            TECDetId tecid(id);
+            dau1_layer = (int)tecid.wheel();
+        }
+
         //Fill
-        V0AnalyzerSimpleNtuple_ks->Fill(pt,eta,mass,nMult_ass_good,dzos1,dzos2,dxyos1,dxyos2,dau1_Nhits,dau2_Nhits,dlos,agl);
+        V0AnalyzerSimpleNtuple_ks->Fill(pt,eta,mass,nMult_ass_good,dzos1,dzos2,dxyos1,dxyos2,dau1_Nhits,dau2_Nhits,dlos,agl,dau1_layer);
             
     }
     
@@ -441,7 +483,7 @@ V0AnalyzerSimpleNtuple::beginJob()
         
     TH1D::SetDefaultSumw2();
     
-    V0AnalyzerSimpleNtuple_ks = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_ks","V0AnalyzerSimpleNtuple_ks","pt:eta:mass:ntrk:trkDCA1z:trkDCA2z:trkDCA1xy:trkDCA2xy:trkNHits1:trkNHits2:L:PAngle");
+    V0AnalyzerSimpleNtuple_ks = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_ks","V0AnalyzerSimpleNtuple_ks","pt:eta:mass:ntrk:trkDCA1z:trkDCA2z:trkDCA1xy:trkDCA2xy:trkNHits1:trkNHits2:L:PAngle:trkLayerInner1");
     V0AnalyzerSimpleNtuple_la = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_la","V0AnalyzerSimpleNtuple_la","pt:eta:mass:ntrk:trkDCA1z:trkDCA2z:trkDCA1xy:trkDCA2xy:trkNHits1:trkNHits2:L:PAngle");
 
     if( doGenParticle_ ){
