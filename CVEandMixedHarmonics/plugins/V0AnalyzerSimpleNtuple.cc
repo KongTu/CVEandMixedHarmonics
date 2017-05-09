@@ -355,47 +355,82 @@ iSetup)
 
         double dzos2 = dzbest2/dzerror2;
         double dxyos2 = dxybest2/dxyerror2;
+
+        if( fabs(dzos1) < 1.0 || fabs(dzos2) < 1.0 || fabs(dxyos1) < 1.0 || fabs(dxyos2) < 1.0 ) continue;
+        if( dlos < 5.0 ) continue;
+        if( agl < 0.999 ) continue;
         
         //algo
-        //int dau1_algo = dau1->algo();
-        //int dau2_algo = dau2->algo();
+        int dau1_algo = dau1->algo();
+        int dau2_algo = dau2->algo();
 
         //inner most hit Det id
         unsigned int id_1;
         id_1 = dau1->innerDetId();
-        //unsigned int id_2;
-        //id_2 = dau2_algo->innerDetId();
+        unsigned int id_2;
+        id_2 = dau2->innerDetId();
 
         DetId detId(id_1);
-        unsigned int subid = detId.subdetId();
+        unsigned int subid1 = detId.subdetId();
+        DetId detId(id_2);
+        unsigned int subid2 = detId.subdetId();
+
         int dau1_layer = 0;
-        if( subid == 1){
+        int dau2_layer = 0;
+
+        if( subid1 == 1){
             PXBDetId pxbid(id_1);
             dau1_layer = (int)pxbid.layer();
         }
-        if( subid == 2){
+        if( subid1 == 2){
             PXFDetId pxfid(id_1);
             dau1_layer = (int)pxfid.disk();
         }
-        if( subid == 3){
+        if( subid1 == 3){
             TIBDetId tibid(id_1);
             dau1_layer = tibid.layer();
         }
-        if( subid == 4){
+        if( subid1 == 4){
             TIDDetId tidid(id_1);
             dau1_layer = (int)tidid.wheel();
         }
-        if( subid == 5){
+        if( subid1 == 5){
             TOBDetId tobid(id_1);
             dau1_layer = tobid.layer();
         }
-        if( subid == 6){
+        if( subid1 == 6){
             TECDetId tecid(id_1);
             dau1_layer = (int)tecid.wheel();
         }
 
+
+        if( subid2 == 1){
+            PXBDetId pxbid(id_2);
+            dau2_layer = (int)pxbid.layer();
+        }
+        if( subid2 == 2){
+            PXFDetId pxfid(id_2);
+            dau2_layer = (int)pxfid.disk();
+        }
+        if( subid2 == 3){
+            TIBDetId tibid(id_2);
+            dau2_layer = tibid.layer();
+        }
+        if( subid2 == 4){
+            TIDDetId tidid(id_2);
+            dau2_layer = (int)tidid.wheel();
+        }
+        if( subid2 == 5){
+            TOBDetId tobid(id_2);
+            dau2_layer = tobid.layer();
+        }
+        if( subid2 == 6){
+            TECDetId tecid(id_2);
+            dau2_layer = (int)tecid.wheel();
+        }
+
         //Fill
-        V0AnalyzerSimpleNtuple_ks->Fill(pt,eta,mass,nMult_ass_good,dzos1,dzos2,dxyos1,dxyos2,dau1_Nhits,dau2_Nhits,dlos,agl,dau1_layer);
+        V0AnalyzerSimpleNtuple_ks->Fill(pt,eta,mass,nMult_ass_good,dau1_Nhits,dau2_Nhits,dau1_algo,dau2_algo,subid1,dau1_layer,subid2,dau2_layer);
             
     }
     
@@ -466,8 +501,83 @@ iSetup)
         double dzos2 = dzbest2/dzerror2;
         double dxyos2 = dxybest2/dxyerror2;
         
+        if( fabs(dzos1) < 1.0 || fabs(dzos2) < 1.0 || fabs(dxyos1) < 1.0 || fabs(dxyos2) < 1.0 ) continue;
+        if( dlos < 5.0 ) continue;
+        if( agl < 0.999 ) continue;
+        
+        //algo
+        int dau1_algo = dau1->algo();
+        int dau2_algo = dau2->algo();
+
+        //inner most hit Det id
+        unsigned int id_1;
+        id_1 = dau1->innerDetId();
+        unsigned int id_2;
+        id_2 = dau2->innerDetId();
+
+        DetId detId(id_1);
+        unsigned int subid1 = detId.subdetId();
+        DetId detId(id_2);
+        unsigned int subid2 = detId.subdetId();
+
+        int dau1_layer = 0;
+        int dau2_layer = 0;
+
+        if( subid1 == 1){
+            PXBDetId pxbid(id_1);
+            dau1_layer = (int)pxbid.layer();
+        }
+        if( subid1 == 2){
+            PXFDetId pxfid(id_1);
+            dau1_layer = (int)pxfid.disk();
+        }
+        if( subid1 == 3){
+            TIBDetId tibid(id_1);
+            dau1_layer = tibid.layer();
+        }
+        if( subid1 == 4){
+            TIDDetId tidid(id_1);
+            dau1_layer = (int)tidid.wheel();
+        }
+        if( subid1 == 5){
+            TOBDetId tobid(id_1);
+            dau1_layer = tobid.layer();
+        }
+        if( subid1 == 6){
+            TECDetId tecid(id_1);
+            dau1_layer = (int)tecid.wheel();
+        }
+
+
+        if( subid2 == 1){
+            PXBDetId pxbid(id_2);
+            dau2_layer = (int)pxbid.layer();
+        }
+        if( subid2 == 2){
+            PXFDetId pxfid(id_2);
+            dau2_layer = (int)pxfid.disk();
+        }
+        if( subid2 == 3){
+            TIBDetId tibid(id_2);
+            dau2_layer = tibid.layer();
+        }
+        if( subid2 == 4){
+            TIDDetId tidid(id_2);
+            dau2_layer = (int)tidid.wheel();
+        }
+        if( subid2 == 5){
+            TOBDetId tobid(id_2);
+            dau2_layer = tobid.layer();
+        }
+        if( subid2 == 6){
+            TECDetId tecid(id_2);
+            dau2_layer = (int)tecid.wheel();
+        }
+
+
+
         //Fill
-        V0AnalyzerSimpleNtuple_la->Fill(pt,eta,mass,nMult_ass_good,dzos1,dzos2,dxyos1,dxyos2,dau1_Nhits,dau2_Nhits,dlos,agl);
+        V0AnalyzerSimpleNtuple_la->Fill(pt,eta,mass,nMult_ass_good,dau1_Nhits,dau2_Nhits,dau1_algo,dau2_algo,subid1,dau1_layer,subid2,dau2_layer);
         
     }
 
@@ -483,8 +593,8 @@ V0AnalyzerSimpleNtuple::beginJob()
         
     TH1D::SetDefaultSumw2();
     
-    V0AnalyzerSimpleNtuple_ks = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_ks","V0AnalyzerSimpleNtuple_ks","pt:eta:mass:ntrk:trkDCA1z:trkDCA2z:trkDCA1xy:trkDCA2xy:trkNHits1:trkNHits2:L:PAngle:trkLayerInner1");
-    V0AnalyzerSimpleNtuple_la = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_la","V0AnalyzerSimpleNtuple_la","pt:eta:mass:ntrk:trkDCA1z:trkDCA2z:trkDCA1xy:trkDCA2xy:trkNHits1:trkNHits2:L:PAngle");
+    V0AnalyzerSimpleNtuple_ks = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_ks","V0AnalyzerSimpleNtuple_ks","pt:eta:mass:ntrk:trkNHits1:trkNHits2:trkAlgo1:trkAlgo2:trkHitDet1:trkHitDet2:trkHitLayer1:trkHitLayer2");
+    V0AnalyzerSimpleNtuple_la = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_la","V0AnalyzerSimpleNtuple_la","pt:eta:mass:ntrk:trkNHits1:trkNHits2:trkAlgo1:trkAlgo2:trkHitDet1:trkHitDet2:trkHitLayer1:trkHitLayer2");
 
     if( doGenParticle_ ){
 
