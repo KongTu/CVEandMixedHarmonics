@@ -370,27 +370,27 @@ iSetup)
         unsigned int subid = detId.subdetId();
         int dau1_layer;
         if( subid == 1){
-            PXBDetId pxbid(id);
+            PXBDetId pxbid(id_1);
             dau1_layer = (int)pxbid.layer();
         }
         if( subid == 2){
-            PXFDetId pxfid(id);
+            PXFDetId pxfid(id_1);
             dau1_layer = (int)pxfid.disk();
         }
         if( subid == 3){
-            TIBDetId tibid(id);
+            TIBDetId tibid(id_1);
             dau1_layer = tibid.layer();
         }
         if( subid == 4){
-            TIDDetId tidid(id);
+            TIDDetId tidid(id_1);
             dau1_layer = (int)tidid.wheel();
         }
         if( subid == 5){
-            TOBDetId tobid(id);
+            TOBDetId tobid(id_1);
             dau1_layer = tobid.layer();
         }
         if( subid == 6){
-            TECDetId tecid(id);
+            TECDetId tecid(id_1);
             dau1_layer = (int)tecid.wheel();
         }
 
