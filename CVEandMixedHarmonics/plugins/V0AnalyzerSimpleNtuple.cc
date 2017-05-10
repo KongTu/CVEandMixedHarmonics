@@ -364,6 +364,9 @@ iSetup)
         int dau1_algo = dau1->algo();
         int dau2_algo = dau2->algo();
 
+        int dau1_originAlgo = dau1->originalAlgo();
+        int dau2_originAlgo = dau2->originalAlgo();
+
         //inner most hit Det id
         unsigned int id_1;
         id_1 = dau1->innerDetId();
@@ -430,7 +433,7 @@ iSetup)
         }
 
         //Fill
-        V0AnalyzerSimpleNtuple_ks->Fill(pt,eta,mass,nMult_ass_good,dau1_Nhits,dau2_Nhits,dau1_algo,dau2_algo,subid1,dau1_layer,subid2,dau2_layer);
+        V0AnalyzerSimpleNtuple_ks->Fill(pt,eta,mass,nMult_ass_good,dau1_Nhits,dau2_Nhits,dau1_algo,dau2_algo,dau1_originAlgo,dau2_originAlgo,subid1,dau1_layer,subid2,dau2_layer);
             
     }
     
@@ -508,6 +511,9 @@ iSetup)
         //algo
         int dau1_algo = dau1->algo();
         int dau2_algo = dau2->algo();
+       
+        int dau1_originAlgo = dau1->originalAlgo();
+        int dau2_originAlgo = dau2->originalAlgo();
 
         //inner most hit Det id
         unsigned int id_1;
@@ -577,7 +583,7 @@ iSetup)
 
 
         //Fill
-        V0AnalyzerSimpleNtuple_la->Fill(pt,eta,mass,nMult_ass_good,dau1_Nhits,dau2_Nhits,dau1_algo,dau2_algo,subid1,dau1_layer,subid2,dau2_layer);
+        V0AnalyzerSimpleNtuple_la->Fill(pt,eta,mass,nMult_ass_good,dau1_Nhits,dau2_Nhits,dau1_algo,dau2_algo,dau1_originAlgo,dau2_originAlgo,subid1,dau1_layer,subid2,dau2_layer);
         
     }
 
@@ -593,8 +599,8 @@ V0AnalyzerSimpleNtuple::beginJob()
         
     TH1D::SetDefaultSumw2();
     
-    V0AnalyzerSimpleNtuple_ks = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_ks","V0AnalyzerSimpleNtuple_ks","pt:eta:mass:ntrk:trkNHits1:trkNHits2:trkAlgo1:trkAlgo2:trkHitDet1:trkHitDet2:trkHitLayer1:trkHitLayer2");
-    V0AnalyzerSimpleNtuple_la = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_la","V0AnalyzerSimpleNtuple_la","pt:eta:mass:ntrk:trkNHits1:trkNHits2:trkAlgo1:trkAlgo2:trkHitDet1:trkHitDet2:trkHitLayer1:trkHitLayer2");
+    V0AnalyzerSimpleNtuple_ks = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_ks","V0AnalyzerSimpleNtuple_ks","pt:eta:mass:ntrk:trkNHits1:trkNHits2:trkAlgo1:trkAlgo2:trkOriginalAlgo1:trkOriginalAlgo2:trkHitDet1:trkHitDet2:trkHitLayer1:trkHitLayer2");
+    V0AnalyzerSimpleNtuple_la = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_la","V0AnalyzerSimpleNtuple_la","pt:eta:mass:ntrk:trkNHits1:trkNHits2:trkAlgo1:trkAlgo2:trkOriginalAlgo1:trkOriginalAlgo2:trkHitDet1:trkHitDet2:trkHitLayer1:trkHitLayer2");
 
     if( doGenParticle_ ){
 
