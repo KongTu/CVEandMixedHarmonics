@@ -218,7 +218,7 @@ q2 calculation at HF and selections:
           if( reverseBeam_ ) caloEta = -hit.eta();
 
     if( dopPb_ && !doBothSide_ ) {if( caloEta < etaLowQ2_ || caloEta > etaHighQ2_ ) continue;}
-    else{ if( fabs(caloEta) < etaLowQ2_ || fabs(caloEta) > etaHighQ2_ ) continue; }
+    else{ if( caloEta < etaLowQ2_ || caloEta > etaHighQ2_ ) continue; }
 
     qHFcos += w*cos(-n3_*caloPhi);
     qHFsin += w*sin(-n3_*caloPhi);
