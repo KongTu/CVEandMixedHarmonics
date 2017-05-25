@@ -273,6 +273,10 @@ Share Q_n3 for both dimensions:
 
   TComplex Q_nC_trk[NetaBins], Q_0_nC_trk[NetaBins];
 
+//Tracker v2 pt 
+  
+  TComplex Q_nC_pt_trk[NetaBins], Q_0_nC_pt_trk[NetaBins];
+
 
 //------------------------------------------------------------------
 
@@ -332,50 +336,6 @@ Share Q_n3 for both dimensions:
         Q_nC_trk[eta] += q_vector(-n3_, 1, weight, phi);
         Q_0_nC_trk[eta] += q_vector(0, 1, weight, phi);
 
-        if( trk.charge() == +1 ){//positive charge
-
-          //3p:
-          Q_n1_1[eta][0] += q_vector(n1_, 1, weight, phi);
-          Q_n2_1[eta][0] += q_vector(n2_, 1, weight, phi);
-
-          Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, weight, phi);
-
-          Q_0_1[eta][0] += q_vector(0, 1, weight, phi);
-          Q_0_2[eta][0] += q_vector(0, 2, weight, phi);
-
-          //2p: (similar way but be careful of the order of harmonics)
-
-          P_n1_1[eta][0] += q_vector(n1_, 1, weight, phi);
-          P_n2_1[eta][0] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
-
-          P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, weight, phi);
-
-          P_0_1[eta][0] += q_vector(0, 1, weight, phi);
-          P_0_2[eta][0] += q_vector(0, 2, weight, phi);
-
-
-        }
-        if( trk.charge() == -1 ){//negative charge
-
-          Q_n1_1[eta][1] += q_vector(n1_, 1, weight, phi);
-          Q_n2_1[eta][1] += q_vector(n2_, 1, weight, phi);
-
-          Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, weight, phi);
-
-          Q_0_1[eta][1] += q_vector(0, 1, weight, phi);
-          Q_0_2[eta][1] += q_vector(0, 2, weight, phi);
-
-          //2p: (similar way but be careful of the order of harmonics)
-
-          P_n1_1[eta][1] += q_vector(n1_, 1, weight, phi);
-          P_n2_1[eta][1] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
-
-          P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, weight, phi);
-
-          P_0_1[eta][1] += q_vector(0, 1, weight, phi);
-          P_0_2[eta][1] += q_vector(0, 2, weight, phi);
-
-        }
       }
     }//end of eta dimension
 
@@ -383,50 +343,9 @@ Share Q_n3 for both dimensions:
     for(int pt = 0; pt < NptBins; pt++){
       if( trk.pt() > ptBins_[pt] && trk.pt() < ptBins_[pt+1] ){
 
-        if( trk.charge() == +1 ){//positive charge
+        Q_nC_pt_trk[pt] += q_vector(-n3_, 1, weight, phi);
+        Q_0_nC_pt_trk[pt] += q_vector(0, 1, weight, phi);
 
-          //3p:
-          Q_pT_n1_1[pt][0] += q_vector(n1_, 1, weight, phi);
-          Q_pT_n2_1[pt][0] += q_vector(n2_, 1, weight, phi);
-
-          Q_pT_n1n2_2[pt][0] += q_vector(n1_+n2_, 2, weight, phi);
-
-          Q_pT_0_1[pt][0] += q_vector(0, 1, weight, phi);
-          Q_pT_0_2[pt][0] += q_vector(0, 2, weight, phi);
-
-          //2p: (similar way but be careful of the order of harmonics)
-
-          P_pT_n1_1[pt][0] += q_vector(n1_, 1, weight, phi);
-          P_pT_n2_1[pt][0] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
-
-          P_pT_n1n2_2[pt][0] += q_vector(n1_-n2_, 2, weight, phi);
-
-          P_pT_0_1[pt][0] += q_vector(0, 1, weight, phi);
-          P_pT_0_2[pt][0] += q_vector(0, 2, weight, phi);
-
-
-        }
-        if( trk.charge() == -1 ){//negative charge
-
-          Q_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, phi);
-          Q_pT_n2_1[pt][1] += q_vector(n2_, 1, weight, phi);
-
-          Q_pT_n1n2_2[pt][1] += q_vector(n1_+n2_, 2, weight, phi);
-
-          Q_pT_0_1[pt][1] += q_vector(0, 1, weight, phi);
-          Q_pT_0_2[pt][1] += q_vector(0, 2, weight, phi);
-
-          //2p: (similar way but be careful of the order of harmonics)
-
-          P_pT_n1_1[pt][1] += q_vector(n1_, 1, weight, phi);
-          P_pT_n2_1[pt][1] += q_vector(-n2_, 1, weight, phi);//it is a minus n2_ because n2_ = 1
-
-          P_pT_n1n2_2[pt][1] += q_vector(n1_-n2_, 2, weight, phi);
-
-          P_pT_0_1[pt][1] += q_vector(0, 1, weight, phi);
-          P_pT_0_2[pt][1] += q_vector(0, 2, weight, phi);
-
-        }
       }
     }//end of pT dimension
   }
@@ -502,7 +421,24 @@ v_{n} in eta slices
     cn_eta[ieta][1]->Fill(N_2_trk.Re()/D_2_trk.Re(), D_2_trk.Re());
   }
 
+/*
+v_{n} in dpt slices
+*/
 
+  for(int ipt = 0; ipt < NptBins; ipt++){
+
+    TComplex N_2_trk, D_2_trk;
+
+    N_2_trk = Q_nC_pt_trk[ipt]*Q_n3_1_HFplus;
+    D_2_trk = Q_0_nC_pt_trk[ipt]*Q_0_1_HFplus;
+
+    cn_pt[ipt][0]->Fill(N_2_trk.Re()/D_2_trk.Re(), D_2_trk.Re());
+
+    N_2_trk = Q_nC_pt_trk[ipt]*Q_n3_1_HFminus;
+    D_2_trk = Q_0_nC_pt_trk[ipt]*Q_0_1_HFminus;
+
+    cn_pt[ipt][1]->Fill(N_2_trk.Re()/D_2_trk.Re(), D_2_trk.Re());
+  }
 
 }
 // ------------ method called once each job just before starting event loop  ------------
@@ -557,7 +493,14 @@ CMEandMixedHarmonicsTest::beginJob()
   for(int eta = 0; eta < NetaBins; eta++){
     for(int HF = 0; HF < 2; HF++){
 
-      cn_eta[eta][HF] = fs->make<TH1D>(Form("cn_eta_%d_%d", eta, HF),";cn_eta", 2000,-1,1);
+      cn_eta[eta][HF] = fs->make<TH1D>(Form("cn_eta_%d_%d", eta, HF),";cn_eta", 200,-1,1);
+    }
+  }
+
+  for(int pt = 0; pt < Nptbins; pt++){
+    for(int HF = 0; HF < 2; HF++){
+
+      cn_pt[pt][HF] = fs->make<TH1D>(Form("cn_pt_%d_%d", pt, HF),";cn_eta", 200,-1,1);
     }
   }
  
