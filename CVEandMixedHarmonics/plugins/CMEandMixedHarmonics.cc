@@ -1318,34 +1318,34 @@ CMEandMixedHarmonics::beginJob()
 
 //acceptance correction
 
-  // for(int HF = 0; HF < 2; HF++){
+  for(int HF = 0; HF < 2; HF++){
 
-  //   c3_Z_real[HF] = fs->make<TH1D>(Form("c3_Z_real_%d", HF),";c3", 1,-1,1);
-  //   c3_Z_imag[HF] = fs->make<TH1D>(Form("c3_Z_imag_%d", HF),";c3", 1,-1,1);
-  // }
+    c3_Z_real[HF] = fs->make<TH1D>(Form("c3_Z_real_%d", HF),";c3", 1,-1,1);
+    c3_Z_imag[HF] = fs->make<TH1D>(Form("c3_Z_imag_%d", HF),";c3", 1,-1,1);
+  }
 
-  // for(int deta = 0; deta < NdEtaBins; deta++){
-  //   for(int sign = 0; sign < 3; sign++){
+  for(int deta = 0; deta < NdEtaBins; deta++){
+    for(int sign = 0; sign < 3; sign++){
 
-  //     c3_XY_real[deta][sign] = fs->make<TH1D>(Form("c3_XY_real_%d_%d", deta, sign),";c3", 1,-1,1);
-  //     c3_XY_imag[deta][sign] = fs->make<TH1D>(Form("c3_XY_imag_%d_%d", deta, sign),";c3", 1,-1,1);
+      c3_XY_real[deta][sign] = fs->make<TH1D>(Form("c3_XY_real_%d_%d", deta, sign),";c3", 1,-1,1);
+      c3_XY_imag[deta][sign] = fs->make<TH1D>(Form("c3_XY_imag_%d_%d", deta, sign),";c3", 1,-1,1);
 
-  //     c3_X_real[deta][sign] = fs->make<TH1D>(Form("c3_X_real_%d_%d", deta, sign),";c3", 1,-1,1);
-  //     c3_X_imag[deta][sign] = fs->make<TH1D>(Form("c3_X_imag_%d_%d", deta, sign),";c3", 1,-1,1);
+      c3_X_real[deta][sign] = fs->make<TH1D>(Form("c3_X_real_%d_%d", deta, sign),";c3", 1,-1,1);
+      c3_X_imag[deta][sign] = fs->make<TH1D>(Form("c3_X_imag_%d_%d", deta, sign),";c3", 1,-1,1);
 
-  //     c3_Y_real[deta][sign] = fs->make<TH1D>(Form("c3_Y_real_%d_%d", deta, sign),";c3", 1,-1,1);
-  //     c3_Y_imag[deta][sign] = fs->make<TH1D>(Form("c3_Y_imag_%d_%d", deta, sign),";c3", 1,-1,1);
+      c3_Y_real[deta][sign] = fs->make<TH1D>(Form("c3_Y_real_%d_%d", deta, sign),";c3", 1,-1,1);
+      c3_Y_imag[deta][sign] = fs->make<TH1D>(Form("c3_Y_imag_%d_%d", deta, sign),";c3", 1,-1,1);
 
-  //     for(int HF = 0; HF < 2; HF++){
+      for(int HF = 0; HF < 2; HF++){
 
-  //       c3_XZ_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_XZ_real_%d_%d_%d", deta, sign, HF),";c3", 1,-1,1);
-  //       c3_XZ_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_XZ_imag_%d_%d_%d", deta, sign, HF),";c3", 1,-1,1);
+        c3_XZ_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_XZ_real_%d_%d_%d", deta, sign, HF),";c3", 1,-1,1);
+        c3_XZ_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_XZ_imag_%d_%d_%d", deta, sign, HF),";c3", 1,-1,1);
 
-  //       c3_YZ_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_YZ_real_%d_%d_%d", deta, sign, HF),";c3", 1,-1,1);
-  //       c3_YZ_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_YZ_imag_%d_%d_%d", deta, sign, HF),";c3", 1,-1,1);
-  //     }
-  //   }    
-  // }
+        c3_YZ_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_YZ_real_%d_%d_%d", deta, sign, HF),";c3", 1,-1,1);
+        c3_YZ_imag[deta][sign][HF] = fs->make<TH1D>(Form("c3_YZ_imag_%d_%d_%d", deta, sign, HF),";c3", 1,-1,1);
+      }
+    }    
+  }
 
 
   if( !doLightWeight_ ){
