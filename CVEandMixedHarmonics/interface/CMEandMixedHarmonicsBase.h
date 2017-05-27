@@ -176,27 +176,29 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       TH2D* effTable[5];
       TH2D* effTable_pPb[5];
 
-      TH1D* c2_ab;
-      TH1D* c2_ac;
-      TH1D* c2_cb;
+      TH1D* c2_ab[20];
+      TH1D* c2_ac[20];
+      TH1D* c2_cb[20];
 
-      TH1D* c2_a;
-      TH1D* c2_b;
-      TH1D* c2_c;
+      TH1D* c2_a[20];
+      TH1D* c2_b[20];
+      TH1D* c2_c[20];
 
       TH1D* cn_tracker;
 
-      TH1D* cn_eta[48][2];
+      //eta
+      TH1D* cn_eta[20][48][2];
 
-      TH1D* c2_real[48][3];
-      TH1D* c2_imag[48][3];
+      TH1D* c2_real[20][48][3];
+      TH1D* c2_imag[20][48][3];
 
-      TH1D* c3_real[48][3][2];
-      TH1D* c3_imag[48][3][2];
+      TH1D* c3_real[20][48][3][2];
+      TH1D* c3_imag[20][48][3][2];
+      //eta
 
       TH1D* c3_XY_real[48][3];
       TH1D* c3_XY_imag[48][3];
-      
+
       TH1D* c3_X_real[48][3];
       TH1D* c3_Y_real[48][3];
       TH1D* c3_Z_real[2];
@@ -211,11 +213,13 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       TH1D* c3_YZ_real[48][3][2];
       TH1D* c3_YZ_imag[48][3][2];
 
+      //dpT
       TH1D* c2_dpT_real[48][3];
       TH1D* c2_dpT_imag[48][3];
 
       TH1D* c3_dpT_real[48][3][2];
       TH1D* c3_dpT_imag[48][3][2];
+      //dpT
 
       TH1D* c3_dpT_XY_real[48][3];
       TH1D* c3_dpT_XY_imag[48][3];
@@ -232,11 +236,13 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       TH1D* c3_dpT_YZ_real[48][3][2];
       TH1D* c3_dpT_YZ_imag[48][3][2];
 
+      //pTave
       TH1D* c2_pTave_real[48][3];
       TH1D* c2_pTave_imag[48][3];
 
       TH1D* c3_pTave_real[48][3][2];
       TH1D* c3_pTave_imag[48][3][2];
+      //pTave
 
       TH1D* c3_pTave_XY_real[48][3];
       TH1D* c3_pTave_XY_imag[48][3];
@@ -253,8 +259,8 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       TH1D* c3_pTave_YZ_real[48][3][2];
       TH1D* c3_pTave_YZ_imag[48][3][2];
 
-      TH1D* delEta3p[3];
-      TH1D* delEta2p[3];
+      TH1D* delEta3p[20][3];
+      TH1D* delEta2p[20][3];
 
       TH1D* delPt3p[3];
       TH1D* delPt2p[3];
@@ -271,6 +277,8 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       TH1D* cbinHist;
       TH1D* q2_mag;
       TH1D* Ntrk_q2;
+
+      int NsubSamples_;
 
       int Nmin_;
       int Nmax_;
