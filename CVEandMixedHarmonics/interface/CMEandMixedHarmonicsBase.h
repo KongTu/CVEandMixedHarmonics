@@ -176,24 +176,24 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       TH2D* effTable[5];
       TH2D* effTable_pPb[5];
 
-      TH1D* c2_ab[20];
-      TH1D* c2_ac[20];
-      TH1D* c2_cb[20];
+      TH1D* c2_ab[10];
+      TH1D* c2_ac[10];
+      TH1D* c2_cb[10];
 
-      TH1D* c2_a[20];
-      TH1D* c2_b[20];
-      TH1D* c2_c[20];
+      TH1D* c2_a[10];
+      TH1D* c2_b[10];
+      TH1D* c2_c[10];
 
       TH1D* cn_tracker;
 
       //eta
-      TH1D* cn_eta[20][48][2];
+      TH1D* cn_eta[10][48][2];
 
-      TH1D* c2_real[20][48][3];
-      TH1D* c2_imag[20][48][3];
+      TH1D* c2_real[10][48][3];
+      TH1D* c2_imag[10][48][3];
 
-      TH1D* c3_real[20][48][3][2];
-      TH1D* c3_imag[20][48][3][2];
+      TH1D* c3_real[10][48][3][2];
+      TH1D* c3_imag[10][48][3][2];
       //eta
 
       TH1D* c3_XY_real[48][3];
@@ -259,8 +259,8 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       TH1D* c3_pTave_YZ_real[48][3][2];
       TH1D* c3_pTave_YZ_imag[48][3][2];
 
-      TH1D* delEta3p[20][3];
-      TH1D* delEta2p[20][3];
+      TH1D* delEta3p[10][3];
+      TH1D* delEta2p[10][3];
 
       TH1D* delPt3p[3];
       TH1D* delPt2p[3];
