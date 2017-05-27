@@ -494,9 +494,6 @@ Share Q_n3 for both dimensions:
   unsigned int sub;
   sub = gRandom->Integer(NsubSamples_);
 
-  cout << "random: " << sub << endl;
-
-
 /*
 accpetance correction terms related to HF
 */
