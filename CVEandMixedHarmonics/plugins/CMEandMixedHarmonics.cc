@@ -492,7 +492,7 @@ Share Q_n3 for both dimensions:
 
 
   TRandom* rdm = new TRandom();
-  int sub = rdm->Integer(NsubSamples_);
+  unsigned int sub = rdm->Integer(NsubSamples_);
 
   cout << "random: " << sub << endl;
 
