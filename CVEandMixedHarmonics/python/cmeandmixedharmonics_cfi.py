@@ -45,8 +45,8 @@ ana = cms.EDAnalyzer('CMEandMixedHarmonics',
               					  gapValue = cms.untracked.double(2.0),
 						  etaLowHF = cms.untracked.double(4.4),
                                                   etaHighHF = cms.untracked.double(5.0),
-                                                  etaLowQ2 = cms.untracked.double(3.4),
-                                                  etaHighQ2 = cms.untracked.double(4.4),
+                                                  etaLowQ2 = cms.untracked.double(3.0),
+                                                  etaHighQ2 = cms.untracked.double(5.0),
                                                   
 
                                                   etaBins = cms.untracked.vdouble(-2.4,-2.3,-2.2,-2.1,-2,-1.9,-1.8,-1.7,-1.6,-1.5,-1.4,
