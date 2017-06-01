@@ -271,7 +271,7 @@ iSetup)
 
         const reco::HitPattern & p = trk.hitPattern();
 
-        const reco::HitPattern::HitCategory hitCat = 0;
+        const reco::HitPattern::HitCategory hitCat = reco::HitPattern::TRACK_HITS;
         //loop over the hits of the track
         for (int i=0; i<p.numberOfHits(hitCat); i++) {
         uint32_t hit = p.getHitPattern(hitCat,i);
