@@ -440,7 +440,7 @@ iSetup)
         double genPt = -0.99;
         double matchedK0s =  MatchV0(iEvent, iSetup, trk, 310, "genParticlesPlusSim", genPt);
 
-
+        if( dau1->algo() != 9 ) continue;
         const reco::HitPattern & p = dau1->hitPattern();
 
         const reco::HitPattern::HitCategory hitCat = reco::HitPattern::TRACK_HITS;
