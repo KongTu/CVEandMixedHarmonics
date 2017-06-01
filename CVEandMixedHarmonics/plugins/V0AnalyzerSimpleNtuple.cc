@@ -452,6 +452,10 @@ iSetup)
             if (p.validHitFilter(hit) && p.pixelBarrelHitFilter(hit))
             std::cout << "valid hit found in pixel barrel layer "
                   << p.getLayer(hit) << std::endl;
+
+            if (p.validHitFilter(hit) && p.stripHitFilter(hit))
+            std::cout << "valid hit found in strip layer "
+                  << p.getLayer(hit) << std::endl;
         }
         // count the number of valid tracker *** hits ***
         std::cout << "number of of valid tracker hits is "
