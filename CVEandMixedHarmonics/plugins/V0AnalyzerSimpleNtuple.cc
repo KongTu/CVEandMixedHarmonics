@@ -428,11 +428,7 @@ iSetup)
         if( agl < 0.999 ) continue;
 
         double genPt = -0.99;
-
         double matchedK0s =  MatchV0(iEvent, iSetup, trk, 310, "genParticlesPlusSim", genPt);
-        
-        cout << "match: " << matchedK0s << endl;
-        if( matchedK0s != 1 ) continue;
 
         //algo
         int dau1_algo = dau1->algo();
@@ -507,7 +503,7 @@ iSetup)
         }
 
         //Fill
-        V0AnalyzerSimpleNtuple_ks->Fill(pt,eta,mass,nMult_ass_good,dau1_Nhits,dau2_Nhits,dau1_algo,dau2_algo,dau1_originAlgo,dau2_originAlgo,subid1,dau1_layer,subid2,dau2_layer);
+        V0AnalyzerSimpleNtuple_ks->Fill(pt,eta,mass,nMult_ass_good,dau1_Nhits,dau2_Nhits,dau1_algo,dau2_algo,dau1_originAlgo,dau2_originAlgo,subid1,dau1_layer,subid2,dau2_layer, matchedK0s);
             
     }
     
@@ -581,7 +577,10 @@ iSetup)
         if( fabs(dzos1) < 1.0 || fabs(dzos2) < 1.0 || fabs(dxyos1) < 1.0 || fabs(dxyos2) < 1.0 ) continue;
         if( dlos < 5.0 ) continue;
         if( agl < 0.999 ) continue;
-        
+
+        double genPt = -0.99;
+        double matchedLam =  MatchV0(iEvent, iSetup, trk, 3122, "genParticlesPlusSim", genPt);
+
         //algo
         int dau1_algo = dau1->algo();
         int dau2_algo = dau2->algo();
@@ -657,7 +656,7 @@ iSetup)
 
 
         //Fill
-        V0AnalyzerSimpleNtuple_la->Fill(pt,eta,mass,nMult_ass_good,dau1_Nhits,dau2_Nhits,dau1_algo,dau2_algo,dau1_originAlgo,dau2_originAlgo,subid1,dau1_layer,subid2,dau2_layer);
+        V0AnalyzerSimpleNtuple_la->Fill(pt,eta,mass,nMult_ass_good,dau1_Nhits,dau2_Nhits,dau1_algo,dau2_algo,dau1_originAlgo,dau2_originAlgo,subid1,dau1_layer,subid2,dau2_layer,matchedLam);
         
     }
 
@@ -673,8 +672,8 @@ V0AnalyzerSimpleNtuple::beginJob()
         
     TH1D::SetDefaultSumw2();
     
-    V0AnalyzerSimpleNtuple_ks = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_ks","V0AnalyzerSimpleNtuple_ks","pt:eta:mass:ntrk:trkNHits1:trkNHits2:trkAlgo1:trkAlgo2:trkOriginalAlgo1:trkOriginalAlgo2:trkHitDet1:trkHitDet2:trkHitLayer1:trkHitLayer2");
-    V0AnalyzerSimpleNtuple_la = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_la","V0AnalyzerSimpleNtuple_la","pt:eta:mass:ntrk:trkNHits1:trkNHits2:trkAlgo1:trkAlgo2:trkOriginalAlgo1:trkOriginalAlgo2:trkHitDet1:trkHitDet2:trkHitLayer1:trkHitLayer2");
+    V0AnalyzerSimpleNtuple_ks = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_ks","V0AnalyzerSimpleNtuple_ks","pt:eta:mass:ntrk:trkNHits1:trkNHits2:trkAlgo1:trkAlgo2:trkOriginalAlgo1:trkOriginalAlgo2:trkHitDet1:trkHitDet2:trkHitLayer1:trkHitLayer2:matched");
+    V0AnalyzerSimpleNtuple_la = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_la","V0AnalyzerSimpleNtuple_la","pt:eta:mass:ntrk:trkNHits1:trkNHits2:trkAlgo1:trkAlgo2:trkOriginalAlgo1:trkOriginalAlgo2:trkHitDet1:trkHitDet2:trkHitLayer1:trkHitLayer2:matched");
 
     if( doGenParticle_ ){
 
