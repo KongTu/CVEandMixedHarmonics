@@ -297,7 +297,7 @@ iSetup)
         const Candidate* genNegDau = genCand.daughter(negGenDauNdx);
 
         TrackRef genPosDauTrack = genPosDau->get<TrackRef>();
-        cout << "test: " << genPosDauTrack.pt() << endl;
+        cout << "test: " << genPosDauTrack->momentum() << endl;
 
 
     //   if ( geneta < -2.4 || geneta > 2.4 ) continue;
