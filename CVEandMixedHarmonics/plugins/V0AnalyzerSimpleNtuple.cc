@@ -296,12 +296,8 @@ iSetup)
         const Candidate* genPosDau = genCand.daughter(posGenDauNdx);
         const Candidate* genNegDau = genCand.daughter(negGenDauNdx);
 
-        auto dau1 = genPosDau->get<reco::TrackRef>();
-        auto dau2 = genNegDau->get<reco::TrackRef>();
-
-        cout << "innermost " << dau1->innerDetId() << endl;
-
-
+        TrackRef genPosDauTrack = genPosDau->get<TrackRef>();
+        cout << "test: " << genPosDauTrack.pt() << endl;
 
 
     //   if ( geneta < -2.4 || geneta > 2.4 ) continue;
