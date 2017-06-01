@@ -204,6 +204,7 @@ iSetup)
 {
     using std::vector;
     using namespace edm;
+    using namespace reco;
     
     // select on requirement of valid vertex
     edm::Handle<reco::VertexCollection> vertices;
