@@ -271,9 +271,9 @@ iSetup)
 
         const reco::HitPattern & p = trk.hitPattern();
 
-        loop over the hits of the track
-        for (int i=0; i<p.numberOfValidHits(); i++) {
-        uint32_t hit = p.getHitPattern(i);
+        //loop over the hits of the track
+        for (int i=0; i<p.numberOfHits(0); i++) {
+        uint32_t hit = p.getHitPattern(0,i);
         cout << "hit: " << hit << endl;
         }
 
