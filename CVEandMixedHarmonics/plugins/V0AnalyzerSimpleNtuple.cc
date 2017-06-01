@@ -276,7 +276,7 @@ iSetup)
         // uint32_t hit = p.getHitPattern(i);
         // }
 
-        cout << "test: " << p.numberOfValidHits() << endl;
+        cout << "test: " << p.numberOfHits() << endl;
 
 
     }
