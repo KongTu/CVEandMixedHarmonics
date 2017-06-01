@@ -432,6 +432,7 @@ iSetup)
         double matchedK0s =  MatchV0(iEvent, iSetup, trk, 310, "genParticlesPlusSim", genPt);
         
         cout << "match: " << matchedK0s << endl;
+        if( matchedK0s != 1 ) continue;
 
         //algo
         int dau1_algo = dau1->algo();
