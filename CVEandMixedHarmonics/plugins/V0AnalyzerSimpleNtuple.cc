@@ -155,7 +155,7 @@ private:
   virtual void beginJob() ;
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
   virtual void endJob() ;
-  bool MatchV0(const edm::Event& iEvent, const edm::EventSetup& iSetup, const reco::VertexCompositeCandidate & trk, int pdgid, string genPLabel, double & genpt_matched);
+  bool V0AnalyzerSimpleNtuple::MatchV0(const edm::Event& iEvent, const edm::EventSetup& iSetup, const reco::VertexCompositeCandidate & trk, int pdgid, string genPLabel, double & genpt_matched);
    
 
   // ----------member data ---------------------------
@@ -682,7 +682,7 @@ V0AnalyzerSimpleNtuple::beginJob()
     }
 }
 bool
-V0Matcher::MatchV0(const edm::Event& iEvent, const edm::EventSetup& iSetup, const reco::VertexCompositeCandidate & trk, int pdgid, string genPLabel, double & genpt_matched)
+V0AnalyzerSimpleNtuple::MatchV0(const edm::Event& iEvent, const edm::EventSetup& iSetup, const reco::VertexCompositeCandidate & trk, int pdgid, string genPLabel, double & genpt_matched)
 {
         using namespace edm;
 
@@ -748,20 +748,20 @@ V0Matcher::MatchV0(const edm::Event& iEvent, const edm::EventSetup& iSetup, cons
                GlobalPoint genVtx(genPosDau->vx(), genPosDau->vy(), genPosDau->vz());
                deltaL = (genVtx - recoVtx).mag();
                 
-               if(pdgid == 310) 
-               {
-                      map_posDeltaR["ks"]->Fill(posDeltaR, genCand.pt());
-                      map_negDeltaR["ks"]->Fill(negDeltaR, genCand.pt());
-                      map_batDeltaR["ks"]->Fill(0., genCand.pt());
-                      map_deltaL["ks"]->Fill(deltaL, genCand.pt()); 
-               }
+               // if(pdgid == 310) 
+               // {
+               //        map_posDeltaR["ks"]->Fill(posDeltaR, genCand.pt());
+               //        map_negDeltaR["ks"]->Fill(negDeltaR, genCand.pt());
+               //        map_batDeltaR["ks"]->Fill(0., genCand.pt());
+               //        map_deltaL["ks"]->Fill(deltaL, genCand.pt()); 
+               // }
               
-               if(pdgid == 3122)
-               {
-                      map_posDeltaR["lambda"]->Fill(posDeltaR, genCand.pt());
-                      map_negDeltaR["lambda"]->Fill(negDeltaR, genCand.pt());
-                      map_batDeltaR["lambda"]->Fill(0., genCand.pt());
-                      map_deltaL["lambda"]->Fill(deltaL, genCand.pt());                            }
+               // if(pdgid == 3122)
+               // {
+               //        map_posDeltaR["lambda"]->Fill(posDeltaR, genCand.pt());
+               //        map_negDeltaR["lambda"]->Fill(negDeltaR, genCand.pt());
+               //        map_batDeltaR["lambda"]->Fill(0., genCand.pt());
+               //        map_deltaL["lambda"]->Fill(deltaL, genCand.pt());                            }
 
                if(posDeltaR < 0.1 && negDeltaR < 0.1 && deltaL < 10.)
                {
