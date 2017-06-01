@@ -113,7 +113,7 @@
 #include "SimDataFormats/TrackingAnalysis/interface/TrackingParticle.h"
 #include "SimDataFormats/TrackingAnalysis/interface/TrackingParticleFwd.h"
 //
-
+#include "DataFormats/Math/interface/deltaPhi.h"
 
 //
 // class decleration
@@ -155,7 +155,7 @@ private:
   virtual void beginJob() ;
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
   virtual void endJob() ;
-  bool V0AnalyzerSimpleNtuple::MatchV0(const edm::Event& iEvent, const edm::EventSetup& iSetup, const reco::VertexCompositeCandidate & trk, int pdgid, string genPLabel, double & genpt_matched);
+  bool MatchV0(const edm::Event& iEvent, const edm::EventSetup& iSetup, const reco::VertexCompositeCandidate & trk, int pdgid, string genPLabel, double & genpt_matched);
    
 
   // ----------member data ---------------------------
