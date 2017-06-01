@@ -270,12 +270,13 @@ iSetup)
         if(fabs(dxyvtx/dxyerror) > 3.0 ) continue;
         if( fabs(trk.eta()) < 2.4 && trk.pt() > 0.4 ){nMult_ass_good++;}// NtrkOffline        
 
-        const reco::HitPattern& p = trk->hitPattern();
+        const reco::HitPattern& p = trk.hitPattern();
 
         // loop over the hits of the track
         for (int i=0; i<p.numberOfHits(); i++) {
         uint32_t hit = p.getHitPattern(i);
-        
+        }
+
     }
 
     edm::Handle<reco::VertexCompositeCandidateCollection> v0candidates_ks;
