@@ -121,7 +121,6 @@
 #include "DataFormats/Math/interface/deltaPhi.h"
 #include "DataFormats/TrackReco/interface/HitPattern.h"
 
-
 //
 // class decleration
 //
@@ -270,7 +269,7 @@ iSetup)
         if(fabs(dxyvtx/dxyerror) > 3.0 ) continue;
         if( fabs(trk.eta()) < 2.4 && trk.pt() > 0.4 ){nMult_ass_good++;}// NtrkOffline        
 
-        const reco::HitPattern& p = trk.hitPattern();
+        const reco::HitPattern& p = tracks->hitPattern();
 
         // loop over the hits of the track
         // for (int i=0; i<p.numberOfHits(); i++) {
@@ -278,7 +277,7 @@ iSetup)
         // }
 
         p.getHitPattern(1);
-        
+
 
     }
 
