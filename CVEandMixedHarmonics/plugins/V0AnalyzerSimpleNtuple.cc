@@ -110,7 +110,8 @@
 // Track Matching and fake rate calculations     
 //#include "RiceHIG/V0Analysis/interface/V0Validator.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
-
+#include "SimDataFormats/TrackingAnalysis/interface/TrackingParticle.h"
+#include "SimDataFormats/TrackingAnalysis/interface/TrackingParticleFwd.h"
 //
 
 
