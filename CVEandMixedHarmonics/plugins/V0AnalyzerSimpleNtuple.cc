@@ -140,10 +140,12 @@ private:
     TNtuple* V0AnalyzerSimpleNtuple_genla;
 
     bool doGenParticle_;
+    bool doSimParticle_;
 
     edm::EDGetTokenT<edm::View<reco::Track> > trackSrc_;
     edm::EDGetTokenT<reco::VertexCollection> vertexSrc_;
     edm::EDGetTokenT<reco::GenParticleCollection> genParticleSrc_;
+    edm::EDGetTokenT<TrackingParticleCollection> tpHitsSrc_;
 
     edm::EDGetTokenT<reco::VertexCompositeCandidateCollection> generalV0_ks_;
     edm::EDGetTokenT<reco::VertexCompositeCandidateCollection> generalV0_la_;
@@ -161,7 +163,8 @@ private:
 // constructors and destructor
 //
 
-V0AnalyzerSimpleNtuple::V0AnalyzerSimpleNtuple(const edm::ParameterSet& iConfig)
+V0AnalyzerSimpleNtuple::V0AnalyzerSimpleNtuple(const edm::ParameterSet& iConfig):
+    tpHitsSrc_(consumes<TrackingParticleCollection>(iConfig.getParameter<edm::InputTag>("tpHitsSrc")))
 {
 
   //now do what ever initialization is needed
@@ -174,6 +177,7 @@ V0AnalyzerSimpleNtuple::V0AnalyzerSimpleNtuple(const edm::ParameterSet& iConfig)
     generalV0_la_ = consumes<reco::VertexCompositeCandidateCollection>(iConfig.getParameter<edm::InputTag>("generalV0_la"));
 
     doGenParticle_ = iConfig.getUntrackedParameter<bool>("doGenParticle", false);
+    doSimParticle_ = iConfig.getUntrackedParameter<bool>("doSimParticle", false);
 
     
 }
@@ -241,6 +245,25 @@ iSetup)
     edm::Handle<reco::VertexCompositeCandidateCollection> v0candidates_la;
     iEvent.getByToken(generalV0_la_,v0candidates_la);
     if(!v0candidates_la.isValid()) return;
+
+    edm::Handle<TrackingParticleCollection> tpCollection;
+    iEvent.getByToken(tpHitsSrc_, tpCollection);
+
+
+    if( doSimParticle_ ){
+
+        for(TrackingParticleCollection::size_type i=0; i<tpCollection->size(); i++){
+            
+            TrackingParticleRef tpr(tpCollection, i);
+            TrackingParticle* tp=const_cast<TrackingParticle*>(tpr.get());
+
+            //TrackingParticle selections:
+            if(tp->status() < 0 || tp->charge()==0 || tp->pt()<1 || TMath::Abs(tp->eta())>2.4) continue;
+
+            cout << "test" << endl;
+        }
+
+    }
 
     if( doGenParticle_ ){
 
