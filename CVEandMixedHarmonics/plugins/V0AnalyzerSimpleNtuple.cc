@@ -279,38 +279,62 @@ iSetup)
         double genpt = genCand.pt();
         double geneta = genCand.eta();
 
-      if ( geneta < -2.4 || geneta > 2.4 ) continue;
-    
-        if ( status == 1 ){
+        if(abs(genCand.pdgId()) != 310) continue;
 
-          if( id == 310 ){
+        if(genCand.numberOfDaughters() != 2) continue;
+        if(genCand.daughter(0)->vertex() != genCand.daughter(1)->vertex()) continue;
 
-            V0AnalyzerSimpleNtuple_genks->Fill(genpt,geneta,genCand.mass());
-
-          }
-
-    //Finding mother:
-        int mid = 0;
-          if( TMath::Abs(id) == 3122 ){
-
-            if(genCand.numberOfMothers()==1){
-              const reco::Candidate * mom = genCand.mother();
-              mid = mom->pdgId();
-              if(mom->numberOfMothers()==1){
-                const reco::Candidate * mom1 = mom->mother();
-                mid = mom1->pdgId();
-              }
-            }
-
-            if (TMath::Abs(mid) != 3322 && TMath::Abs(mid) != 3312 && TMath::Abs(mid) != 3324 && TMath::Abs(mid) != 3314 && TMath::Abs(mid) != 3334){
-
-             V0AnalyzerSimpleNtuple_genla->Fill(genpt, geneta, genCand.mass());
-
-            }
-          }
-     
+        int posGenDauNdx = 0;
+        int negGenDauNdx = 1;
+        if(genCand.daughter(0)->charge() < 0){
+         
+          posGenDauNdx = 1;
+          negGenDauNdx = 0;
         }
-      }
+
+        const Candidate* genPosDau = genCand.daughter(posGenDauNdx);
+        const Candidate* genNegDau = genCand.daughter(negGenDauNdx);
+
+        auto dau1 = genPosDau->get<reco::TrackRef>();
+        auto dau2 = genNegDau->get<reco::TrackRef>();
+
+        cout << "innermost " << dau1->innerDetId() << endl;
+
+
+
+
+    //   if ( geneta < -2.4 || geneta > 2.4 ) continue;
+    
+    //     if ( status == 1 ){
+
+    //       if( id == 310 ){
+
+    //         V0AnalyzerSimpleNtuple_genks->Fill(genpt,geneta,genCand.mass());
+
+    //       }
+
+    // //Finding mother:
+    //     int mid = 0;
+    //       if( TMath::Abs(id) == 3122 ){
+
+    //         if(genCand.numberOfMothers()==1){
+    //           const reco::Candidate * mom = genCand.mother();
+    //           mid = mom->pdgId();
+    //           if(mom->numberOfMothers()==1){
+    //             const reco::Candidate * mom1 = mom->mother();
+    //             mid = mom1->pdgId();
+    //           }
+    //         }
+
+    //         if (TMath::Abs(mid) != 3322 && TMath::Abs(mid) != 3312 && TMath::Abs(mid) != 3324 && TMath::Abs(mid) != 3314 && TMath::Abs(mid) != 3334){
+
+    //          V0AnalyzerSimpleNtuple_genla->Fill(genpt, geneta, genCand.mass());
+
+    //         }
+    //       }
+     
+    //     }
+    }
 
   } 
     
