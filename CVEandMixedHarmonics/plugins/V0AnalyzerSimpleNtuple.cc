@@ -430,6 +430,27 @@ iSetup)
         double genPt = -0.99;
         double matchedK0s =  MatchV0(iEvent, iSetup, trk, 310, "genParticlesPlusSim", genPt);
 
+        // hit pattern of the track
+        const reco::HitPattern& p = dau1->hitPattern();
+
+        // loop over the hits of the track
+        for (int i=0; i<p.numberOfHits(); i++) {
+        uint32_t hit = p.getHitPattern(i);
+
+        // if the hit is valid and in pixel barrel, print out the layer
+        if (p.validHitFilter(hit) && p.pixelBarrelHitFilter(hit))
+        std::cout << "valid hit found in pixel barrel layer "
+              << p.getLayer(hit) << std::endl;
+        }
+
+        // count the number of valid tracker *** hits ***
+        std::cout << "number of of valid tracker hits is "
+          << p.numberOfValidTrackerHits() << std::endl;
+
+        // count the number of tracker *** layers *** with measurement
+        std::cout << "number of tracker layers with measurement is "
+          << p.trackerLayersWithMeasurement() << std::endl;
+
         //algo
         int dau1_algo = dau1->algo();
         int dau2_algo = dau2->algo();
