@@ -118,6 +118,23 @@
 //
 // class decleration
 //
+float e_mass = 0.000511;
+
+float pion_mass = 0.13957018;
+float proton_mass = 0.938272013;
+float kaon_mass = 0.493677;
+float pion_sigma = pion_mass*1.e-6;
+float proton_sigma = proton_mass*1.e-6;
+float kaon_sigma = kaon_mass*1.e-6;
+float lambda_mass = 1.115683;
+float lambda_sigma = 0.000006;
+
+float ks_mass = 0.497614;
+float xi_mass = 1.32171;
+
+const int PDGID[4] = {310,3122,3312,3334};
+const double PDGMASS[4] = {0.497614,1.115683,1.32171,1.67245};
+const string PNAMES[4] = {"ks","lambda","xi","omega"};
 
 #define PI 3.1416
 using namespace std;
@@ -132,6 +149,8 @@ private:
   virtual void beginJob() ;
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
   virtual void endJob() ;
+  bool MatchV0(const edm::Event& iEvent, const edm::EventSetup& iSetup, const reco::VertexCompositeCandidate & trk, int pdgid, string genPLabel, double & genpt_matched);
+   
 
   // ----------member data ---------------------------
     
@@ -296,9 +315,6 @@ iSetup)
         const Candidate* genPosDau = genCand.daughter(posGenDauNdx);
         const Candidate* genNegDau = genCand.daughter(negGenDauNdx);
 
-        TrackRef genPosDauTrack = genPosDau->get<TrackRef>();
-        cout << "test: " << genPosDauTrack->algo() << endl;
-
 
     //   if ( geneta < -2.4 || geneta > 2.4 ) continue;
     
@@ -404,7 +420,13 @@ iSetup)
         if( fabs(dzos1) < 1.0 || fabs(dzos2) < 1.0 || fabs(dxyos1) < 1.0 || fabs(dxyos2) < 1.0 ) continue;
         if( dlos < 5.0 ) continue;
         if( agl < 0.999 ) continue;
+
+        double genPt = -0.99;
+
+        double matchedK0s =  MatchV0(iEvent, iSetup, trk, 310, "genParticlesPlusSim", genPt);
         
+        cout << "match: " << matchedK0s << endl;
+
         //algo
         int dau1_algo = dau1->algo();
         int dau2_algo = dau2->algo();
@@ -652,6 +674,96 @@ V0AnalyzerSimpleNtuple::beginJob()
         V0AnalyzerSimpleNtuple_genks = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_genks","V0AnalyzerSimpleNtuple_genks","ks_pt:ks_eta:ks_mass");
         V0AnalyzerSimpleNtuple_genla = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_genla","V0AnalyzerSimpleNtuple_genla","la_pt:la_eta:la_mass");
     }
+}
+bool
+V0Matcher::MatchV0(const edm::Event& iEvent, const edm::EventSetup& iSetup, const reco::VertexCompositeCandidate & trk, int pdgid, string genPLabel, double & genpt_matched)
+{
+        using namespace edm;
+
+        edm::Handle<reco::GenParticleCollection> genCol;
+        iEvent.getByLabel(genPLabel, genCol);
+
+        bool isMatched = false;
+        int posRecoDauNdx = 0;
+        int negRecoDauNdx = 1;
+
+        if(trk.daughter(0)->charge() < 0)
+        {      
+               posRecoDauNdx = 1;
+               negRecoDauNdx = 0;
+        }
+
+        const Candidate* recoPosDau = trk.daughter(posRecoDauNdx);
+        const Candidate* recoNegDau = trk.daughter(negRecoDauNdx);
+
+        double recoPosDauPhi = recoPosDau->momentum().phi();
+        double recoNegDauPhi = recoNegDau->momentum().phi();
+
+        double recoPosDauEta = recoPosDau->momentum().eta();
+        double recoNegDauEta = recoNegDau->momentum().eta();
+
+        GlobalPoint recoVtx(trk.vx(), trk.vy(), trk.vz());
+
+        double deltaL = -1;
+        double posDeltaR = -1;
+        double negDeltaR = -1;
+        for(unsigned igen = 0; igen < genCol->size(); igen++)
+        {
+               const reco::GenParticle & genCand = (*genCol)[igen];
+               if(abs(genCand.pdgId()) != pdgid) continue;
+
+               if(genCand.numberOfDaughters() != 2) continue;
+               if(genCand.daughter(0)->vertex() != genCand.daughter(1)->vertex()) continue;
+
+               int posGenDauNdx = 0;
+               int negGenDauNdx = 1;
+               if(genCand.daughter(0)->charge() < 0)
+               {
+                      posGenDauNdx = 1;
+                      negGenDauNdx = 0;
+               }
+
+               const Candidate* genPosDau = genCand.daughter(posGenDauNdx);
+               const Candidate* genNegDau = genCand.daughter(negGenDauNdx);
+
+               double genPosDauPhi = genPosDau->momentum().phi();
+               double genNegDauPhi = genNegDau->momentum().phi();
+
+               double genPosDauEta = genPosDau->momentum().eta();
+               double genNegDauEta = genNegDau->momentum().eta();
+
+               double posDeltaPhi = reco::deltaPhi(genPosDauPhi, recoPosDauPhi);
+               double negDeltaPhi = reco::deltaPhi(genNegDauPhi, recoNegDauPhi);
+               double posDeltaEta = genPosDauEta - recoPosDauEta;
+               double negDeltaEta = genNegDauEta - recoNegDauEta;
+
+               posDeltaR = sqrt(posDeltaPhi*posDeltaPhi + posDeltaEta*posDeltaEta);
+               negDeltaR = sqrt(negDeltaPhi*negDeltaPhi + negDeltaEta*negDeltaEta);
+               GlobalPoint genVtx(genPosDau->vx(), genPosDau->vy(), genPosDau->vz());
+               deltaL = (genVtx - recoVtx).mag();
+                
+               if(pdgid == 310) 
+               {
+                      map_posDeltaR["ks"]->Fill(posDeltaR, genCand.pt());
+                      map_negDeltaR["ks"]->Fill(negDeltaR, genCand.pt());
+                      map_batDeltaR["ks"]->Fill(0., genCand.pt());
+                      map_deltaL["ks"]->Fill(deltaL, genCand.pt()); 
+               }
+              
+               if(pdgid == 3122)
+               {
+                      map_posDeltaR["lambda"]->Fill(posDeltaR, genCand.pt());
+                      map_negDeltaR["lambda"]->Fill(negDeltaR, genCand.pt());
+                      map_batDeltaR["lambda"]->Fill(0., genCand.pt());
+                      map_deltaL["lambda"]->Fill(deltaL, genCand.pt());                            }
+
+               if(posDeltaR < 0.1 && negDeltaR < 0.1 && deltaL < 10.)
+               {
+                      isMatched = true;
+                      genpt_matched = genCand.pt();
+               }
+        }
+        return isMatched;
 }
 
 // ------------ method called once each job just after ending the event
