@@ -118,6 +118,13 @@
 //
 // class decleration
 //
+
+#define PI 3.1416
+using namespace std;
+using namespace reco;
+using namespace edm;
+
+
 float e_mass = 0.000511;
 
 float pion_mass = 0.13957018;
@@ -136,8 +143,7 @@ const int PDGID[4] = {310,3122,3312,3334};
 const double PDGMASS[4] = {0.497614,1.115683,1.32171,1.67245};
 const string PNAMES[4] = {"ks","lambda","xi","omega"};
 
-#define PI 3.1416
-using namespace std;
+
 
 class V0AnalyzerSimpleNtuple : public edm::EDAnalyzer {
 public:
