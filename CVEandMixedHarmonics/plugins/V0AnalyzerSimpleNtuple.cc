@@ -773,10 +773,10 @@ V0AnalyzerSimpleNtuple::beginJob()
         V0AnalyzerSimpleNtuple_genla = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_genla","V0AnalyzerSimpleNtuple_genla","la_pt:la_eta:la_mass");
     }
 
-    hitMap_K0s_matched_dau1 = fs->make<TH2D>("hitMap_K0s_matched_dau1",";algo;hit_layer",30,0,30,30,0,30,100,0,10);
-    hitMap_K0s_matched_dau2 = fs->make<TH2D>("hitMap_K0s_matched_dau2",";algo;hit_layer",30,0,30,30,0,30,100,0,10);
-    hitMap_Lam_matched_dau1 = fs->make<TH2D>("hitMap_Lam_matched_dau1",";algo;hit_layer",30,0,30,30,0,30,100,0,10);
-    hitMap_Lam_matched_dau2 = fs->make<TH2D>("hitMap_Lam_matched_dau2",";algo;hit_layer",30,0,30,30,0,30,100,0,10);
+    hitMap_K0s_matched_dau1 = fs->make<TH3D>("hitMap_K0s_matched_dau1",";algo;hit_layer;p_{T}",30,0,30,30,0,30,100,0,10);
+    hitMap_K0s_matched_dau2 = fs->make<TH3D>("hitMap_K0s_matched_dau2",";algo;hit_layer;p_{T}",30,0,30,30,0,30,100,0,10);
+    hitMap_Lam_matched_dau1 = fs->make<TH3D>("hitMap_Lam_matched_dau1",";algo;hit_layer;p_{T}",30,0,30,30,0,30,100,0,10);
+    hitMap_Lam_matched_dau2 = fs->make<TH3D>("hitMap_Lam_matched_dau2",";algo;hit_layer;p_{T}",30,0,30,30,0,30,100,0,10);
 
 }
 bool
