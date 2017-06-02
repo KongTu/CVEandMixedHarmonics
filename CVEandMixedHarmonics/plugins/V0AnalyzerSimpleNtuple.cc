@@ -181,6 +181,12 @@ private:
 
     edm::EDGetTokenT<reco::VertexCompositeCandidateCollection> generalV0_ks_;
     edm::EDGetTokenT<reco::VertexCompositeCandidateCollection> generalV0_la_;
+
+    TH2D* hitMap_K0s_matched_dau1;
+    TH2D* hitMap_K0s_matched_dau2;
+
+    TH2D* hitMap_Lam_matched_dau1;
+    TH2D* hitMap_Lam_matched_dau2;
 };
 
 //
@@ -268,11 +274,6 @@ iSetup)
         if(fabs(dzvtx/dzerror) > 3.0 ) continue;
         if(fabs(dxyvtx/dxyerror) > 3.0 ) continue;
         if( fabs(trk.eta()) < 2.4 && trk.pt() > 0.4 ){nMult_ass_good++;}// NtrkOffline        
-
-
-
-
-
     }
 
     edm::Handle<reco::VertexCompositeCandidateCollection> v0candidates_ks;
@@ -440,34 +441,50 @@ iSetup)
         double genPt = -0.99;
         double matchedK0s =  MatchV0(iEvent, iSetup, trk, 310, "genParticlesPlusSim", genPt);
 
-        if( dau1->algo() != 9 ) continue;
-        const reco::HitPattern & p = dau1->hitPattern();
-
-        const reco::HitPattern::HitCategory hitCat = reco::HitPattern::TRACK_HITS;
-        //loop over the hits of the track
-        for (int i=0; i<p.numberOfHits(hitCat); i++) {
-            uint32_t hit = p.getHitPattern(hitCat,i);
-            cout << "hit: " << hit << endl;
-        // if the hit is valid and in pixel barrel, print out the layer
-            if (p.validHitFilter(hit) && p.pixelBarrelHitFilter(hit))
-            std::cout << "valid hit found in pixel barrel layer "
-                  << p.getLayer(hit) << std::endl;
-
-            if (p.validHitFilter(hit) && p.stripHitFilter(hit))
-            std::cout << "valid hit found in strip layer "
-                  << p.getLayer(hit) << std::endl;
-        }
-        // count the number of valid tracker *** hits ***
-        std::cout << "number of of valid tracker hits is "
-          << p.numberOfValidTrackerHits() << std::endl;
-
-        // count the number of tracker *** layers *** with measurement
-        std::cout << "number of tracker layers with measurement is "
-          << p.trackerLayersWithMeasurement() << std::endl;
-
         //algo
         int dau1_algo = dau1->algo();
         int dau2_algo = dau2->algo();
+
+        if( matchedK0s ){
+            const reco::HitPattern & p1 = dau1->hitPattern();
+            const reco::HitPattern & p2 = dau2->hitPattern();
+
+            const reco::HitPattern::HitCategory hitCat = reco::HitPattern::TRACK_HITS;
+            //loop over the hits of the track
+            for (int i=0; i<p1.numberOfHits(hitCat); i++){
+                uint32_t hit = p1.getHitPattern(hitCat,i);
+           
+                if (p1.validHitFilter(hit) && p1.pixelBarrelHitFilter(hit)){
+       
+                    int pixelLayer = p1.getLayer(hit);
+                    hitMap_K0s_matched_dau1->Fill(dau1_algo, pixelLayer);
+                }
+
+                if (p1.validHitFilter(hit) && p1.stripHitFilter(hit)){
+     
+                    int stripLayer = p1.getLayer(hit)+4;
+                    hitMap_K0s_matched_dau1->Fill(dau1_algo, stripLayer);
+                }
+
+            }
+            for (int i=0; i<p2.numberOfHits(hitCat); i++){
+                uint32_t hit = p2.getHitPattern(hitCat,i);
+           
+                if (p2.validHitFilter(hit) && p2.pixelBarrelHitFilter(hit)){
+       
+                    int pixelLayer = p2.getLayer(hit);
+                    hitMap_K0s_matched_dau2->Fill(dau2_algo, pixelLayer);
+                }
+
+                if (p2.validHitFilter(hit) && p2.stripHitFilter(hit)){
+     
+                    int stripLayer = p2.getLayer(hit)+4;
+                    hitMap_K0s_matched_dau2->Fill(dau2_algo, stripLayer);
+                }
+
+            }
+        }
+
 
         int dau1_originAlgo = dau1->originalAlgo();
         int dau2_originAlgo = dau2->originalAlgo();
@@ -619,6 +636,46 @@ iSetup)
         //algo
         int dau1_algo = dau1->algo();
         int dau2_algo = dau2->algo();
+
+        if( matchedLam ){
+            const reco::HitPattern & p1 = dau1->hitPattern();
+            const reco::HitPattern & p2 = dau2->hitPattern();
+
+            const reco::HitPattern::HitCategory hitCat = reco::HitPattern::TRACK_HITS;
+            //loop over the hits of the track
+            for (int i=0; i<p1.numberOfHits(hitCat); i++){
+                uint32_t hit = p1.getHitPattern(hitCat,i);
+           
+                if (p1.validHitFilter(hit) && p1.pixelBarrelHitFilter(hit)){
+       
+                    int pixelLayer = p1.getLayer(hit);
+                    hitMap_Lam_matched_dau1->Fill(dau1_algo, pixelLayer);
+                }
+
+                if (p1.validHitFilter(hit) && p1.stripHitFilter(hit)){
+     
+                    int stripLayer = p1.getLayer(hit)+4;
+                    hitMap_Lam_matched_dau1->Fill(dau1_algo, stripLayer);
+                }
+
+            }
+            for (int i=0; i<p2.numberOfHits(hitCat); i++){
+                uint32_t hit = p2.getHitPattern(hitCat,i);
+           
+                if (p2.validHitFilter(hit) && p2.pixelBarrelHitFilter(hit)){
+       
+                    int pixelLayer = p2.getLayer(hit);
+                    hitMap_Lam_matched_dau2->Fill(dau2_algo, pixelLayer);
+                }
+
+                if (p2.validHitFilter(hit) && p2.stripHitFilter(hit)){
+     
+                    int stripLayer = p2.getLayer(hit)+4;
+                    hitMap_Lam_matched_dau2->Fill(dau2_algo, stripLayer);
+                }
+
+            }
+        }
        
         int dau1_originAlgo = dau1->originalAlgo();
         int dau2_originAlgo = dau2->originalAlgo();
@@ -715,6 +772,12 @@ V0AnalyzerSimpleNtuple::beginJob()
         V0AnalyzerSimpleNtuple_genks = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_genks","V0AnalyzerSimpleNtuple_genks","ks_pt:ks_eta:ks_mass");
         V0AnalyzerSimpleNtuple_genla = fs->make< TNtuple>("V0AnalyzerSimpleNtuple_genla","V0AnalyzerSimpleNtuple_genla","la_pt:la_eta:la_mass");
     }
+
+    hitMap_K0s_matched_dau1 = fs->make<TH2D>("hitMap_K0s_matched_dau1","hitMap_K0s_matched_dau1",";algo;hit_layer",30,0,30,30,0,30);
+    hitMap_K0s_matched_dau2 = fs->make<TH2D>("hitMap_K0s_matched_dau2","hitMap_K0s_matched_dau2",";algo;hit_layer",30,0,30,30,0,30);
+    hitMap_Lam_matched_dau1 = fs->make<TH2D>("hitMap_Lam_matched_dau1","hitMap_Lam_matched_dau1",";algo;hit_layer",30,0,30,30,0,30);
+    hitMap_Lam_matched_dau2 = fs->make<TH2D>("hitMap_Lam_matched_dau2","hitMap_Lam_matched_dau2",";algo;hit_layer",30,0,30,30,0,30);
+
 }
 bool
 V0AnalyzerSimpleNtuple::MatchV0(const edm::Event& iEvent, const edm::EventSetup& iSetup, const reco::VertexCompositeCandidate & trk, int pdgid, string genPLabel, double & genpt_matched)
@@ -783,21 +846,6 @@ V0AnalyzerSimpleNtuple::MatchV0(const edm::Event& iEvent, const edm::EventSetup&
                GlobalPoint genVtx(genPosDau->vx(), genPosDau->vy(), genPosDau->vz());
                deltaL = (genVtx - recoVtx).mag();
                 
-               // if(pdgid == 310) 
-               // {
-               //        map_posDeltaR["ks"]->Fill(posDeltaR, genCand.pt());
-               //        map_negDeltaR["ks"]->Fill(negDeltaR, genCand.pt());
-               //        map_batDeltaR["ks"]->Fill(0., genCand.pt());
-               //        map_deltaL["ks"]->Fill(deltaL, genCand.pt()); 
-               // }
-              
-               // if(pdgid == 3122)
-               // {
-               //        map_posDeltaR["lambda"]->Fill(posDeltaR, genCand.pt());
-               //        map_negDeltaR["lambda"]->Fill(negDeltaR, genCand.pt());
-               //        map_batDeltaR["lambda"]->Fill(0., genCand.pt());
-               //        map_deltaL["lambda"]->Fill(deltaL, genCand.pt());                            }
-
                if(posDeltaR < 0.1 && negDeltaR < 0.1 && deltaL < 10.)
                {
                       isMatched = true;
