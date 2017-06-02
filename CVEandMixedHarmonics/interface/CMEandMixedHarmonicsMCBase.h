@@ -222,6 +222,7 @@ class CMEandMixedHarmonicsMC : public edm::EDAnalyzer {
 
       TH1D* Ntrk;
       TH1D* Ntrk_MB;
+      TH1D* Ntrk_HF;
       TH1D* vtxZ;
       TH1D* trkPhi;
       TH1D* hfPhi;

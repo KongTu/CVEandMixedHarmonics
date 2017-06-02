@@ -120,17 +120,22 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
   if( doGenOnly_ ){
 
     double nTracks_gen = 0.0;
+    double nTracks_HF = 0.0;
     const GenEvent* evt = mc->GetEvent();
 
     HepMC::GenEvent::particle_const_iterator begin = evt->particles_begin();
     HepMC::GenEvent::particle_const_iterator end = evt->particles_end();
     for(HepMC::GenEvent::particle_const_iterator it = begin; it != end; ++it){
 
+      if( fabs((*it)->momentum().eta()) < 5.0 && fabs((*it)->momentum().eta()) > 3.0 ){
+          nTracks_HF++;
+      }
       if((*it)->status() != 1) continue;
 
        int pdg_id = (*it)->pdg_id();
        const ParticleData * part = pdt->particle(pdg_id);
        int charge = static_cast<int>(part->charge());
+
        if(charge == 0) continue;
 
        if((*it)->momentum().perp()<0.01) continue;
@@ -153,8 +158,9 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
        nTracks_gen += weight;
     }
 
+    Ntrk_HF->Fill( nTracks_HF );
     Ntrk_MB->Fill( nTracks_gen );
-    if( nTracks_gen < Nmin_ || nTracks_gen >= Nmax_ ) return;
+    if( nTracks_HF < Nmin_ || nTracks_HF >= Nmax_ ) return;
     Ntrk->Fill( nTracks_gen );
   }
   else{
@@ -1090,6 +1096,7 @@ CMEandMixedHarmonicsMC::beginJob()
 
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",10000,0,10000);
   Ntrk_MB = fs->make<TH1D>("Ntrk_MB",";Ntrk",10000,0,10000);
+  Ntrk_HF = fs->make<TH1D>("Ntrk_HF",";Ntrk",30000,0,30000);
   vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
@@ -1112,16 +1119,16 @@ CMEandMixedHarmonicsMC::beginJob()
     
   }
 
-  c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 2000,-1,1);
-  c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 2000,-1,1);
-  c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 2000,-1,1);
+  c2_ab = fs->make<TH1D>("c2_ab",";c2_ab", 1,-1,1);
+  c2_ac = fs->make<TH1D>("c2_ac",";c2_ac", 1,-1,1);
+  c2_cb = fs->make<TH1D>("c2_cb",";c2_cb", 1,-1,1);
 
-  cn_tracker = fs->make<TH1D>("cn_tracker",";cn_tracker", 2000,-1,1);
+  cn_tracker = fs->make<TH1D>("cn_tracker",";cn_tracker", 1,-1,1);
 
   for(int eta = 0; eta < NetaBins; eta++){
     for(int HF = 0; HF < 2; HF++){
 
-      cn_eta[eta][HF] = fs->make<TH1D>(Form("cn_eta_%d_%d", eta, HF),";cn_eta", 2000,-1,1);
+      cn_eta[eta][HF] = fs->make<TH1D>(Form("cn_eta_%d_%d", eta, HF),";cn_eta", 1,-1,1);
     }
   }
   
@@ -1129,8 +1136,8 @@ CMEandMixedHarmonicsMC::beginJob()
     for(int sign = 0; sign < 3; sign++){
       for(int HF = 0; HF < 2; HF++){
 
-        c3_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_real_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
-        //c3_imag[deta][sign][HF] = fs->make<TH1D>(Form("//c3_imag_%d_%d_%d", deta, sign, HF),";c3", 2000,-1,1);
+        c3_real[deta][sign][HF] = fs->make<TH1D>(Form("c3_real_%d_%d_%d", deta, sign, HF),";c3", 1,-1,1);
+        //c3_imag[deta][sign][HF] = fs->make<TH1D>(Form("//c3_imag_%d_%d_%d", deta, sign, HF),";c3", 1,-1,1);
       }
     }    
   }
@@ -1139,11 +1146,11 @@ CMEandMixedHarmonicsMC::beginJob()
     for(int sign = 0; sign < 3; sign++){
       for(int HF = 0; HF < 2; HF++){
 
-        c3_dpT_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_real_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
-        //c3_dpT_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_imag_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
+        c3_dpT_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_real_%d_%d_%d", dpt, sign, HF),";c3", 1,-1,1);
+        //c3_dpT_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_dpT_imag_%d_%d_%d", dpt, sign, HF),";c3", 1,-1,1);
 
-        c3_pTave_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_real_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
-        //c3_pTave_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_imag_%d_%d_%d", dpt, sign, HF),";c3", 2000,-1,1);
+        c3_pTave_real[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_real_%d_%d_%d", dpt, sign, HF),";c3", 1,-1,1);
+        //c3_pTave_imag[dpt][sign][HF] = fs->make<TH1D>(Form("c3_pTave_imag_%d_%d_%d", dpt, sign, HF),";c3", 1,-1,1);
 
       }
     }    
@@ -1152,19 +1159,19 @@ CMEandMixedHarmonicsMC::beginJob()
   for(int deta = 0; deta < NdEtaBins; deta++){
     for(int sign = 0; sign < 3; sign++){
 
-      c2_real[deta][sign] = fs->make<TH1D>(Form("c2_real_%d_%d", deta, sign),";c2", 2000,-1,1);
-      //c2_imag[deta][sign] = fs->make<TH1D>(Form("c2_imag_%d_%d", deta, sign),";c2", 2000,-1,1);
+      c2_real[deta][sign] = fs->make<TH1D>(Form("c2_real_%d_%d", deta, sign),";c2", 1,-1,1);
+      //c2_imag[deta][sign] = fs->make<TH1D>(Form("c2_imag_%d_%d", deta, sign),";c2", 1,-1,1);
     }    
   }
 
   for(int dpt = 0; dpt < NdPtBins; dpt++){
     for(int sign = 0; sign < 3; sign++){
 
-      c2_dpT_real[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_real_%d_%d", dpt, sign),";c2", 2000,-1,1);
-      //c2_dpT_imag[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_imag_%d_%d", dpt, sign),";c2", 2000,-1,1);
+      c2_dpT_real[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_real_%d_%d", dpt, sign),";c2", 1,-1,1);
+      //c2_dpT_imag[dpt][sign] = fs->make<TH1D>(Form("c2_dpT_imag_%d_%d", dpt, sign),";c2", 1,-1,1);
    
-      c2_pTave_real[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_real_%d_%d", dpt, sign),";c2", 2000,-1,1);
-      //c2_pTave_imag[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_imag_%d_%d", dpt, sign),";c2", 2000,-1,1);
+      c2_pTave_real[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_real_%d_%d", dpt, sign),";c2", 1,-1,1);
+      //c2_pTave_imag[dpt][sign] = fs->make<TH1D>(Form("c2_pTave_imag_%d_%d", dpt, sign),";c2", 1,-1,1);
    
     }    
   }
