@@ -493,6 +493,7 @@ Share Q_n3 for both dimensions:
 
   unsigned int sub;
   sub = gRandom->Integer(NsubSamples_);
+  sub_check->Fill( sub );
 
 /*
 accpetance correction terms related to HF
@@ -1253,6 +1254,7 @@ CMEandMixedHarmonics::beginJob()
   trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
   q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
   Ntrk_q2 = fs->make<TH1D>("Ntrk_q2",";Ntrk",5000,0,5000);
+  sub_check = fs->make<TH1D>("sub_check",";sub_check",100,0,100);
 
   for(int sub = 0; sub < NsubSamples_; sub++){
 
