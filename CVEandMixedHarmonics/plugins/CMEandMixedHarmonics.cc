@@ -1474,13 +1474,17 @@ CMEandMixedHarmonics::getLightConeVar(double px, double py, double pz){
 
   vector<double> temp;
 
-  if( px > 0 && py < 0){
-
+  if( px > 0 && py > 0){
+    phi = phi;
+  }
+  else if( px > 0 && py < 0){
     phi = -phi;
   }
   else if( px < 0 && py > 0){
-
     phi = PI - phi;
+  }
+  else if( px < 0 && py < 0){
+    phi = -PI + phi;
   }
 
   temp.push_back( pt );
