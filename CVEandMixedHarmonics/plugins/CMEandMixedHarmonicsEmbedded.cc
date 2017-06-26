@@ -546,7 +546,7 @@ Share Q_n3 for both dimensions:
 
 //step2: generate the phi according to the v2 EbyE:  
 
-  TF1* function1 = new TF1("function1", "[0]*cos(2*x - 2*[1]) + [2]", 2*Psi_RP-PI, 2*Psi_RP+PI);
+  TF1* function1 = new TF1("function1", "[0]*cos(2*x - 2*[1]) + [2]", -PI, PI);
   function1->SetParameter(0, v2_eBye);
   function1->SetParameter(1, Psi_RP);
   function1->SetParameter(2, v2_eBye);
@@ -559,7 +559,7 @@ Share Q_n3 for both dimensions:
 
     embedded_cluster_phi->Fill(cluster_phi);
 
-  //step3: start to decay
+//step3: start to decay
 
     const double clusterMass = 0.775;//rho0 mass
 
@@ -597,7 +597,7 @@ Share Q_n3 for both dimensions:
     vector<double> dau1_LightConeVar = getLightConeVar(dau1_px, dau1_py, dau1_pz);
     vector<double> dau2_LightConeVar = getLightConeVar(dau2_px, dau2_py, dau2_pz);
 
-  //step4: Fill the Q-vectors:
+//step4: Fill the Q-vectors:
 
     double dau1_pt = dau1_LightConeVar[0];
     double dau1_eta = dau1_LightConeVar[1];
