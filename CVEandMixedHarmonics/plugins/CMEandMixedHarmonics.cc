@@ -1443,7 +1443,7 @@ CMEandMixedHarmonics::get4Momentum(double pt, double eta, double phi, double mas
   }
   else if( phi < 0 && phi > -PI){
 
-    py = -py
+    py = -py;
   }
 
   if( phi > -PI/2.0 && phi < PI/2.0 ){
