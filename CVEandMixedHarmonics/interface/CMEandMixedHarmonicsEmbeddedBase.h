@@ -27,6 +27,8 @@
 #include <TNtuple.h>
 #include <TGraph.h>
 #include <TComplex.h>
+#include <TGenPhaseSpace.h>
+#include <TLorentzVector.h>
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
