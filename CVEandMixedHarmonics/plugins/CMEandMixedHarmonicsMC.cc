@@ -479,7 +479,14 @@ Share Q_n3 for both dimensions:
       double geneta = genCand.eta();
       double genphi = genCand.phi();
       int gencharge = genCand.charge();
+      int pdg_id = genCand.pdgId();
       double weight = 1.0;
+
+      if( pdg_id == 113 ){
+
+      mother_Spectra->Fill( (*it)->momentum().eta(), (*it)->momentum().perp() );
+      
+      }
 
       if( status != 1 || gencharge == 0 ) continue;
       if( genpt < ptLow_ || genpt > ptHigh_) continue;
