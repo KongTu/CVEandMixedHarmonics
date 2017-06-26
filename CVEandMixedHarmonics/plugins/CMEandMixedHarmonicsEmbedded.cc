@@ -511,7 +511,7 @@ Share Q_n3 for both dimensions:
     double nlayers = trk.hitPattern().trackerLayersWithMeasurement();
     chi2n = chi2n/nlayers;
     double nPixelLayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
-    double phi = trk.phi();
+    //double phi = trk.phi();
     double trkEta = trk.eta();
 
     double weight = 1.0;

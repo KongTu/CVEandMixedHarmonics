@@ -29,6 +29,7 @@
 #include <TComplex.h>
 #include <TGenPhaseSpace.h>
 #include <TLorentzVector.h>
+#include <TF1.h>
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
