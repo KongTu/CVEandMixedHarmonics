@@ -542,6 +542,7 @@ Share Q_n3 for both dimensions:
   }
 
   double v2_eBye = c22/c22_weight;
+  v2_eBye = fabs(v2_eBye);
 
   // TH1D* eByEc2 = new TH1D();
 
@@ -567,7 +568,14 @@ Share Q_n3 for both dimensions:
   // cout << "v2 " << sqrt( c2 ) << endl;
   cout << "v2 EbyE: " << v2_eBye << endl;
 
-//step2: generate the 4 momentum with calculated phi:  
+//step2: generate the phi according to the v2 EbyE:  
+
+  TF1* function1 = new TF1("function1", "[0]*cos(2*x - 2*[1])", Psi_RP-PI, Psi_RP+PI);
+  function1->SetParameter(0, v2_eBye);
+  function1->SetParameter(1, Psi_RP);
+
+  double cluster_phi = function1->GetRandom();
+  cout << "cluster phi" << cluster_phi << endl;
 
   const double clusterMass = 0.775;//rho0 mass
 
@@ -576,7 +584,7 @@ Share Q_n3 for both dimensions:
 
   mother_Spectra->GetRandom2(cluster_eta, cluster_pt);
 
-  vector<double> cluster4Momentum = get4Momentum(cluster_pt, cluster_eta, 1.0, clusterMass);
+  vector<double> cluster4Momentum = get4Momentum(cluster_pt, cluster_eta, cluster_phi, clusterMass);
 
   double energy_total = cluster4Momentum[0];
   double cluster_px = cluster4Momentum[1];
@@ -594,12 +602,14 @@ Share Q_n3 for both dimensions:
   TLorentzVector* pPion1 = event.GetDecay(0);
   TLorentzVector* pPion2 = event.GetDecay(1);
 
+//end of embedded. 
+
 
   unsigned int sub;
   sub = gRandom->Integer(NsubSamples_);
   sub_check->Fill( sub );
 
-//end of embedded. 
+
 
 /*
 accpetance correction terms related to HF
