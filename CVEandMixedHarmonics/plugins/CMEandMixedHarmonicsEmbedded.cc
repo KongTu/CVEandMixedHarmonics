@@ -570,12 +570,14 @@ Share Q_n3 for both dimensions:
 
 //step2: generate the phi according to the v2 EbyE:  
 
-  TF1* function1 = new TF1("function1", "[0]*cos(2*x - 2*[1])", Psi_RP-PI, Psi_RP+PI);
+  TF1* function1 = new TF1("function1", "[0]*cos(2*x - 2*[1])", 2*Psi_RP-PI, 2*Psi_RP+PI);
   function1->SetParameter(0, v2_eBye);
   function1->SetParameter(1, Psi_RP);
 
   double cluster_phi = function1->GetRandom();
   cout << "cluster phi" << cluster_phi << endl;
+
+  embedded_cluster_phi->Fill(cluster_phi);
 
   const double clusterMass = 0.775;//rho0 mass
 
@@ -1375,6 +1377,7 @@ CMEandMixedHarmonicsEmbedded::beginJob()
   q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
   Ntrk_q2 = fs->make<TH1D>("Ntrk_q2",";Ntrk",5000,0,5000);
   sub_check = fs->make<TH1D>("sub_check",";sub_check",100,0,100);
+  embedded_cluster_phi = fs->make<TH1D>("embedded_cluster_phi",";#phi",70, -3.5, 3.5);
 
   for(int sub = 0; sub < NsubSamples_; sub++){
 
