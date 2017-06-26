@@ -190,7 +190,7 @@ class CMEandMixedHarmonicsEmbedded : public edm::EDAnalyzer {
 
       TH1D* cn_tracker;
       TH1D* sub_check;
-      TH1D* mother_Spectra;
+      TH2D* mother_Spectra;
 
       //eta
       TH1D* cn_eta[36][48][2];

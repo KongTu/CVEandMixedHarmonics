@@ -301,6 +301,10 @@ Share Q_n3 for both dimensions:
 
   const double clusterMass = 0.775;//rho0 mass
 
+  double cluster_px = 1.0;
+  double cluster_py = 1.0;
+  double cluster_pz = 1.0;
+
   double energy_total = sqrt(cluster_px*cluster_px + cluster_py*cluster_py + cluster_pz*cluster_pz + clusterMass*clusterMass);
 
   TLorentzVector p4(cluster_px,cluster_py,cluster_pz,energy_total);
