@@ -138,7 +138,7 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
        if( pdg_id == 113 ){
 
-          mother_Spectra->Fill( (*it)->momentum().eta(), (*it)-momentum().perp() );
+          mother_Spectra->Fill( (*it)->momentum().eta(), (*it)->momentum().perp() );
        }
 
        if(charge == 0) continue;
