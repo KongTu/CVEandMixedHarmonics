@@ -301,11 +301,17 @@ Share Q_n3 for both dimensions:
 
   const double clusterMass = 0.775;//rho0 mass
 
-  double cluster_px = 1.0;
-  double cluster_py = 1.0;
-  double cluster_pz = 1.0;
+  double cluster_pt = 0.0;
+  double cluster_eta = 0.0;
 
-  double energy_total = sqrt(cluster_px*cluster_px + cluster_py*cluster_py + cluster_pz*cluster_pz + clusterMass*clusterMass);
+  mother_Spectra->GetRandom2(cluster_eta, cluster_pt);
+
+  vector<double> cluster4Momentum = get4Momentum(cluster_pt, cluster_eta, 1.0, clusterMass);
+
+  double energy_total = cluster4Momentum[0];
+  double cluster_px = cluster4Momentum[1];
+  double cluster_py = cluster4Momentum[2];
+  double cluster_pz = cluster4Momentum[3];
 
   TLorentzVector p4(cluster_px,cluster_py,cluster_pz,energy_total);
   TGenPhaseSpace event;
