@@ -333,7 +333,7 @@ Share Q_n3 for both dimensions:
     TLorentzVector* pPion1 = event.GetDecay(0);
     TLorentzVector* pPion2 = event.GetDecay(1);
 
-    cout<< "three_momentum: " << pPion->P()<<endl;
+    cout<< "three_momentum: " << pPion1->P()<<endl;
 
     cout << "px: " << pPion1->Px() << " py: " << pPion1->Py() << " pz: " << pPion1->Pz() << endl;
     cout << "px: " << pPion2->Px() << " py: " << pPion2->Py() << " pz: " << pPion2->Pz() << endl;
