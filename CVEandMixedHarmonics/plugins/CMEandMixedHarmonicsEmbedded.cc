@@ -318,7 +318,9 @@ Share Q_n3 for both dimensions:
     double phi = trk.phi();
     double trkEta = trk.eta();
 
-    TLorentzVector p4(trk.px(),trk.py(),trk.pz(),trk.energy());
+    double energy_total = sqrt(trk.px()*trk.px() + trk.py()*trk.py() + trk.pz()*trk.pz() + 1.0*1.0);
+
+    TLorentzVector p4(trk.px(),trk.py(),trk.pz(),energy_total);
     TGenPhaseSpace event;
 
     double masses[2] = {0.1396,0.1396};
