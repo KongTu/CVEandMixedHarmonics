@@ -297,34 +297,6 @@ Share Q_n3 for both dimensions:
 
 //------------------------------------------------------------------
 
-//Start to generate clusters
-
-  const double clusterMass = 0.775;//rho0 mass
-
-  double cluster_pt = 0.0;
-  double cluster_eta = 0.0;
-
-  mother_Spectra->GetRandom2(cluster_eta, cluster_pt);
-
-  vector<double> cluster4Momentum = get4Momentum(cluster_pt, cluster_eta, 1.0, clusterMass);
-
-  double energy_total = cluster4Momentum[0];
-  double cluster_px = cluster4Momentum[1];
-  double cluster_py = cluster4Momentum[2];
-  double cluster_pz = cluster4Momentum[3];
-
-  TLorentzVector p4(cluster_px,cluster_py,cluster_pz,energy_total);
-  TGenPhaseSpace event;
-
-  double masses[2] = {0.1396,0.1396};
-  event.SetDecay(p4,2,masses);
-  
-  double weight1 = event.Generate();
-
-  TLorentzVector* pPion1 = event.GetDecay(0);
-  TLorentzVector* pPion2 = event.GetDecay(1);
-
-
 //Start filling Q-vectors;
 
   //track loop to fill charged particles Q-vectors
@@ -516,10 +488,66 @@ Share Q_n3 for both dimensions:
           else{continue;}
   }
 
+//Start to generate clusters
+
+//step1: calculate the EbyE v2 and its event plane:
+
+  TH1D* eByEc2 = new TH1D();
+
+  for(int ieta = 0; ieta < NetaBins; ieta++){
+    for(int jeta = 0; jeta < NetaBins; jeta++){
+
+      double deltaEta = fabs( etaBins_[ieta] - etaBins_[jeta] );
+
+      if( deltaEta > 2.0 ){//calculate the tracker v2 with a gap of 2
+
+          TComplex N_2;
+          TComplex D_2;
+
+          N_2 = Q_nC_trk[ieta]*TComplex::Conjugate(Q_nC_trk[jeta]);
+          D_2 = Q_0_nC_trk[ieta]*Q_0_nC_trk[jeta];
+
+          eByEc2->Fill(N_2.Re()/D_2.Re(), D_2.Re());
+      }
+    }
+  }
+
+  double c2 = eByEc2->GetMean();
+  cout << "v2 " << sqrt( c2 ) << endl;
+
+//step2: generate the 4 momentum with calculated phi:  
+
+  const double clusterMass = 0.775;//rho0 mass
+
+  double cluster_pt = 0.0;
+  double cluster_eta = 0.0;
+
+  mother_Spectra->GetRandom2(cluster_eta, cluster_pt);
+
+  vector<double> cluster4Momentum = get4Momentum(cluster_pt, cluster_eta, 1.0, clusterMass);
+
+  double energy_total = cluster4Momentum[0];
+  double cluster_px = cluster4Momentum[1];
+  double cluster_py = cluster4Momentum[2];
+  double cluster_pz = cluster4Momentum[3];
+
+  TLorentzVector p4(cluster_px,cluster_py,cluster_pz,energy_total);
+  TGenPhaseSpace event;
+
+  double masses[2] = {0.1396,0.1396};
+  event.SetDecay(p4,2,masses);
+  
+  double weight1 = event.Generate();
+
+  TLorentzVector* pPion1 = event.GetDecay(0);
+  TLorentzVector* pPion2 = event.GetDecay(1);
+
 
   unsigned int sub;
   sub = gRandom->Integer(NsubSamples_);
   sub_check->Fill( sub );
+
+//end of embedded. 
 
 /*
 accpetance correction terms related to HF
