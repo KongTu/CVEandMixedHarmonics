@@ -1438,20 +1438,16 @@ CMEandMixedHarmonics::get4Momentum(double pt, double eta, double phi, double mas
   vector<double> temp;
 
   if( phi > 0 && phi < PI){
-
     py = py; 
   }
   else if( phi < 0 && phi > -PI){
-
     py = -py;
   }
 
   if( phi > -PI/2.0 && phi < PI/2.0 ){
-
     px = px;
   }
   else if( phi < -PI/2.0 || phi > PI/2.0 ){
-
     px = -px;
   }
   
@@ -1477,9 +1473,9 @@ CMEandMixedHarmonics::getLightConeVar(double px, double py, double pz){
   if( px > 0 && py > 0){
     phi = phi;
   }
-  else if( px > 0 && py < 0){
-    phi = -phi;
-  }
+  // else if( px > 0 && py < 0){
+  //   phi = -phi;
+  // }
   else if( px < 0 && py > 0){
     phi = PI - phi;
   }
