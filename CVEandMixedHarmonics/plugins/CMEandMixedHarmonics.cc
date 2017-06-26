@@ -18,8 +18,6 @@
 
 
 #include "CVEandMixedHarmonics/CVEandMixedHarmonics/interface/CMEandMixedHarmonicsBase.h"
-#define PI 3.1416
-
 
 
 CMEandMixedHarmonics::CMEandMixedHarmonics(const edm::ParameterSet& iConfig)
