@@ -323,11 +323,17 @@ Share Q_n3 for both dimensions:
     TLorentzVector p4(trk.px(),trk.py(),trk.pz(),energy_total);
     TGenPhaseSpace event;
 
+
     double masses[2] = {0.1396,0.1396};
     event.SetDecay(p4,2,masses);
+    
+    double weight = event.Generate();
+    cout << "weight : " << weight << endl;
 
     TLorentzVector* pPion1 = event.GetDecay(0);
     TLorentzVector* pPion2 = event.GetDecay(1);
+
+    cout<< "three_momentum: " << pPion->P()<<endl;
 
     cout << "px: " << pPion1->Px() << " py: " << pPion1->Py() << " pz: " << pPion1->Pz() << endl;
     cout << "px: " << pPion2->Px() << " py: " << pPion2->Py() << " pz: " << pPion2->Pz() << endl;
