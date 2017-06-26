@@ -18,7 +18,7 @@
 
 
 #include "CVEandMixedHarmonics/CVEandMixedHarmonics/interface/CMEandMixedHarmonicsBase.h"
-
+#define PI 3.1416
 
 
 
@@ -1438,6 +1438,25 @@ CMEandMixedHarmonics::get4Momentum(double pt, double eta, double phi, double mas
   double E = sqrt(px*px+py*py+pz*pz + mass*mass);
 
   vector<double> temp;
+
+  if( phi > 0 && phi < PI){
+
+    py = py; 
+  }
+  else if( phi < 0 && phi > -PI){
+
+    py = -py
+  }
+
+  if( phi > -PI/2.0 && phi < PI/2.0 ){
+
+    px = px;
+  }
+  else if( phi < -PI/2.0 || phi > PI/2.0 ){
+
+    px = -px;
+  }
+  
   temp.push_back( E );
   temp.push_back( px );
   temp.push_back( py );
