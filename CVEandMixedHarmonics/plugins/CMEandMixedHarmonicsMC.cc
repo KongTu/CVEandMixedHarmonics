@@ -136,6 +136,11 @@ CMEandMixedHarmonicsMC::analyze(const edm::Event& iEvent, const edm::EventSetup&
        const ParticleData * part = pdt->particle(pdg_id);
        int charge = static_cast<int>(part->charge());
 
+       if( pdg_id == 113 ){
+
+          mother_Spectra->Fill( (*it)->momentum().eta(), (*it)-momentum().perp() );
+       }
+
        if(charge == 0) continue;
 
        if((*it)->momentum().perp()<0.01) continue;
@@ -1105,6 +1110,8 @@ CMEandMixedHarmonicsMC::beginJob()
   trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
   q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
   Ntrk_q2 = fs->make<TH1D>("Ntrk_q2",";Ntrk",5000,0,5000);
+
+  mother_Spectra = fs->make<TH2D>("mother_Spectra",";#eta;p_{T}", 48,-2.4,2.4,120,0,12);
 
   for(int sign = 0; sign < 3; sign++){
 

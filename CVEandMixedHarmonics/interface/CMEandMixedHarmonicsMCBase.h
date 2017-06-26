@@ -232,6 +232,8 @@ class CMEandMixedHarmonicsMC : public edm::EDAnalyzer {
       TH1D* q2_mag;
       TH1D* Ntrk_q2;
 
+      TH2D* mother_Spectra;
+
       int Nmin_;
       int Nmax_;
 
