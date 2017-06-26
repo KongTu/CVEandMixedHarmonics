@@ -492,6 +492,57 @@ Share Q_n3 for both dimensions:
 
 //step1: calculate the EbyE v2 and its event plane:
 
+  double Psi_RP = TMath::ATan( Q_n3_trk.Re()/Q_n3_trk.Im() );
+  double c22 = 0.0;
+  double c22_weight = 0.0;
+
+  for(unsigned it = 0; it < tracks->size(); it++){
+
+    const reco::Track & trk = (*tracks)[it];
+
+    math::XYZPoint bestvtx(bestvx,bestvy,bestvz);
+
+    double dzvtx = trk.dz(bestvtx);
+    double dxyvtx = trk.dxy(bestvtx);
+    double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
+    double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError); 
+    double nhits = trk.numberOfValidHits();
+    double chi2n = trk.normalizedChi2();
+    double nlayers = trk.hitPattern().trackerLayersWithMeasurement();
+    chi2n = chi2n/nlayers;
+    double nPixelLayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
+    double phi = trk.phi();
+    double trkEta = trk.eta();
+
+    double weight = 1.0;
+    if( doEffCorrection_ ) { 
+
+      if( dopPb_ ){
+        weight = 1.0/effTable_pPb[eff_]->GetBinContent( effTable_pPb[eff_]->FindBin(trk.eta(), trk.pt()) );
+      }
+      else{
+        weight = 1.0/effTable[eff_]->GetBinContent( effTable[eff_]->FindBin(trk.eta(), trk.pt()) );
+      }
+
+    }
+
+    if(!trk.quality(reco::TrackBase::highPurity)) continue;
+    if(fabs(trk.ptError())/trk.pt() > offlineptErr_ ) continue;
+    if(fabs(dzvtx/dzerror) > offlineDCA_) continue;
+    if(fabs(dxyvtx/dxyerror) > offlineDCA_) continue;
+    if(chi2n > offlineChi2_ ) continue;
+    if(nhits < offlinenhits_ ) continue;
+    if( nPixelLayers <= 0 ) continue;
+    if(trk.pt() < ptLow_ || trk.pt() > ptHigh_ ) continue;
+    if(fabs(trkEta) > etaTracker_ ) continue;
+
+    c22 += weight*cos(2*trk.phi() - 2*Psi_RP);
+    c22_weight += weight;
+
+  }
+
+  double v2_eBye = c22/c22_weight;
+
   TH1D* eByEc2 = new TH1D();
 
   for(int ieta = 0; ieta < NetaBins; ieta++){
@@ -514,6 +565,7 @@ Share Q_n3 for both dimensions:
 
   double c2 = eByEc2->GetMean();
   cout << "v2 " << sqrt( c2 ) << endl;
+  cout << "v2 EbyE: " << v2_eBye << endl;
 
 //step2: generate the 4 momentum with calculated phi:  
 
