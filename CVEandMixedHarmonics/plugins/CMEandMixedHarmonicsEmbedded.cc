@@ -327,8 +327,8 @@ Share Q_n3 for both dimensions:
     double masses[2] = {0.1396,0.1396};
     event.SetDecay(p4,2,masses);
     
-    double weight = event.Generate();
-    cout << "weight : " << weight << endl;
+    double weight1 = event.Generate();
+    cout << "weight : " << weight1 << endl;
 
     TLorentzVector* pPion1 = event.GetDecay(0);
     TLorentzVector* pPion2 = event.GetDecay(1);
