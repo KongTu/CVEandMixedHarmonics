@@ -159,6 +159,8 @@ class CMEandMixedHarmonics : public edm::EDAnalyzer {
       virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       virtual TComplex q_vector(double n, double p, double w, double phi);
+      virtual vector<double> get4Momentum(double pt, double eta, double phi, double mass);
+      virtual vector<double> getLightConeVar(double px, double py, double pz, double mass);
 
       // ----------member data ---------------------------
       edm::EDGetTokenT<reco::VertexCollection> vertexSrc_;

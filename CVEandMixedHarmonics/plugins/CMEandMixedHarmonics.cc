@@ -1415,6 +1415,40 @@ CMEandMixedHarmonics::beginJob()
 
 
 }
+vector<double> 
+CMEandMixedHarmonics::get4Momentum(double pt, double eta, double phi, double mass)
+{
+  double polar_angle = 2*TMath::ATan( TMath::Exp(-eta) );
+  double pz = pt/TMath::Tan( polar_angle );
+  double py = pz*TMath::Tan( phi );
+  double px = sqrt(pt*pt - py*py);
+  double E = sqrt(px*px+py*py+pz*pz + mass*mass);
+
+  vector<double> temp;
+  temp.push_back( E );
+  temp.push_back( px );
+  temp.push_back( py );
+  temp.push_back( pz );
+
+  return temp;
+
+}
+vector<double> 
+CMEandMixedHarmonics::getLightConeVar(double px, double py, double pz){
+
+  double pt = sqrt(px*px + py*py);
+  double phi = TMath::ATan(py/pz);
+  double polar_angle = TMath::ATan(pt/pz);
+  double three_momentum = sqrt(px*px+py*py+pz*pz);
+  double eta = TMath::ATan(pz/three_momentum);
+
+  vector<double> temp;
+  temp.push_back( pt );
+  temp.push_back( eta );
+  temp.push_back( phi );
+
+  return temp; 
+}
 TComplex 
 CMEandMixedHarmonics::q_vector(double n, double p, double w, double phi) 
 {
