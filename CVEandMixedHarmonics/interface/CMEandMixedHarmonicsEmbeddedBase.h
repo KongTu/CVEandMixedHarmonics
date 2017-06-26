@@ -288,6 +288,7 @@ class CMEandMixedHarmonicsEmbedded : public edm::EDAnalyzer {
       TH1D* Ntrk_q2;
 
       int NsubSamples_;
+      int Nembedded_;
 
       int Nmin_;
       int Nmax_;
@@ -327,6 +328,7 @@ class CMEandMixedHarmonicsEmbedded : public edm::EDAnalyzer {
       bool dopPb_;
       bool doBothSide_;
       bool doLightWeight_;
+
 
       std::vector<double> etaBins_;
       std::vector<double> dEtaBins_;

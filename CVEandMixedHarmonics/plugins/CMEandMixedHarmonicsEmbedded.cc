@@ -32,6 +32,7 @@ CMEandMixedHarmonicsEmbedded::CMEandMixedHarmonicsEmbedded(const edm::ParameterS
   towerSrc_ = consumes<CaloTowerCollection>(towerName_);
 
   NsubSamples_ = iConfig.getUntrackedParameter<int>("NsubSamples");
+  Nembedded_ = iConfig.getUntrackedParameter<int>("Nembedded");
 
   Nmin_ = iConfig.getUntrackedParameter<int>("Nmin");
   Nmax_ = iConfig.getUntrackedParameter<int>("Nmax");
@@ -550,193 +551,193 @@ Share Q_n3 for both dimensions:
   function1->SetParameter(1, Psi_RP);
   function1->SetParameter(2, v2_eBye);
 
-  double cluster_phi = function1->GetRandom();
-  
-  //cout << "cluster phi" << cluster_phi << endl;
+  for(int num_embedded = 0; num_embedded < Nembedded_; num_embedded++){
 
-  embedded_cluster_phi->Fill(cluster_phi);
+    double cluster_phi = function1->GetRandom();
+    
+    //cout << "cluster phi" << cluster_phi << endl;
 
-//step3: start to decay
+    embedded_cluster_phi->Fill(cluster_phi);
 
-  const double clusterMass = 0.775;//rho0 mass
+  //step3: start to decay
 
-  double cluster_pt = 0.0;
-  double cluster_eta = 0.0;
+    const double clusterMass = 0.775;//rho0 mass
 
-  mother_Spectra->GetRandom2(cluster_eta, cluster_pt);
+    double cluster_pt = 0.0;
+    double cluster_eta = 0.0;
 
-  vector<double> cluster4Momentum = get4Momentum(cluster_pt, cluster_eta, cluster_phi, clusterMass);
+    mother_Spectra->GetRandom2(cluster_eta, cluster_pt);
 
-  double energy_total = cluster4Momentum[0];
-  double cluster_px = cluster4Momentum[1];
-  double cluster_py = cluster4Momentum[2];
-  double cluster_pz = cluster4Momentum[3];
+    vector<double> cluster4Momentum = get4Momentum(cluster_pt, cluster_eta, cluster_phi, clusterMass);
 
-  TLorentzVector p4(cluster_px,cluster_py,cluster_pz,energy_total);
-  TGenPhaseSpace event;
+    double energy_total = cluster4Momentum[0];
+    double cluster_px = cluster4Momentum[1];
+    double cluster_py = cluster4Momentum[2];
+    double cluster_pz = cluster4Momentum[3];
 
-  double masses[2] = {0.1396,0.1396};
-  event.SetDecay(p4,2,masses);
-  
-  double weight1 = event.Generate();
+    TLorentzVector p4(cluster_px,cluster_py,cluster_pz,energy_total);
+    TGenPhaseSpace event;
 
-  TLorentzVector* pPion1 = event.GetDecay(0);
-  TLorentzVector* pPion2 = event.GetDecay(1);
+    double masses[2] = {0.1396,0.1396};
+    event.SetDecay(p4,2,masses);
+    
+    double weight1 = event.Generate();
 
-  double dau1_px = pPion1->Px();
-  double dau1_py = pPion1->Py();
-  double dau1_pz = pPion1->Pz();
+    TLorentzVector* pPion1 = event.GetDecay(0);
+    TLorentzVector* pPion2 = event.GetDecay(1);
 
-  double dau2_px = pPion2->Px();
-  double dau2_py = pPion2->Py();
-  double dau2_pz = pPion2->Pz();
+    double dau1_px = pPion1->Px();
+    double dau1_py = pPion1->Py();
+    double dau1_pz = pPion1->Pz();
 
-  vector<double> dau1_LightConeVar = getLightConeVar(dau1_px, dau1_py, dau1_pz);
-  vector<double> dau2_LightConeVar = getLightConeVar(dau2_px, dau2_py, dau2_pz);
+    double dau2_px = pPion2->Px();
+    double dau2_py = pPion2->Py();
+    double dau2_pz = pPion2->Pz();
 
-//step4: Fill the Q-vectors:
+    vector<double> dau1_LightConeVar = getLightConeVar(dau1_px, dau1_py, dau1_pz);
+    vector<double> dau2_LightConeVar = getLightConeVar(dau2_px, dau2_py, dau2_pz);
 
-  double dau1_pt = dau1_LightConeVar[0];
-  double dau1_eta = dau1_LightConeVar[1];
-  double dau1_phi = dau1_LightConeVar[2];
+  //step4: Fill the Q-vectors:
 
-  double dau2_pt = dau2_LightConeVar[0];
-  double dau2_eta = dau2_LightConeVar[1];
-  double dau2_phi = dau2_LightConeVar[2];
+    double dau1_pt = dau1_LightConeVar[0];
+    double dau1_eta = dau1_LightConeVar[1];
+    double dau1_phi = dau1_LightConeVar[2];
 
-  unsigned int random_charge;
-  random_charge = gRandom->Integer(2);
-  int dau1_charge = +1;
-  int dau2_charge = -1;
+    double dau2_pt = dau2_LightConeVar[0];
+    double dau2_eta = dau2_LightConeVar[1];
+    double dau2_phi = dau2_LightConeVar[2];
 
-  if( random_charge == 0 ) {
-    dau1_charge = +1;
-    dau2_charge = -1;
-  }
-  else if( random_charge == 1 ){
-    dau1_charge = -1;
-    dau2_charge = +1;
-  }
+    unsigned int random_charge;
+    random_charge = gRandom->Integer(2);
+    int dau1_charge = +1;
+    int dau2_charge = -1;
 
-  if( dau1_pt > ptLow_ || dau1_pt < ptHigh_ ){
-    if( fabs(dau1_eta) < etaTracker_ ){
-
-      
-      for(int eta = 0; eta < NetaBins; eta++){
-        if( dau1_eta > etaBins_[eta] && dau1_eta < etaBins_[eta+1] ){
-
-          Q_nC_trk[eta] += q_vector(-n3_, 1, 1.0, dau1_phi);
-          Q_0_nC_trk[eta] += q_vector(0, 1, 1.0, dau1_phi);
-
-          if( dau1_charge == +1 ){//positive charge
-
-            //3p:
-            Q_n1_1[eta][0] += q_vector(n1_, 1, 1.0, dau1_phi);
-            Q_n2_1[eta][0] += q_vector(n2_, 1, 1.0, dau1_phi);
-
-            Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, 1.0, dau1_phi);
-
-            Q_0_1[eta][0] += q_vector(0, 1, 1.0, dau1_phi);
-            Q_0_2[eta][0] += q_vector(0, 2, 1.0, dau1_phi);
-
-            //2p: (similar way but be careful of the order of harmonics)
-
-            P_n1_1[eta][0] += q_vector(n1_, 1, 1.0, dau1_phi);
-            P_n2_1[eta][0] += q_vector(-n2_, 1, 1.0, dau1_phi);//it is a minus n2_ because n2_ = 1
-
-            P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, 1.0, dau1_phi);
-
-            P_0_1[eta][0] += q_vector(0, 1, 1.0, dau1_phi);
-            P_0_2[eta][0] += q_vector(0, 2, 1.0, dau1_phi);
-
-
-          }
-          if( dau1_charge == -1 ){//negative charge
-
-            Q_n1_1[eta][1] += q_vector(n1_, 1, 1.0, dau1_phi);
-            Q_n2_1[eta][1] += q_vector(n2_, 1, 1.0, dau1_phi);
-
-            Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, 1.0, dau1_phi);
-
-            Q_0_1[eta][1] += q_vector(0, 1, 1.0, dau1_phi);
-            Q_0_2[eta][1] += q_vector(0, 2, 1.0, dau1_phi);
-
-            //2p: (similar way but be careful of the order of harmonics)
-
-            P_n1_1[eta][1] += q_vector(n1_, 1, 1.0, dau1_phi);
-            P_n2_1[eta][1] += q_vector(-n2_, 1, 1.0, dau1_phi);//it is a minus n2_ because n2_ = 1
-
-            P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, 1.0, dau1_phi);
-
-            P_0_1[eta][1] += q_vector(0, 1, 1.0, dau1_phi);
-            P_0_2[eta][1] += q_vector(0, 2, 1.0, dau1_phi);
-
-          }
-        }
-      }//end of eta dimension
+    if( random_charge == 0 ) {
+      dau1_charge = +1;
+      dau2_charge = -1;
     }
-  }
-
-  if( dau2_pt > ptLow_ || dau2_pt < ptHigh_ ){
-    if( fabs(dau2_eta) < etaTracker_ ){
-
-      for(int eta = 0; eta < NetaBins; eta++){
-        if( dau2_eta > etaBins_[eta] && dau2_eta < etaBins_[eta+1] ){
-
-          Q_nC_trk[eta] += q_vector(-n3_, 1, 1.0, dau2_phi);
-          Q_0_nC_trk[eta] += q_vector(0, 1, 1.0, dau2_phi);
-
-          if( dau2_charge == +1 ){//positive charge
-
-            //3p:
-            Q_n1_1[eta][0] += q_vector(n1_, 1, 1.0, dau2_phi);
-            Q_n2_1[eta][0] += q_vector(n2_, 1, 1.0, dau2_phi);
-
-            Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, 1.0, dau2_phi);
-
-            Q_0_1[eta][0] += q_vector(0, 1, 1.0, dau2_phi);
-            Q_0_2[eta][0] += q_vector(0, 2, 1.0, dau2_phi);
-
-            //2p: (similar way but be careful of the order of harmonics)
-
-            P_n1_1[eta][0] += q_vector(n1_, 1, 1.0, dau2_phi);
-            P_n2_1[eta][0] += q_vector(-n2_, 1, 1.0, dau2_phi);//it is a minus n2_ because n2_ = 1
-
-            P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, 1.0, dau2_phi);
-
-            P_0_1[eta][0] += q_vector(0, 1, 1.0, dau2_phi);
-            P_0_2[eta][0] += q_vector(0, 2, 1.0, dau2_phi);
-
-
-          }
-          if( dau2_charge == -1 ){//negative charge
-
-            Q_n1_1[eta][1] += q_vector(n1_, 1, 1.0, dau2_phi);
-            Q_n2_1[eta][1] += q_vector(n2_, 1, 1.0, dau2_phi);
-
-            Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, 1.0, dau2_phi);
-
-            Q_0_1[eta][1] += q_vector(0, 1, 1.0, dau2_phi);
-            Q_0_2[eta][1] += q_vector(0, 2, 1.0, dau2_phi);
-
-            //2p: (similar way but be careful of the order of harmonics)
-
-            P_n1_1[eta][1] += q_vector(n1_, 1, 1.0, dau2_phi);
-            P_n2_1[eta][1] += q_vector(-n2_, 1, 1.0, dau2_phi);//it is a minus n2_ because n2_ = 1
-
-            P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, 1.0, dau2_phi);
-
-            P_0_1[eta][1] += q_vector(0, 1, 1.0, dau2_phi);
-            P_0_2[eta][1] += q_vector(0, 2, 1.0, dau2_phi);
-
-          }
-        }
-      }//end of eta dimension
+    else if( random_charge == 1 ){
+      dau1_charge = -1;
+      dau2_charge = +1;
     }
-  }
 
-//end of embedded. 
+    if( dau1_pt > ptLow_ || dau1_pt < ptHigh_ ){
+      if( fabs(dau1_eta) < etaTracker_ ){
 
+        
+        for(int eta = 0; eta < NetaBins; eta++){
+          if( dau1_eta > etaBins_[eta] && dau1_eta < etaBins_[eta+1] ){
+
+            Q_nC_trk[eta] += q_vector(-n3_, 1, 1.0, dau1_phi);
+            Q_0_nC_trk[eta] += q_vector(0, 1, 1.0, dau1_phi);
+
+            if( dau1_charge == +1 ){//positive charge
+
+              //3p:
+              Q_n1_1[eta][0] += q_vector(n1_, 1, 1.0, dau1_phi);
+              Q_n2_1[eta][0] += q_vector(n2_, 1, 1.0, dau1_phi);
+
+              Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, 1.0, dau1_phi);
+
+              Q_0_1[eta][0] += q_vector(0, 1, 1.0, dau1_phi);
+              Q_0_2[eta][0] += q_vector(0, 2, 1.0, dau1_phi);
+
+              //2p: (similar way but be careful of the order of harmonics)
+
+              P_n1_1[eta][0] += q_vector(n1_, 1, 1.0, dau1_phi);
+              P_n2_1[eta][0] += q_vector(-n2_, 1, 1.0, dau1_phi);//it is a minus n2_ because n2_ = 1
+
+              P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, 1.0, dau1_phi);
+
+              P_0_1[eta][0] += q_vector(0, 1, 1.0, dau1_phi);
+              P_0_2[eta][0] += q_vector(0, 2, 1.0, dau1_phi);
+
+
+            }
+            if( dau1_charge == -1 ){//negative charge
+
+              Q_n1_1[eta][1] += q_vector(n1_, 1, 1.0, dau1_phi);
+              Q_n2_1[eta][1] += q_vector(n2_, 1, 1.0, dau1_phi);
+
+              Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, 1.0, dau1_phi);
+
+              Q_0_1[eta][1] += q_vector(0, 1, 1.0, dau1_phi);
+              Q_0_2[eta][1] += q_vector(0, 2, 1.0, dau1_phi);
+
+              //2p: (similar way but be careful of the order of harmonics)
+
+              P_n1_1[eta][1] += q_vector(n1_, 1, 1.0, dau1_phi);
+              P_n2_1[eta][1] += q_vector(-n2_, 1, 1.0, dau1_phi);//it is a minus n2_ because n2_ = 1
+
+              P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, 1.0, dau1_phi);
+
+              P_0_1[eta][1] += q_vector(0, 1, 1.0, dau1_phi);
+              P_0_2[eta][1] += q_vector(0, 2, 1.0, dau1_phi);
+
+            }
+          }
+        }//end of eta dimension
+      }
+    }
+
+    if( dau2_pt > ptLow_ || dau2_pt < ptHigh_ ){
+      if( fabs(dau2_eta) < etaTracker_ ){
+
+        for(int eta = 0; eta < NetaBins; eta++){
+          if( dau2_eta > etaBins_[eta] && dau2_eta < etaBins_[eta+1] ){
+
+            Q_nC_trk[eta] += q_vector(-n3_, 1, 1.0, dau2_phi);
+            Q_0_nC_trk[eta] += q_vector(0, 1, 1.0, dau2_phi);
+
+            if( dau2_charge == +1 ){//positive charge
+
+              //3p:
+              Q_n1_1[eta][0] += q_vector(n1_, 1, 1.0, dau2_phi);
+              Q_n2_1[eta][0] += q_vector(n2_, 1, 1.0, dau2_phi);
+
+              Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, 1.0, dau2_phi);
+
+              Q_0_1[eta][0] += q_vector(0, 1, 1.0, dau2_phi);
+              Q_0_2[eta][0] += q_vector(0, 2, 1.0, dau2_phi);
+
+              //2p: (similar way but be careful of the order of harmonics)
+
+              P_n1_1[eta][0] += q_vector(n1_, 1, 1.0, dau2_phi);
+              P_n2_1[eta][0] += q_vector(-n2_, 1, 1.0, dau2_phi);//it is a minus n2_ because n2_ = 1
+
+              P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, 1.0, dau2_phi);
+
+              P_0_1[eta][0] += q_vector(0, 1, 1.0, dau2_phi);
+              P_0_2[eta][0] += q_vector(0, 2, 1.0, dau2_phi);
+
+
+            }
+            if( dau2_charge == -1 ){//negative charge
+
+              Q_n1_1[eta][1] += q_vector(n1_, 1, 1.0, dau2_phi);
+              Q_n2_1[eta][1] += q_vector(n2_, 1, 1.0, dau2_phi);
+
+              Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, 1.0, dau2_phi);
+
+              Q_0_1[eta][1] += q_vector(0, 1, 1.0, dau2_phi);
+              Q_0_2[eta][1] += q_vector(0, 2, 1.0, dau2_phi);
+
+              //2p: (similar way but be careful of the order of harmonics)
+
+              P_n1_1[eta][1] += q_vector(n1_, 1, 1.0, dau2_phi);
+              P_n2_1[eta][1] += q_vector(-n2_, 1, 1.0, dau2_phi);//it is a minus n2_ because n2_ = 1
+
+              P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, 1.0, dau2_phi);
+
+              P_0_1[eta][1] += q_vector(0, 1, 1.0, dau2_phi);
+              P_0_2[eta][1] += q_vector(0, 2, 1.0, dau2_phi);
+
+            }
+          }
+        }//end of eta dimension
+      }
+    }
+  }//end of Nembedded
 
   unsigned int sub;
   sub = gRandom->Integer(NsubSamples_);
