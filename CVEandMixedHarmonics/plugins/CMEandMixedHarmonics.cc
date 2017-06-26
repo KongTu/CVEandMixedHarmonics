@@ -146,6 +146,8 @@ CMEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         cout << "-----compare-------" << endl;
         cout << "px: " << fourMomentum[1] << " py: " << fourMomentum[2] << " pz: " << fourMomentum[3] << endl;
         cout << "px: " << trk.px() << " py: " << trk.py() << " pz: " << trk.pz() << endl;
+        cout << "angle: " << fourMomentum[4] << endl;
+
         cout << "-----compare 2 -----" << endl;
         cout << "pt: " << lightConeVar[0] << " eta: " << lightConeVar[1] << " phi: " << lightConeVar[2] << endl;
         cout << "pt: " << trk.pt() << " eta: " << trk.eta() << " phi: " << trk.phi() << endl;
