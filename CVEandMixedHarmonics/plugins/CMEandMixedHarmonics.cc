@@ -1438,7 +1438,7 @@ CMEandMixedHarmonics::getLightConeVar(double px, double py, double pz){
 
   double pt = sqrt(px*px + py*py);
   double phi = TMath::ATan(py/pz);
-  double polar_angle = TMath::ATan(pt/pz);
+  //double polar_angle = TMath::ATan(pt/pz);
   double three_momentum = sqrt(px*px+py*py+pz*pz);
   double eta = TMath::ATan(pz/three_momentum);
 
