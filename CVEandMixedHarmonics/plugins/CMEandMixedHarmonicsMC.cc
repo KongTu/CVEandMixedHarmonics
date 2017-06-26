@@ -482,7 +482,7 @@ Share Q_n3 for both dimensions:
       int pdg_id = genCand.pdgId();
       double weight = 1.0;
 
-      if( pdg_id == 113 ){
+      if( status == 1 && pdg_id == 113 ){
 
       mother_Spectra->Fill( geneta, genpt );
       
