@@ -191,6 +191,8 @@ class CMEandMixedHarmonicsEmbedded : public edm::EDAnalyzer {
 
       TH1D* cn_tracker;
       TH1D* sub_check;
+
+      TH1D* embedded_cluster_phi;
       TH2D* mother_Spectra;
 
       //eta
