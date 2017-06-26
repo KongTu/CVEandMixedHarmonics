@@ -492,7 +492,7 @@ Share Q_n3 for both dimensions:
 
 //step1: calculate the EbyE v2 and its event plane:
 
-  double Psi_RP = TMath::ATan( Q_n3_trk.Re()/Q_n3_trk.Im() );
+  double Psi_RP = TMath::ATan( Q_n3_trk.Im()/Q_n3_trk.Re() );
   double c22 = 0.0;
   double c22_weight = 0.0;
 
@@ -543,28 +543,28 @@ Share Q_n3 for both dimensions:
 
   double v2_eBye = c22/c22_weight;
 
-  TH1D* eByEc2 = new TH1D();
+  // TH1D* eByEc2 = new TH1D();
 
-  for(int ieta = 0; ieta < NetaBins; ieta++){
-    for(int jeta = 0; jeta < NetaBins; jeta++){
+  // for(int ieta = 0; ieta < NetaBins; ieta++){
+  //   for(int jeta = 0; jeta < NetaBins; jeta++){
 
-      double deltaEta = fabs( etaBins_[ieta] - etaBins_[jeta] );
+  //     double deltaEta = fabs( etaBins_[ieta] - etaBins_[jeta] );
 
-      if( deltaEta > 2.0 ){//calculate the tracker v2 with a gap of 2
+  //     if( deltaEta > 2.0 ){//calculate the tracker v2 with a gap of 2
 
-          TComplex N_2;
-          TComplex D_2;
+  //         TComplex N_2;
+  //         TComplex D_2;
 
-          N_2 = Q_nC_trk[ieta]*TComplex::Conjugate(Q_nC_trk[jeta]);
-          D_2 = Q_0_nC_trk[ieta]*Q_0_nC_trk[jeta];
+  //         N_2 = Q_nC_trk[ieta]*TComplex::Conjugate(Q_nC_trk[jeta]);
+  //         D_2 = Q_0_nC_trk[ieta]*Q_0_nC_trk[jeta];
 
-          eByEc2->Fill(N_2.Re()/D_2.Re(), D_2.Re());
-      }
-    }
-  }
+  //         eByEc2->Fill(N_2.Re()/D_2.Re(), D_2.Re());
+  //     }
+  //   }
+  // }
 
-  double c2 = eByEc2->GetMean();
-  cout << "v2 " << sqrt( c2 ) << endl;
+  // double c2 = eByEc2->GetMean();
+  // cout << "v2 " << sqrt( c2 ) << endl;
   cout << "v2 EbyE: " << v2_eBye << endl;
 
 //step2: generate the 4 momentum with calculated phi:  
