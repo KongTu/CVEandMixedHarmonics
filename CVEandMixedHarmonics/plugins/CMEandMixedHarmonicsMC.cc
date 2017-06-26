@@ -484,7 +484,7 @@ Share Q_n3 for both dimensions:
 
       if( pdg_id == 113 ){
 
-      mother_Spectra->Fill( (*it)->momentum().eta(), (*it)->momentum().perp() );
+      mother_Spectra->Fill( geneta, genpt );
       
       }
 
