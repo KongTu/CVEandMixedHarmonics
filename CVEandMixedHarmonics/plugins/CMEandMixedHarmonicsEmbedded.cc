@@ -680,8 +680,6 @@ Share Q_n3 for both dimensions:
   if( dau2_pt > ptLow_ || dau2_pt < ptHigh_ ){
     if( fabs(dau2_eta) < etaTracker_ ){
 
-      1.0 = 1.0;
-
       for(int eta = 0; eta < NetaBins; eta++){
         if( dau2_eta > etaBins_[eta] && dau2_eta < etaBins_[eta+1] ){
 
