@@ -138,7 +138,17 @@ CMEandMixedHarmonics::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         double dzvtx = trk.dz(bestvtx);
         double dxyvtx = trk.dxy(bestvtx);
         double dzerror = sqrt(trk.dzError()*trk.dzError()+bestvzError*bestvzError);
-        double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError); 
+        double dxyerror = sqrt(trk.d0Error()*trk.d0Error()+bestvxError*bestvyError);
+
+        vector<double> fourMomentum = get4Momentum(trk.pt(), trk.eta(), trk.phi(), 0.149);
+        vector<double> lightConeVar = getLightConeVar(trk.px(), trk.py(), trk.pz() );
+
+        cout << "-----compare-------" << endl;
+        cout << "px: " << fourMomentum[1] << " py: " << fourMomentum[2] << " pz: " << fourMomentum[3] << endl;
+        cout << "px: " << trk.px() << " py: " << trk.py() << " pz: " << trk.pz() << endl;
+        cout << "-----compare 2 -----" << endl;
+        cout << "pt: " << lightConeVar[0] << " eta: " << lightConeVar[1] << " phi: " << lightConeVar[2] << endl;
+        cout << "pt: " << trk.pt() << " eta: " << trk.eta() << " phi: " << trk.phi() << endl;
 
         if(!trk.quality(reco::TrackBase::highPurity)) continue;
         if(fabs(trk.ptError())/trk.pt() > 0.1 ) continue;
