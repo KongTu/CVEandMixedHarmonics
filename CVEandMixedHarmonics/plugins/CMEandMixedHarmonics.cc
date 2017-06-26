@@ -1430,11 +1430,8 @@ CMEandMixedHarmonics::get4Momentum(double pt, double eta, double phi, double mas
 {
   double polar_angle = 2*TMath::ATan( TMath::Exp(-eta) );
   double pz = pt/TMath::Tan( polar_angle );
-  //double px = sqrt(pt*pt/( 1+TMath::Tan(phi)*TMath::Tan(phi) ) );
-  //double py = sqrt(pt*pt - px*px);
-  double py = TMath::Tan(phi)*sqrt(pt*pt - px*px);
-  double px = sqrt(pt*pt- py*py);
-
+  double px = sqrt(pt*pt/( 1+TMath::Tan(phi)*TMath::Tan(phi) ) );
+  double py = sqrt(pt*pt - px*px);
   double E = sqrt(px*px+py*py+pz*pz + mass*mass);
 
   vector<double> temp;
@@ -1442,6 +1439,7 @@ CMEandMixedHarmonics::get4Momentum(double pt, double eta, double phi, double mas
   temp.push_back( px );
   temp.push_back( py );
   temp.push_back( pz );
+  temp.push_back( polar_angle ); 
 
   return temp;
 
