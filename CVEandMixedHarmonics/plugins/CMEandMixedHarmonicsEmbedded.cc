@@ -621,56 +621,55 @@ Share Q_n3 for both dimensions:
   if( dau1_pt > ptLow_ || dau1_pt < ptHigh_ ){
     if( fabs(dau1_eta) < etaTracker_ ){
 
-      weight = 1.0;
-
+      
       for(int eta = 0; eta < NetaBins; eta++){
         if( dau1_eta > etaBins_[eta] && dau1_eta < etaBins_[eta+1] ){
 
-          Q_nC_trk[eta] += q_vector(-n3_, 1, weight, dau1_phi);
-          Q_0_nC_trk[eta] += q_vector(0, 1, weight, dau1_phi);
+          Q_nC_trk[eta] += q_vector(-n3_, 1, 1.0, dau1_phi);
+          Q_0_nC_trk[eta] += q_vector(0, 1, 1.0, dau1_phi);
 
           if( dau1_charge == +1 ){//positive charge
 
             //3p:
-            Q_n1_1[eta][0] += q_vector(n1_, 1, weight, dau1_phi);
-            Q_n2_1[eta][0] += q_vector(n2_, 1, weight, dau1_phi);
+            Q_n1_1[eta][0] += q_vector(n1_, 1, 1.0, dau1_phi);
+            Q_n2_1[eta][0] += q_vector(n2_, 1, 1.0, dau1_phi);
 
-            Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, weight, dau1_phi);
+            Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, 1.0, dau1_phi);
 
-            Q_0_1[eta][0] += q_vector(0, 1, weight, dau1_phi);
-            Q_0_2[eta][0] += q_vector(0, 2, weight, dau1_phi);
+            Q_0_1[eta][0] += q_vector(0, 1, 1.0, dau1_phi);
+            Q_0_2[eta][0] += q_vector(0, 2, 1.0, dau1_phi);
 
             //2p: (similar way but be careful of the order of harmonics)
 
-            P_n1_1[eta][0] += q_vector(n1_, 1, weight, dau1_phi);
-            P_n2_1[eta][0] += q_vector(-n2_, 1, weight, dau1_phi);//it is a minus n2_ because n2_ = 1
+            P_n1_1[eta][0] += q_vector(n1_, 1, 1.0, dau1_phi);
+            P_n2_1[eta][0] += q_vector(-n2_, 1, 1.0, dau1_phi);//it is a minus n2_ because n2_ = 1
 
-            P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, weight, dau1_phi);
+            P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, 1.0, dau1_phi);
 
-            P_0_1[eta][0] += q_vector(0, 1, weight, dau1_phi);
-            P_0_2[eta][0] += q_vector(0, 2, weight, dau1_phi);
+            P_0_1[eta][0] += q_vector(0, 1, 1.0, dau1_phi);
+            P_0_2[eta][0] += q_vector(0, 2, 1.0, dau1_phi);
 
 
           }
           if( dau1_charge == -1 ){//negative charge
 
-            Q_n1_1[eta][1] += q_vector(n1_, 1, weight, dau1_phi);
-            Q_n2_1[eta][1] += q_vector(n2_, 1, weight, dau1_phi);
+            Q_n1_1[eta][1] += q_vector(n1_, 1, 1.0, dau1_phi);
+            Q_n2_1[eta][1] += q_vector(n2_, 1, 1.0, dau1_phi);
 
-            Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, weight, dau1_phi);
+            Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, 1.0, dau1_phi);
 
-            Q_0_1[eta][1] += q_vector(0, 1, weight, dau1_phi);
-            Q_0_2[eta][1] += q_vector(0, 2, weight, dau1_phi);
+            Q_0_1[eta][1] += q_vector(0, 1, 1.0, dau1_phi);
+            Q_0_2[eta][1] += q_vector(0, 2, 1.0, dau1_phi);
 
             //2p: (similar way but be careful of the order of harmonics)
 
-            P_n1_1[eta][1] += q_vector(n1_, 1, weight, dau1_phi);
-            P_n2_1[eta][1] += q_vector(-n2_, 1, weight, dau1_phi);//it is a minus n2_ because n2_ = 1
+            P_n1_1[eta][1] += q_vector(n1_, 1, 1.0, dau1_phi);
+            P_n2_1[eta][1] += q_vector(-n2_, 1, 1.0, dau1_phi);//it is a minus n2_ because n2_ = 1
 
-            P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, weight, dau1_phi);
+            P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, 1.0, dau1_phi);
 
-            P_0_1[eta][1] += q_vector(0, 1, weight, dau1_phi);
-            P_0_2[eta][1] += q_vector(0, 2, weight, dau1_phi);
+            P_0_1[eta][1] += q_vector(0, 1, 1.0, dau1_phi);
+            P_0_2[eta][1] += q_vector(0, 2, 1.0, dau1_phi);
 
           }
         }
@@ -681,56 +680,56 @@ Share Q_n3 for both dimensions:
   if( dau2_pt > ptLow_ || dau2_pt < ptHigh_ ){
     if( fabs(dau2_eta) < etaTracker_ ){
 
-      weight = 1.0;
+      1.0 = 1.0;
 
       for(int eta = 0; eta < NetaBins; eta++){
         if( dau2_eta > etaBins_[eta] && dau2_eta < etaBins_[eta+1] ){
 
-          Q_nC_trk[eta] += q_vector(-n3_, 1, weight, dau2_phi);
-          Q_0_nC_trk[eta] += q_vector(0, 1, weight, dau2_phi);
+          Q_nC_trk[eta] += q_vector(-n3_, 1, 1.0, dau2_phi);
+          Q_0_nC_trk[eta] += q_vector(0, 1, 1.0, dau2_phi);
 
           if( dau2_charge == +1 ){//positive charge
 
             //3p:
-            Q_n1_1[eta][0] += q_vector(n1_, 1, weight, dau2_phi);
-            Q_n2_1[eta][0] += q_vector(n2_, 1, weight, dau2_phi);
+            Q_n1_1[eta][0] += q_vector(n1_, 1, 1.0, dau2_phi);
+            Q_n2_1[eta][0] += q_vector(n2_, 1, 1.0, dau2_phi);
 
-            Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, weight, dau2_phi);
+            Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, 1.0, dau2_phi);
 
-            Q_0_1[eta][0] += q_vector(0, 1, weight, dau2_phi);
-            Q_0_2[eta][0] += q_vector(0, 2, weight, dau2_phi);
+            Q_0_1[eta][0] += q_vector(0, 1, 1.0, dau2_phi);
+            Q_0_2[eta][0] += q_vector(0, 2, 1.0, dau2_phi);
 
             //2p: (similar way but be careful of the order of harmonics)
 
-            P_n1_1[eta][0] += q_vector(n1_, 1, weight, dau2_phi);
-            P_n2_1[eta][0] += q_vector(-n2_, 1, weight, dau2_phi);//it is a minus n2_ because n2_ = 1
+            P_n1_1[eta][0] += q_vector(n1_, 1, 1.0, dau2_phi);
+            P_n2_1[eta][0] += q_vector(-n2_, 1, 1.0, dau2_phi);//it is a minus n2_ because n2_ = 1
 
-            P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, weight, dau2_phi);
+            P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, 1.0, dau2_phi);
 
-            P_0_1[eta][0] += q_vector(0, 1, weight, dau2_phi);
-            P_0_2[eta][0] += q_vector(0, 2, weight, dau2_phi);
+            P_0_1[eta][0] += q_vector(0, 1, 1.0, dau2_phi);
+            P_0_2[eta][0] += q_vector(0, 2, 1.0, dau2_phi);
 
 
           }
           if( dau2_charge == -1 ){//negative charge
 
-            Q_n1_1[eta][1] += q_vector(n1_, 1, weight, dau2_phi);
-            Q_n2_1[eta][1] += q_vector(n2_, 1, weight, dau2_phi);
+            Q_n1_1[eta][1] += q_vector(n1_, 1, 1.0, dau2_phi);
+            Q_n2_1[eta][1] += q_vector(n2_, 1, 1.0, dau2_phi);
 
-            Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, weight, dau2_phi);
+            Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, 1.0, dau2_phi);
 
-            Q_0_1[eta][1] += q_vector(0, 1, weight, dau2_phi);
-            Q_0_2[eta][1] += q_vector(0, 2, weight, dau2_phi);
+            Q_0_1[eta][1] += q_vector(0, 1, 1.0, dau2_phi);
+            Q_0_2[eta][1] += q_vector(0, 2, 1.0, dau2_phi);
 
             //2p: (similar way but be careful of the order of harmonics)
 
-            P_n1_1[eta][1] += q_vector(n1_, 1, weight, dau2_phi);
-            P_n2_1[eta][1] += q_vector(-n2_, 1, weight, dau2_phi);//it is a minus n2_ because n2_ = 1
+            P_n1_1[eta][1] += q_vector(n1_, 1, 1.0, dau2_phi);
+            P_n2_1[eta][1] += q_vector(-n2_, 1, 1.0, dau2_phi);//it is a minus n2_ because n2_ = 1
 
-            P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, weight, dau2_phi);
+            P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, 1.0, dau2_phi);
 
-            P_0_1[eta][1] += q_vector(0, 1, weight, dau2_phi);
-            P_0_2[eta][1] += q_vector(0, 2, weight, dau2_phi);
+            P_0_1[eta][1] += q_vector(0, 1, 1.0, dau2_phi);
+            P_0_2[eta][1] += q_vector(0, 2, 1.0, dau2_phi);
 
           }
         }
