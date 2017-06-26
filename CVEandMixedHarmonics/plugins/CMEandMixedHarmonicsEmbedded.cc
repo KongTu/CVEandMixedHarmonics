@@ -491,7 +491,6 @@ Share Q_n3 for both dimensions:
 //Start to generate clusters
 
 //step1: calculate the EbyE v2 and its event plane:
-
   double Psi_RP = TMath::ATan( Q_n3_trk.Im()/Q_n3_trk.Re() );
   double c22 = 0.0;
   double c22_weight = 0.0;
@@ -544,30 +543,6 @@ Share Q_n3 for both dimensions:
   double v2_eBye = c22/c22_weight;
   v2_eBye = fabs(v2_eBye);
 
-  // TH1D* eByEc2 = new TH1D();
-
-  // for(int ieta = 0; ieta < NetaBins; ieta++){
-  //   for(int jeta = 0; jeta < NetaBins; jeta++){
-
-  //     double deltaEta = fabs( etaBins_[ieta] - etaBins_[jeta] );
-
-  //     if( deltaEta > 2.0 ){//calculate the tracker v2 with a gap of 2
-
-  //         TComplex N_2;
-  //         TComplex D_2;
-
-  //         N_2 = Q_nC_trk[ieta]*TComplex::Conjugate(Q_nC_trk[jeta]);
-  //         D_2 = Q_0_nC_trk[ieta]*Q_0_nC_trk[jeta];
-
-  //         eByEc2->Fill(N_2.Re()/D_2.Re(), D_2.Re());
-  //     }
-  //   }
-  // }
-
-  // double c2 = eByEc2->GetMean();
-  // cout << "v2 " << sqrt( c2 ) << endl;
-  cout << "v2 EbyE: " << v2_eBye << endl;
-
 //step2: generate the phi according to the v2 EbyE:  
 
   TF1* function1 = new TF1("function1", "[0]*cos(2*x - 2*[1]) + [2]", 2*Psi_RP-PI, 2*Psi_RP+PI);
@@ -576,19 +551,12 @@ Share Q_n3 for both dimensions:
   function1->SetParameter(2, v2_eBye);
 
   double cluster_phi = function1->GetRandom();
-  //make sure them between -PI to PI
-  if( cluster_phi > PI && cluster_phi < 2*PI ){
-
-    cluster_phi = -(2*PI - cluster_phi);
-  }
-  else if(cluster_phi < -PI && cluster_phi > -2*PI){
-
-    cluster_phi = cluster_phi + 2*PI;
-  }
   
-  cout << "cluster phi" << cluster_phi << endl;
+  //cout << "cluster phi" << cluster_phi << endl;
 
   embedded_cluster_phi->Fill(cluster_phi);
+
+//step3: start to decay
 
   const double clusterMass = 0.775;//rho0 mass
 
@@ -615,14 +583,167 @@ Share Q_n3 for both dimensions:
   TLorentzVector* pPion1 = event.GetDecay(0);
   TLorentzVector* pPion2 = event.GetDecay(1);
 
+  double dau1_px = pPion1->Px();
+  double dau1_py = pPion1->Py();
+  double dau1_pz = pPion1->Pz();
+
+  double dau2_px = pPion2->Px();
+  double dau2_py = pPion2->Py();
+  double dau2_pz = pPion2->Pz();
+
+  vector<double> dau1_LightConeVar = getLightConeVar(dau1_px, dau1_py, dau1_pz);
+  vector<double> dau2_LightConeVar = getLightConeVar(dau2_px, dau2_py, dau2_pz);
+
+//step4: Fill the Q-vectors:
+
+  double dau1_pt = dau1_LightConeVar[0];
+  double dau1_eta = dau1_LightConeVar[1];
+  double dau1_phi = dau1_LightConeVar[2];
+
+  double dau2_pt = dau2_LightConeVar[0];
+  double dau2_eta = dau2_LightConeVar[1];
+  double dau2_phi = dau2_LightConeVar[2];
+
+  unsigned int random_charge;
+  random_charge = gRandom->Integer(2);
+  int dau1_charge = +1;
+  int dau2_charge = -1;
+
+  if( random_charge == 0 ) {
+    dau1_charge = +1;
+    dau2_charge = -1;
+  }
+  else if( random_charge == 1 ){
+    dau1_charge = -1;
+    dau2_charge = +1;
+  }
+
+  if( dau1_pt > ptLow_ || dau1_pt < ptHigh_ ){
+    if( fabs(dau1_eta) < etaTracker_ ){
+
+      weight = 1.0;
+
+      for(int eta = 0; eta < NetaBins; eta++){
+        if( dau1_eta > etaBins_[eta] && dau1_eta < etaBins_[eta+1] ){
+
+          Q_nC_trk[eta] += q_vector(-n3_, 1, weight, dau1_phi);
+          Q_0_nC_trk[eta] += q_vector(0, 1, weight, dau1_phi);
+
+          if( dau1_charge == +1 ){//positive charge
+
+            //3p:
+            Q_n1_1[eta][0] += q_vector(n1_, 1, weight, dau1_phi);
+            Q_n2_1[eta][0] += q_vector(n2_, 1, weight, dau1_phi);
+
+            Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, weight, dau1_phi);
+
+            Q_0_1[eta][0] += q_vector(0, 1, weight, dau1_phi);
+            Q_0_2[eta][0] += q_vector(0, 2, weight, dau1_phi);
+
+            //2p: (similar way but be careful of the order of harmonics)
+
+            P_n1_1[eta][0] += q_vector(n1_, 1, weight, dau1_phi);
+            P_n2_1[eta][0] += q_vector(-n2_, 1, weight, dau1_phi);//it is a minus n2_ because n2_ = 1
+
+            P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, weight, dau1_phi);
+
+            P_0_1[eta][0] += q_vector(0, 1, weight, dau1_phi);
+            P_0_2[eta][0] += q_vector(0, 2, weight, dau1_phi);
+
+
+          }
+          if( dau1_charge == -1 ){//negative charge
+
+            Q_n1_1[eta][1] += q_vector(n1_, 1, weight, dau1_phi);
+            Q_n2_1[eta][1] += q_vector(n2_, 1, weight, dau1_phi);
+
+            Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, weight, dau1_phi);
+
+            Q_0_1[eta][1] += q_vector(0, 1, weight, dau1_phi);
+            Q_0_2[eta][1] += q_vector(0, 2, weight, dau1_phi);
+
+            //2p: (similar way but be careful of the order of harmonics)
+
+            P_n1_1[eta][1] += q_vector(n1_, 1, weight, dau1_phi);
+            P_n2_1[eta][1] += q_vector(-n2_, 1, weight, dau1_phi);//it is a minus n2_ because n2_ = 1
+
+            P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, weight, dau1_phi);
+
+            P_0_1[eta][1] += q_vector(0, 1, weight, dau1_phi);
+            P_0_2[eta][1] += q_vector(0, 2, weight, dau1_phi);
+
+          }
+        }
+      }//end of eta dimension
+    }
+  }
+
+  if( dau2_pt > ptLow_ || dau2_pt < ptHigh_ ){
+    if( fabs(dau2_eta) < etaTracker_ ){
+
+      weight = 1.0;
+
+      for(int eta = 0; eta < NetaBins; eta++){
+        if( dau2_eta > etaBins_[eta] && dau2_eta < etaBins_[eta+1] ){
+
+          Q_nC_trk[eta] += q_vector(-n3_, 1, weight, dau2_phi);
+          Q_0_nC_trk[eta] += q_vector(0, 1, weight, dau2_phi);
+
+          if( dau2_charge == +1 ){//positive charge
+
+            //3p:
+            Q_n1_1[eta][0] += q_vector(n1_, 1, weight, dau2_phi);
+            Q_n2_1[eta][0] += q_vector(n2_, 1, weight, dau2_phi);
+
+            Q_n1n2_2[eta][0] += q_vector(n1_+n2_, 2, weight, dau2_phi);
+
+            Q_0_1[eta][0] += q_vector(0, 1, weight, dau2_phi);
+            Q_0_2[eta][0] += q_vector(0, 2, weight, dau2_phi);
+
+            //2p: (similar way but be careful of the order of harmonics)
+
+            P_n1_1[eta][0] += q_vector(n1_, 1, weight, dau2_phi);
+            P_n2_1[eta][0] += q_vector(-n2_, 1, weight, dau2_phi);//it is a minus n2_ because n2_ = 1
+
+            P_n1n2_2[eta][0] += q_vector(n1_-n2_, 2, weight, dau2_phi);
+
+            P_0_1[eta][0] += q_vector(0, 1, weight, dau2_phi);
+            P_0_2[eta][0] += q_vector(0, 2, weight, dau2_phi);
+
+
+          }
+          if( dau2_charge == -1 ){//negative charge
+
+            Q_n1_1[eta][1] += q_vector(n1_, 1, weight, dau2_phi);
+            Q_n2_1[eta][1] += q_vector(n2_, 1, weight, dau2_phi);
+
+            Q_n1n2_2[eta][1] += q_vector(n1_+n2_, 2, weight, dau2_phi);
+
+            Q_0_1[eta][1] += q_vector(0, 1, weight, dau2_phi);
+            Q_0_2[eta][1] += q_vector(0, 2, weight, dau2_phi);
+
+            //2p: (similar way but be careful of the order of harmonics)
+
+            P_n1_1[eta][1] += q_vector(n1_, 1, weight, dau2_phi);
+            P_n2_1[eta][1] += q_vector(-n2_, 1, weight, dau2_phi);//it is a minus n2_ because n2_ = 1
+
+            P_n1n2_2[eta][1] += q_vector(n1_-n2_, 2, weight, dau2_phi);
+
+            P_0_1[eta][1] += q_vector(0, 1, weight, dau2_phi);
+            P_0_2[eta][1] += q_vector(0, 2, weight, dau2_phi);
+
+          }
+        }
+      }//end of eta dimension
+    }
+  }
+
 //end of embedded. 
 
 
   unsigned int sub;
   sub = gRandom->Integer(NsubSamples_);
   sub_check->Fill( sub );
-
-
 
 /*
 accpetance correction terms related to HF
@@ -1388,7 +1509,7 @@ CMEandMixedHarmonicsEmbedded::beginJob()
   q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
   Ntrk_q2 = fs->make<TH1D>("Ntrk_q2",";Ntrk",5000,0,5000);
   sub_check = fs->make<TH1D>("sub_check",";sub_check",100,0,100);
-  embedded_cluster_phi = fs->make<TH1D>("embedded_cluster_phi",";#phi",70, -3.5, 3.5);
+  embedded_cluster_phi = fs->make<TH1D>("embedded_cluster_phi",";#phi",200, -10, 10);
 
   for(int sub = 0; sub < NsubSamples_; sub++){
 
