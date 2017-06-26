@@ -297,6 +297,24 @@ Share Q_n3 for both dimensions:
 
 //------------------------------------------------------------------
 
+//Start to generate clusters
+
+  const double clusterMass = 0.775;//rho0 mass
+
+  double energy_total = sqrt(cluster_px*cluster_px + cluster_py*cluster_py + cluster_pz*cluster_pz + clusterMass*clusterMass);
+
+  TLorentzVector p4(cluster_px,cluster_py,cluster_pz,energy_total);
+  TGenPhaseSpace event;
+
+  double masses[2] = {0.1396,0.1396};
+  event.SetDecay(p4,2,masses);
+  
+  double weight1 = event.Generate();
+
+  TLorentzVector* pPion1 = event.GetDecay(0);
+  TLorentzVector* pPion2 = event.GetDecay(1);
+
+
 //Start filling Q-vectors;
 
   //track loop to fill charged particles Q-vectors
@@ -317,23 +335,6 @@ Share Q_n3 for both dimensions:
     double nPixelLayers = trk.hitPattern().pixelLayersWithMeasurement();//only pixel layers
     double phi = trk.phi();
     double trkEta = trk.eta();
-
-    double energy_total = sqrt(trk.px()*trk.px() + trk.py()*trk.py() + trk.pz()*trk.pz() + 1.0*1.0);
-
-    TLorentzVector p4(trk.px(),trk.py(),trk.pz(),energy_total);
-    TGenPhaseSpace event;
-
-
-    double masses[2] = {0.1396,0.1396};
-    event.SetDecay(p4,2,masses);
-    
-    double weight1 = event.Generate();
-
-    TLorentzVector* pPion1 = event.GetDecay(0);
-    TLorentzVector* pPion2 = event.GetDecay(1);
-
-    cout << "px: " << pPion1->Px() << " py: " << pPion1->Py() << " pz: " << pPion1->Pz() << endl;
-    cout << "px: " << pPion2->Px() << " py: " << pPion2->Py() << " pz: " << pPion2->Pz() << endl;
 
     double weight = 1.0;
     if( doEffCorrection_ ) { 
@@ -1260,6 +1261,10 @@ CMEandMixedHarmonicsEmbedded::beginJob()
      effTable_pPb[i] = (TH2D*)f2.Get(Form("rTotalEff3D_%d",i));
   }
 
+  edm::FileInPath fip3("CVEandMixedHarmonics/CVEandMixedHarmonics/data/rho_map.root");
+  TFile f3(fip3.fullPath().c_str(),"READ");
+  mother_Spectra = (TH2D*)f3.Get("mother_Spectra");
+  
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);
   cbinHist = fs->make<TH1D>("cbinHist",";cbin",200,0,200);
