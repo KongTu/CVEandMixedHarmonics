@@ -576,6 +576,16 @@ Share Q_n3 for both dimensions:
   function1->SetParameter(2, v2_eBye);
 
   double cluster_phi = function1->GetRandom();
+  //make sure them between -PI to PI
+  if( cluster_phi > PI && cluster_phi < 2*PI ){
+
+    cluster_phi = -(2*PI - cluster_phi);
+  }
+  else if(cluster_phi < -PI && cluster_phi > -2*PI){
+
+    cluster_phi = cluster_phi + 2*PI;
+  }
+  
   cout << "cluster phi" << cluster_phi << endl;
 
   embedded_cluster_phi->Fill(cluster_phi);
