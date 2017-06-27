@@ -230,6 +230,7 @@ q2 calculation at HF and selections:
   double q2HF_real = qHFcos/qHF_count;
   double q2HF_imag = qHFsin/qHF_count;
   double magnitude_HF = sqrt(q2HF_imag*q2HF_imag + q2HF_real*q2HF_real);
+  double Psi_RP_HF = TMath::ATan(q2HF_imag/q2HF_real);
 
   if( magnitude_HF > q2max_ || magnitude_HF < q2min_ ) return;//q2 selections. 
   
@@ -543,12 +544,14 @@ Share Q_n3 for both dimensions:
 
   double v2_eBye = c22/c22_weight;
 
+  cout << "magnitude_q2: " << magnitude_HF << endl;
+
 //step2: generate the phi according to the v2 EbyE:  
 
   TF1* function1 = new TF1("function1", "[0]*cos(2*x - 2*[1]) + [2]", -PI, PI);
-  function1->SetParameter(0, v2_eBye);
-  function1->SetParameter(1, Psi_RP);
-  function1->SetParameter(2, fabs(v2_eBye));
+  function1->SetParameter(0, magnitude_HF);
+  function1->SetParameter(1, Psi_RP_HF);
+  function1->SetParameter(2, fabs(magnitude_HF));
 
   for(int num_embedded = 0; num_embedded < Nembedded_; num_embedded++){
 
