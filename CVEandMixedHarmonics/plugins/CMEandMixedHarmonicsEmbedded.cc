@@ -544,8 +544,6 @@ Share Q_n3 for both dimensions:
 
   double v2_eBye = c22/c22_weight;
 
-  cout << "angle difference: " << Psi_RP_HF - Psi_RP << endl;
-
 //step2: generate the phi according to the v2 EbyE:  
 
   TF1* function1 = new TF1("function1", "[0]*cos(2*x - 2*[1]) + [2]", -PI, PI);
