@@ -300,7 +300,7 @@ q2 calculation at HF and selections:
 
 
   double numerator = s_hp/Np - s_hn/Nn;
-  double denominator = s_mp/Nmp - s_np/Nmn;
+  double denominator = s_mp/Nmp - s_mn/Nmn;
 
   CcS->Fill(numerator/denominator, Np+Nn);
 
