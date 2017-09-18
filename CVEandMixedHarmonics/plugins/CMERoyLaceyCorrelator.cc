@@ -317,7 +317,7 @@ CMERoyLaceyCorrelator::beginJob()
   trkPhi = fs->make<TH1D>("trkPhi", ";#phi", 700, -3.5, 3.5);
   hfPhi = fs->make<TH1D>("hfPhi", ";#phi", 700, -3.5, 3.5);
   trkPt = fs->make<TH1D>("trkPt", ";p_{T}(GeV)", Nptbins,ptBinsArray);
-  trk_eta = fs->make<TH1D>("trk_eta", ";#eta", NetaBins, etaBinsArray);
+  trk_eta = fs->make<TH1D>("trk_eta", ";#eta", 50,-2.5,2.5);
   q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
   Ntrk_q2 = fs->make<TH1D>("Ntrk_q2",";Ntrk",5000,0,5000);
 
