@@ -281,19 +281,11 @@ CMERoyLaceyCorrelator::beginJob()
     
   TH1D::SetDefaultSumw2();
 
-
-  double etaBinsArray[100];
-  for(unsigned i = 0; i < etaBins_.size(); i++){
-    etaBinsArray[i] = etaBins_[i];
-  }
-
   double ptBinsArray[100];
   const int Nptbins = ptBins_.size() - 1;
   for(unsigned i = 0; i < ptBins_.size(); i++){
     ptBinsArray[i] = ptBins_[i];
   }
-
-
 
   edm::FileInPath fip1("CVEandMixedHarmonics/CVEandMixedHarmonics/data/Hydjet_eff_mult_v1.root");
   TFile f1(fip1.fullPath().c_str(),"READ");
