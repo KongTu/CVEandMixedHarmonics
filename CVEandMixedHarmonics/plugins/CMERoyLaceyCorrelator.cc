@@ -343,8 +343,8 @@ CMERoyLaceyCorrelator::beginJob()
   q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
   Ntrk_q2 = fs->make<TH1D>("Ntrk_q2",";Ntrk",5000,0,5000);
 
-  CcS_num = fs->make<TH1D>("CcS_num", ";#DeltaS", 2000,-2,2);
-  CcS_den = fs->make<TH1D>("CcS_den", ";#DeltaS", 2000,-2,2);
+  CcS_num = fs->make<TH1D>("CcS_num", ";#DeltaS", 20,-1,1);
+  CcS_den = fs->make<TH1D>("CcS_den", ";#DeltaS", 20,-1,1);
 
 }
 vector<double> 
