@@ -219,7 +219,16 @@ q2 calculation at HF and selections:
   q2_mag->Fill( magnitude_HF );
   Ntrk_q2->Fill(nTracks);
 
-  cout << "test1 " << endl;
+
+  double s_hp = 0.0;
+  double s_hn = 0.0;
+  double s_mp = 0.0;
+  double s_mn = 0.0;
+
+  double Np = 0.0;
+  double Nn = 0.0;
+  double Nmp = 0.0;
+  double Nmn = 0.0;
 
   //track loop to fill charged particles Q-vectors
   for(unsigned it = 0; it < tracks->size(); it++){
@@ -266,9 +275,35 @@ q2 calculation at HF and selections:
     trkPt->Fill(trk.pt(), weight);
     trk_eta->Fill(trkEta, weight);
 
-    
-    cout << "test: " << sin(phi - Psi_RP_HF) << endl;
+    if( trk.charge() == 1 ){
+      s_hp += weight*sin( phi - Psi_RP_HF );
+      Np += weight;
+    }
+    if( trk.charge() == -1 ){
+      s_hn += weight*sin( phi - Psi_RP_HF );
+      Nn += weight;
+    }
+
+    unsigned int random_charge;
+    random_charge = gRandom->Integer(2);
+
+    if( random_charge == 0 ){
+      s_mp += weight*sin( phi - Psi_RP_HF );
+      Nmp++;
+    }
+    if( random_charge == 1 ){
+      s_mn += weight*sin( phi - Psi_RP_HF );
+      Nmn++;
+    }
+
   }
+
+
+  double numerator = s_hp/Np - s_hn/Nn;
+  double denominator = s_mp/Nmp - s_np/Nmn;
+
+  CcS->Fill(numerator/denominator, Np+Nn);
+
 
 }
 // ------------ method called once each job just before starting event loop  ------------
@@ -307,6 +342,7 @@ CMERoyLaceyCorrelator::beginJob()
   q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
   Ntrk_q2 = fs->make<TH1D>("Ntrk_q2",";Ntrk",5000,0,5000);
 
+  CcS = fs->make<TH1D>("CcS", ";#DeltaS", 2000,-2,2);
 }
 vector<double> 
 CMERoyLaceyCorrelator::get4Momentum(double pt, double eta, double phi, double mass)
