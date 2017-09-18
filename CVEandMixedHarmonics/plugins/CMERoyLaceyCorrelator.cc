@@ -219,9 +219,7 @@ q2 calculation at HF and selections:
   q2_mag->Fill( magnitude_HF );
   Ntrk_q2->Fill(nTracks);
 
-
-
-//Start filling Q-vectors;
+  cout << "test1 " << endl;
 
   //track loop to fill charged particles Q-vectors
   for(unsigned it = 0; it < tracks->size(); it++){
@@ -298,10 +296,6 @@ CMERoyLaceyCorrelator::beginJob()
   for(int i = 0; i < 1; i++){
      effTable_pPb[i] = (TH2D*)f2.Get(Form("rTotalEff3D_%d",i));
   }
-
-  edm::FileInPath fip3("CVEandMixedHarmonics/CVEandMixedHarmonics/data/rho_map.root");
-  TFile f3(fip3.fullPath().c_str(),"READ");
-  mother_Spectra = (TH2D*)f3.Get("mother_Spectra");
   
   Ntrk = fs->make<TH1D>("Ntrk",";Ntrk",5000,0,5000);
   vtxZ = fs->make<TH1D>("vtxZ",";vz", 400,-20,20);
@@ -312,8 +306,6 @@ CMERoyLaceyCorrelator::beginJob()
   trk_eta = fs->make<TH1D>("trk_eta", ";#eta", 50,-2.5,2.5);
   q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
   Ntrk_q2 = fs->make<TH1D>("Ntrk_q2",";Ntrk",5000,0,5000);
-
-
 
 }
 vector<double> 
