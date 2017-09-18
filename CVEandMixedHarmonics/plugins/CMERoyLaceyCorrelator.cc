@@ -302,7 +302,8 @@ q2 calculation at HF and selections:
   double numerator = s_hp/Np - s_hn/Nn;
   double denominator = s_mp/Nmp - s_mn/Nmn;
 
-  CcS->Fill(numerator/denominator, Np+Nn);
+  CcS_num->Fill(numerator, Np+Nn);
+  CcS_den->Fill(denominator, Np+Nn);
 
 
 }
@@ -342,7 +343,9 @@ CMERoyLaceyCorrelator::beginJob()
   q2_mag = fs->make<TH1D>("q2_mag", "q2", 2000,-1,1);
   Ntrk_q2 = fs->make<TH1D>("Ntrk_q2",";Ntrk",5000,0,5000);
 
-  CcS = fs->make<TH1D>("CcS", ";#DeltaS", 2000,-2,2);
+  CcS_num = fs->make<TH1D>("CcS_num", ";#DeltaS", 2000,-2,2);
+  CcS_den = fs->make<TH1D>("CcS_den", ";#DeltaS", 2000,-2,2);
+
 }
 vector<double> 
 CMERoyLaceyCorrelator::get4Momentum(double pt, double eta, double phi, double mass)

@@ -197,7 +197,8 @@ class CMERoyLaceyCorrelator : public edm::EDAnalyzer {
       TH1D* q2_mag;
       TH1D* Ntrk_q2;
 
-      TH1D* CcS;
+      TH1D* CcS_num;
+      TH1D* CcS_den;
 
       int NsubSamples_;
       int Nembedded_;
