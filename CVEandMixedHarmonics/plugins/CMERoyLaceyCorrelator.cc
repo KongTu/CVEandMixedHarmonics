@@ -289,11 +289,11 @@ q2 calculation at HF and selections:
 
     if( random_charge == 0 ){
       s_mp += weight*sin( phi - Psi_RP_HF );
-      Nmp++;
+      Nmp += weight;
     }
     if( random_charge == 1 ){
       s_mn += weight*sin( phi - Psi_RP_HF );
-      Nmn++;
+      Nmn += weight;
     }
 
   }
