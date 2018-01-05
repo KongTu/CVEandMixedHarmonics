@@ -219,7 +219,7 @@ q2 calculation at HF and selections:
   q2_mag->Fill( magnitude_HF );
   Ntrk_q2->Fill(nTracks);
 
-
+//parrallel
   double s_hp = 0.0;
   double s_hn = 0.0;
   double s_mp = 0.0;
@@ -229,6 +229,17 @@ q2 calculation at HF and selections:
   double Nn = 0.0;
   double Nmp = 0.0;
   double Nmn = 0.0;
+
+//perpendicular
+  double s_per_hp = 0.0;
+  double s_per_hn = 0.0;
+  double s_per_mp = 0.0;
+  double s_per_mn = 0.0;
+
+  double N_per_p = 0.0;
+  double N_per_n = 0.0;
+  double N_per_mp = 0.0;
+  double N_per_mn = 0.0;
 
   //track loop to fill charged particles Q-vectors
   for(unsigned it = 0; it < tracks->size(); it++){
@@ -278,10 +289,17 @@ q2 calculation at HF and selections:
     if( trk.charge() == 1 ){
       s_hp += weight*sin( phi - Psi_RP_HF );
       Np += weight;
+
+      s_per_hp += weight*sin( phi - (Psi_RP_HF+PI/2.0) );
+      N_per_p += weight;
+
     }
     if( trk.charge() == -1 ){
       s_hn += weight*sin( phi - Psi_RP_HF );
       Nn += weight;
+
+      s_per_hn += weight*sin( phi - (Psi_RP_HF+PI/2.0) );
+      N_per_n += weight;
     }
 
     unsigned int random_charge;
@@ -290,10 +308,16 @@ q2 calculation at HF and selections:
     if( random_charge == 0 ){
       s_mp += weight*sin( phi - Psi_RP_HF );
       Nmp += weight;
+
+      s_per_mp += weight*sin( phi - (Psi_RP_HF+PI/2.0) );
+      N_per_mp += weight;
     }
     if( random_charge == 1 ){
       s_mn += weight*sin( phi - Psi_RP_HF );
       Nmn += weight;
+
+      s_per_mn += weight*sin( phi - (Psi_RP_HF+PI/2.0) );
+      N_per_mn += weight;
     }
 
   }
@@ -304,6 +328,12 @@ q2 calculation at HF and selections:
 
   CcS_num->Fill(numerator, Np+Nn);
   CcS_den->Fill(denominator, Np+Nn);
+
+  double numerator_per = s_per_hp/N_per_p - s_per_hn/N_per_n;
+  double denominator_per = s_per_mp/N_per_mp - s_per_mn/N_per_mn;
+
+  CcS_per_num->Fill(numerator_per, N_per_p+N_per_n);
+  CcS_per_den->Fill(denominator_per, N_per_p+N_per_n);
 
 
 }
@@ -346,6 +376,8 @@ CMERoyLaceyCorrelator::beginJob()
   CcS_num = fs->make<TH1D>("CcS_num", ";#DeltaS", 20,-1,1);
   CcS_den = fs->make<TH1D>("CcS_den", ";#DeltaS", 20,-1,1);
 
+  CcS_per_num = fs->make<TH1D>("CcS_per_num", ";#DeltaS", 20,-1,1);
+  CcS_per_den = fs->make<TH1D>("CcS_per_den", ";#DeltaS", 20,-1,1);
 }
 vector<double> 
 CMERoyLaceyCorrelator::get4Momentum(double pt, double eta, double phi, double mass)
